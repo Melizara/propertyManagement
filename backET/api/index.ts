@@ -20,7 +20,7 @@ mongoose.connect(process.env.MONGO_URI!).then(() => {
     app.listen(port, () => {
         console.log(`Mihazakazaka mafy ny serveur amin'ny port ${port}`);
     });
-    console.log("mifandray soa amantsara amin'ny MOngoDB")
+    console.log(`mifandray soa amantsara amin'ny MOngoDB ${mongoose.connection.host}`)
 }).catch((error: Error) => {
     console.log("tsy afaka mifandray amin'ny MongoDB", error);
 })
