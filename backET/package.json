@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node api/index.ts",
-    "server": "nodemon api/index.ts"
+    "server": "nodemon --watch api --ext ts --exec npx ts-node api/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -14,11 +14,14 @@
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "mongoose": "^8.19.1"
+    "mongoose": "^8.19.1",
+    "mysql2": "^3.15.2",
+    "sequelize": "^6.37.7"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",
     "@types/node": "^24.8.1",
+    "@types/sequelize": "^4.28.20",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
