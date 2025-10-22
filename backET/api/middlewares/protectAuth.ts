@@ -19,7 +19,7 @@ export const protectAuth = (req: Request, res: Response, next: NextFunction) => 
         }
     } else {
         return res.status(403).json({
-            message: "No tokem"
+            message: "No token"
         })
     }
 }
