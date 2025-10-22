@@ -10,6 +10,7 @@ export const protectAuth = (req: Request, res: Response, next: NextFunction) => 
                 throw new Error("SECRET_KEY is not defined in environment variables");
             }
             const decoded = jwt.verify(token, process.env.SECRET_KEY) as { _id: string };
+            
             req.userId = decoded._id;
             next();
         } catch (error) {

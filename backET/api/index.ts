@@ -15,7 +15,7 @@ app.get("/", (req: Request, res: Response) => {
     return res.send("Karakory");
 });
 app.use("/api/user", router);
-app.use("/api/storie",storieRouter);
+app.use("/api/story",storieRouter);
 
 mongoose.connect(process.env.MONGO_URI!).then(() => {
     app.listen(port, () => {
