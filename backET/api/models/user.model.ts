@@ -1,5 +1,7 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
+//Ity interface ity dia ampiasaina mba i-typena anle donnees anle modele
+// ny '?' dia midika fa optionnel
 export interface IUser {
     id?: number;
     username: string;
@@ -8,12 +10,9 @@ export interface IUser {
     createdAt?: Date;
 }
 
-export class User extends Model<IUser> {
-    // pas de class fields, pas de implements
-}
+//On cree la class User qui herite de l'interface IUser
+export class User extends Model<IUser> {}
 
-
-// Fonction pour initialiser le modèle avec une instance Sequelize
 export const initUser = (sequelize: Sequelize) => {
     User.init(
         {

@@ -6,25 +6,28 @@ import jwt from "jsonwebtoken";
 
 export const register = async (req: Request, res: Response) => {
     try {
-        //Jerena rah efa misy io utilisateur io
+        //Verification sao dia efa misy anaty DB io User ajoutena io
+        //Requete ity,mitovy amin'ny hoe SELECT...WHERE
+        //Ilay 'req.body.email' io ilay valeur envoyena avy any postman na frontend
         const isExists = await User.findOne({
             where: { email: req.body.email }
         })
         if (isExists) {
             return res.status(400).json({
-                message: "Efa misy io compte io"
+                message: "Utilisateur deja existant"
             })
         }
-        //Hashena ilay mdp amzay tsy de mora hita
-        const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash(req.body.password, salt);
-        //Micreer anle utilisateur(requete)
+        //Hashage du mot de passe
+        const salt = await bcrypt.genSalt(10);//Creer un 'salt' qui est une serie de nombre aleatoir
+        const hash = await bcrypt.hash(req.body.password, salt);//Combinena eto ilay mdp sy salt
+
+        //Requete pour creer un utilisateur
         const user = await User.create({
             username: req.body.username,
             email: req.body.email,
             password: hash
         })
-        //Misy ve ilay SECRET_KEY ary amin'ny .env
+        //Verification si le SECRET_KEY existe dans le .env
         if (!process.env.SECRET_KEY) {
             throw new Error("Tsy ao ilay SECRET_KEY");
         }
@@ -34,9 +37,9 @@ export const register = async (req: Request, res: Response) => {
             process.env.SECRET_KEY,
             { expiresIn: "1d" }
         )
-
-        //Alaina ary amin'ny reponse ny password
+        //Fomba atao mba tsy i-affichena ny mdp any am'ny reponse JSON
         const { password, ...userData } = user.get({ plain: true });
+
         return res.status(200).json({ userData, token })
     } catch (error) {
         if (error instanceof Error) {
@@ -48,16 +51,13 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
     try {
-        console.log("Body reçu :", req.body); // <-- vérifie email et password
         const { email, password } = req.body;
 
-        // Vérifie si l'utilisateur existe
         const user = await User.findOne({ where: { email } });
         console.log("Utilisateur trouvé :", user);
         if (!user) {
-            return res.status(400).json({ message: "Email ou mot de passe incorrect" });
+            return res.status(400).json({ message: "Utilisateur introuvable" });
         }
-
         // Vérifie le mot de passe
         const userPlain = user.get({ plain: true });
         const isPasswordValid = await bcrypt.compare(password, userPlain.password);
@@ -65,20 +65,16 @@ export const login = async (req: Request, res: Response) => {
         if (!isPasswordValid) {
             return res.status(400).json({ message: "Email ou mot de passe incorrect" });
         }
-
         // Vérifie que le SECRET_KEY existe
         if (!process.env.SECRET_KEY) {
             throw new Error("Tsy ao ilay SECRET_KEY");
         }
-
         // Génère un token
         const token = jwt.sign(
             { id: (user as any).id },
             process.env.SECRET_KEY,
             { expiresIn: "1d" }
         )
-
-
         // Supprime le mot de passe de la réponse
         const { password: pwd, ...userData } = user.get({ plain: true });
 
