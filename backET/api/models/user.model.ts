@@ -1,22 +1,50 @@
-import mongoose, { Document, Schema } from "mongoose";
+import { DataTypes, Model, Sequelize } from "sequelize";
 
-// Interface TypeScript pour un utilisateur
-export interface IUser extends Document {
+export interface IUser {
+    id?: number;
     username: string;
     email: string;
     password: string;
-    createdAt: Date;
+    createdAt?: Date;
 }
 
-// Schema Mongoose pour User
-const UserSchema: Schema<IUser> = new Schema({
-    username: { type: String, required: true, unique: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now }
-});
+export class User extends Model<IUser> {
+    // pas de class fields, pas de implements
+}
 
-// Export du modèle
-const User = mongoose.model<IUser>("User", UserSchema);
-export default User;
 
+// Fonction pour initialiser le modèle avec une instance Sequelize
+export const initUser = (sequelize: Sequelize) => {
+    User.init(
+        {
+            id: {
+                type: DataTypes.INTEGER,
+                autoIncrement: true,
+                primaryKey: true,
+            },
+            username: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                unique: true,
+            },
+            email: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                unique: true,
+            },
+            password: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            createdAt: {
+                type: DataTypes.DATE,
+                defaultValue: DataTypes.NOW,
+            },
+        },
+        {
+            sequelize,
+            tableName: "users",
+            timestamps: false, // si tu ne veux pas de createdAt/updatedAt automatiques
+        }
+    );
+};
