@@ -3,7 +3,9 @@ import type { Request, Response } from "express";//Fomba fi-declarevana type req
 import dotenv from "dotenv";
 import { initializeDatabase } from "./database.ts";
 import router from "./routes/user.route.ts";
-import { initUser } from "./models/user.model.ts";
+// import { initUser } from "./models/user.model.ts";
+import storyRouter from "./routes/story.route.ts";
+import { initModels } from "./models/index.model.ts";
 
 dotenv.config();//Chargement variable avy any amin'ny .env
 
@@ -15,11 +17,13 @@ app.get("/", (req: Request, res: Response) => {
     return res.send("Karakory");
 });
 app.use("/api/user", router);//Fampiasana ny routen'ny user
+app.use("/api/story", storyRouter);
 
 const startServer = async () => {
     const sequelize = await initializeDatabase();//Creer et retourner  une instance connectee a la DB
 
-    initUser(sequelize);//Initialisation anle modele User
+    // initUser(sequelize);//Initialisation anle modele User
+    initModels(sequelize);
 
     await sequelize.sync({ force: false });//Creation anle table anaty DB @ alalan'ny modele
     console.log("Table synchroniser");

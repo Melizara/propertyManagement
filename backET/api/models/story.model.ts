@@ -1,37 +1,54 @@
-import mongoose, { Document, Schema } from "mongoose";
+import { DataTypes, Model, Sequelize } from "sequelize";
 
-export interface IStory extends Document {
-    author: String;
-    title: String,
-    text: String,
-    poster: String,
-    views: Number
+export interface IStory {
+    id?: number;
+    authorId: string;
+    title: string,
+    text: string,
+    poster: string,
+    views?: number
 }
 
-const StorySchema: Schema<IStory> = new mongoose.Schema({
-    author: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
-    },
-    title: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    text: {
-        type: String,
-        required: true,
-    },
-    poster: {
-        type: String
-    },
-    views: {
-        type: Number,
-        default: 0
-    }
-}, { timestamps: true });
+export class Story extends Model<IStory> { }
 
-const Story = mongoose.model<IStory>("Story", StorySchema);
-export default Story;
+export const initStory = (sequelize: Sequelize) => {
+    Story.init(
+        {
+            id: {
+                type: DataTypes.INTEGER,
+                autoIncrement: true,
+                primaryKey: true,
+            },
+            authorId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: {
+                    model: "users", // nom de la table de User
+                    key: "id",
+                },
+                onDelete: "CASCADE", // si un user est supprimé, ses stories le sont aussi
+            },
+            title: {
+                type: DataTypes.STRING,
+                allowNull: false
+            },
+            text: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            poster: {
+                type: DataTypes.STRING,
+            },
+            views: {
+                type: DataTypes.INTEGER,
+                defaultValue: 0
+
+            }
+        },
+        {
+            sequelize,
+            tableName: "stories",
+            timestamps: false, // si tu ne veux pas de createdAt/updatedAt automatiques
+        })
+}
 

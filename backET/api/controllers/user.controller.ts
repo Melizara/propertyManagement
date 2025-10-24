@@ -111,4 +111,3 @@ export const account = async (req: Request, res: Response) => {
         }
     }
 };
-

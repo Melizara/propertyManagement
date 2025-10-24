@@ -9,7 +9,6 @@ export interface IUser {
     password: string;
     createdAt?: Date;
 }
-
 //On cree la class User qui herite de l'interface IUser
 export class User extends Model<IUser> {}
 

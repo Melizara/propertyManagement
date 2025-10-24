@@ -1,4 +1,47 @@
 import type { Request, Response } from "express";
+import { Story } from "../models/story.model.ts";
+
+export const createStory = async (req: Request, res: Response) => {
+    try {
+        if (!req.userId) {
+            return res.status(401).json({ error: "Utilisateur non authentifié" });
+        }
+        const story = await Story.create({
+            title: req.body.title,
+            text: req.body.text,
+            poster: req.body.poster,
+            authorId: req.userId!
+        });
+        return res.status(201).json(story);
+    } catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ error: error.message });
+        }
+    }
+}
+export const updateStory = async (req: Request, res: Response) => {
+    return res.status(200).json({
+        message: "Update"
+    })
+}
+export const getStory = async (req: Request, res: Response) => {
+    return res.status(200).json({
+        message: "get"
+    })
+}
+export const getStories = async (req: Request, res: Response) => {
+    return res.status(200).json({
+        message: "gets"
+    })
+}
+export const deleteStory = async (req: Request, res: Response) => {
+    return res.status(200).json({
+        message: "delete"
+    })
+}
+
+/*
+import type { Request, Response } from "express";
 import Story from "../models/story.model.ts";
 
 export const createStory = async (req: Request, res: Response) => {
@@ -108,4 +151,4 @@ export const deleteStory = async (req: Request, res: Response) => {
         }
     }
 }
-
+*/
