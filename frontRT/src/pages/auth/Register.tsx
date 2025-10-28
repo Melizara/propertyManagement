@@ -1,11 +1,13 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { register } from "../../features/authSlice.tsx";
 import type { AppDispatch } from "../../apps/Store.tsx";
+import type { RootState } from "../../apps/Store.tsx";
 
 function Register() {
+  const user = useSelector((state: RootState) => state.auth.data)
   const [inputs, setInputs] = useState({
     username: "",
     email: "",
@@ -36,6 +38,12 @@ function Register() {
       console.error("Registration failed:", error);
     }
   };
+
+  if (user && window.localStorage.getItem("token")) {
+    return <Navigate to="/" />
+  }
+
+
   return (
     <div className="container-lg my-5">
       <div className="text-center align-items-center align-content-center">
