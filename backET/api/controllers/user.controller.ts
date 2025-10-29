@@ -54,9 +54,9 @@ export const login = async (req: Request, res: Response) => {
         const { email, password } = req.body;
 
         const user = await User.findOne({ where: { email } });
-        console.log("Utilisateur trouvé :", user);
+        // console.log("Utilisateur trouvé :", user);
         if (!user) {
-            return res.status(400).json({ message: "Utilisateur introuvable" });
+            return res.status(404).json({ message: "Utilisateur introuvable" });
         }
         // Vérifie le mot de passe
         const userPlain = user.get({ plain: true });
