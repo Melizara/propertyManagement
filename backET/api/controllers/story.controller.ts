@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { Story } from "../models/story.model.ts";
+import { User } from "../models/user.model.ts";
 
 export const createStory = async (req: Request, res: Response) => {
     try {
@@ -20,135 +21,87 @@ export const createStory = async (req: Request, res: Response) => {
     }
 }
 export const updateStory = async (req: Request, res: Response) => {
-    return res.status(200).json({
-        message: "Update"
-    })
-}
-export const getStory = async (req: Request, res: Response) => {
-    return res.status(200).json({
-        message: "get"
-    })
-}
-export const getStories = async (req: Request, res: Response) => {
-    return res.status(200).json({
-        message: "gets"
-    })
-}
-export const deleteStory = async (req: Request, res: Response) => {
-    return res.status(200).json({
-        message: "delete"
-    })
-}
-
-/*
-import type { Request, Response } from "express";
-import Story from "../models/story.model.ts";
-
-export const createStory = async (req: Request, res: Response) => {
     try {
-        const doc = new Story({
+        const story = await Story.findByPk(req.params.id);
+
+        if (!story) {
+            return res.status(404).json({ message: "not found storie update" });
+        }
+
+        await story.update({
             title: req.body.title,
             text: req.body.text,
             poster: req.body.poster,
-            author: req.userId
-        })
-
-        const story = await doc.save();
-        return res.status(200).json(story)
-    } catch (error) {
-        if (error instanceof Error) {
-            return res.status(500).json({
-                error: error.message
-            })
-        }
-    }
-}
-export const getStory = async (req: Request, res: Response) => {
-    try {
-        const storyId = req.params.id
-
-        const story = await Story.findOneAndUpdate(
-            { _id: storyId },
-            { $inc: { views: 1 } },
-            { returnDocument: "after" }
-        )
-
-        if (!story) {
-            return res.status(404).json({
-                message: "not found storie"
-            })
-        }
+            authorId: req.userId,
+        });
 
         return res.status(200).json(story);
     } catch (error) {
         if (error instanceof Error) {
-            res.status(500).json({
-                error: error.message
-            })
+            return res.status(500).json({ error: error.message });
         }
     }
-}
+};
 
+export const getStory = async (req: Request, res: Response) => {
+    try {
+        const storyId = req.params.id;
+
+        const story = await Story.findByPk(storyId, {
+            include: [
+                {
+                    model: User,
+                    as: "author", // si tu as défini l'alias dans les relations
+                    attributes: ["id", "username", "email"] // sélectionner seulement les champs voulus
+                    // si tu veux inclure password aussi : ["id","username","email","password"]
+                },
+            ],
+        });
+
+        if (!story) {
+            return res.status(404).json({ message: "Story not found" });
+        }
+
+        // Incrémentation du nombre de vues
+        await story.save();
+
+        return res.status(200).json(story);
+    } catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ error: error.message });
+        }
+    }
+};
 
 export const getStories = async (req: Request, res: Response) => {
     try {
-        const stories = await Story.find().sort({ createdAt: -1 }).populate("author", "-password").exec();
-
+        const stories = await Story.findAll({
+            order: [["id", "DESC"]],
+            include: [{ association: "author", attributes: { exclude: ["password"] } }],
+        });
         return res.status(200).json(stories);
     } catch (error) {
         if (error instanceof Error) {
-            return res.status(500).json({
-                error: error.message
-            })
+            return res.status(500).json({ error: error.message });
         }
     }
-}
-export const updateStory = async (req: Request, res: Response) => {
-    try {
-        const story = await Story.findOneAndUpdate(
-            { _id: req.params.id },
-            {
-                title: req.body.title,
-                text: req.body.text,
-                poster: req.body.poster,
-                author: req.userId
-            },
-            { new: true }
-        )
-
-        if (!story) {
-            return res.status(404).json({
-                message: "not found storie update"
-            })
-        }
-
-        return res.status(200).json(story);
-    } catch (error) {
-        if (error instanceof Error) {
-            return res.status(500).json({
-                error: error.message
-            })
-        }
-    }
-}
+};
 export const deleteStory = async (req: Request, res: Response) => {
     try {
-        const story = await Story.findByIdAndDelete({ _id: req.params.id });
+        const story = await Story.findByPk(req.params.id);
 
         if (!story) {
-            return res.status(404).json({
-                message: "not found storie delete"
-            })
+            return res.status(404).json({ message: "not found storie delete" });
         }
 
+        await story.destroy();
         return res.status(200).json(story);
-
     } catch (error) {
         if (error instanceof Error) {
-            return res.status(500).json({
-                error: error.message
-            })
+            return res.status(500).json({ error: error.message });
         }
     }
-}
-*/
+};
+
+
+

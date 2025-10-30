@@ -1,11 +1,23 @@
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchStories } from "../features/storySlice";
+import type { RootState } from "../apps/Store";
+import type { AppDispatch } from "../apps/Store";
 
 
 function Home() {
+  const { stories, status } = useSelector((state: RootState) => state.stories);
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(fetchStories())
+  }, [dispatch]);
+
   return (
     <div className="container-lg my-5">
       <div className="row align-items-center align-content-center">
-        <div className="col-nd-6 mt-5 mt-md-0">
+        <div className="col-md-6 mt-5 mt-md-0">
           <div className="text-center">
             Texte au centre
           </div>
@@ -30,28 +42,31 @@ function Home() {
             </div>
           </div>
         </div>
+
+        {status === "loading" && (
+          <div className="text-center mt-5">
+            <h3 className="text-secondary fw-bold fs-4">
+              Loading ...
+            </h3>
+          </div>
+        )}
+        {status === "error" && (
+          <div className="text-center mt-5">
+            <h3 className="text-secondary fw-bold fs-4">
+              Wrong
+            </h3>
+          </div>
+        )}
         <div className="row">
-          <div className="col-md-6 col-lg-4 text-center text-decoration-none">
-            <div className="shadow rounded">
-              rounded
+          {status === "success" && stories.map((story) => (
+            <div key={story.id} className="col-md-6 col-lg-4 text-center text-decoration-none">
+              <div className="shadow rounded">
+                rounded
+              </div>
+              <h2 className="lead fw-bold my-4">{story.title}</h2>
+              <Link to={`/story/${story.id}`}><button className="btn btn-primary text-white lead fw-bold mb-5">Read</button></Link>
             </div>
-            <h2 className="lead fw-bold my-4">Story 1</h2>
-            <Link to={"/story/:id"}><button className="btn btn-primary text-white lead fw-bold mb-5">Read</button></Link>
-          </div>
-          <div className="col-md-6 col-lg-4 text-center text-decoration-none">
-            <div className="shadow rounded">
-              rounded
-            </div>
-            <h2 className="lead fw-bold my-4">Story 2</h2>
-            <Link to={"/story/:id"}><button className="btn btn-primary text-white lead fw-bold mb-5">Read</button></Link>
-          </div>
-          <div className="col-md-6 col-lg-4 text-center text-decoration-none">
-            <div className="shadow rounded">
-              rounded
-            </div>
-            <h2 className="lead fw-bold my-4">Story3</h2>
-            <Link to={"/story:id"}><button className="btn btn-primary text-white lead fw-bold mb-5">Read</button></Link>
-          </div> 
+          ))}
         </div>
       </div>
     </div>

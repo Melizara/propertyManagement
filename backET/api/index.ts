@@ -21,7 +21,7 @@ app.get("/", (req: Request, res: Response) => {
     return res.send("Karakory");
 });
 app.use("/api/user", router);//Fampiasana ny routen'ny user
-app.use("/api/story", storyRouter);
+app.use("/api/stories", storyRouter);
 
 const startServer = async () => {
     const sequelize = await initializeDatabase();//Creer et retourner  une instance connectee a la DB
