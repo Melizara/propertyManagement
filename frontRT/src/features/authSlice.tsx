@@ -2,6 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../axios";
 import { AxiosError } from "axios";
 
+//Ces codes suivant sont des interfaces avec ts
+//Ca sert a connnaitre le type de chaque données pour eviter les erreurs
 interface RegisterParams {
   username: string;
   email: string;
@@ -22,12 +24,15 @@ interface AuthState {
   error: string | null; // ✅ ajouté
 }
 
+//Ceci est l'etat initale qui herite du interface AuthState.
 const initialState: AuthState = {
   data: null,
   status: "idle",
   error: null, // ✅ ajouté
 };
 
+//Ceci est une fonction asynchrone qui sert a appeller l'API
+//Regitser zao ity
 export const register = createAsyncThunk("/auth/register", async (params: RegisterParams, { dispatch, rejectWithValue }) => {
   try {
     const { data } = await axios.post("api/user/register", params);
@@ -48,6 +53,7 @@ export const register = createAsyncThunk("/auth/register", async (params: Regist
     return rejectWithValue("Oops")
   }
 });
+//Login
 export const login = createAsyncThunk("/auth/login", async (params: LoginParams, { dispatch, rejectWithValue }) => {
   try {
     const { data } = await axios.post("api/user/login", params);
@@ -67,6 +73,7 @@ export const login = createAsyncThunk("/auth/login", async (params: LoginParams,
     return rejectWithValue("Oops")
   }
 });
+//Recuperation de l'infos du compte
 export const account = createAsyncThunk("/auth/account", async () => {
   const { data } = await axios.get("/api/user/account")
   return data;

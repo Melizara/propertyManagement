@@ -30,7 +30,6 @@ export const deleteStory = createAsyncThunk<void, number>(
     }
 );
 
-
 const storiesSlice = createSlice({
     name: "stories",
     initialState,

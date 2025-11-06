@@ -6,13 +6,16 @@ import type { RootState } from "../../apps/Store.tsx";
 import type { FormEvent } from "react";
 
 function Write() {
+  //Recuperation des infos de l'utilisateur dans le store Redux.
   const user = useSelector((state: RootState) => state.auth.data);
 
+  //Ces deux hoooks sert a creer des etats locaux pour stocker le titre et contenu du texte que l'utilisateur saisie
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
 
   const [loading, setLoading] = useState(false);
 
+  //recuperer le id depuis l'URL
   const { id } = useParams();
   const isUpdate = Boolean(id);
 
