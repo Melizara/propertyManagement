@@ -20,21 +20,12 @@ export const initStory = (sequelize: Sequelize) => {
                 autoIncrement: true,
                 primaryKey: true,
             },
-<<<<<<< HEAD
-            authorId: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                references: {
-                    model: "users",
-                    key: "matricule",
-=======
             authorMatricule: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 references: {
                     model: User,
                     key: "matricule"
->>>>>>> 2c69140 (Nety ilay login aoha)
                 },
                 onDelete: "CASCADE",
                 onUpdate: "CASCADE",
