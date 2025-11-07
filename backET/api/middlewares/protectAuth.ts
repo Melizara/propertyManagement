@@ -18,9 +18,10 @@ export const protectAuth = (req: AuthRequest, res: Response, next: NextFunction)
             throw new Error("SECRET_KEY is not defined in environment variables");
         }
         // Vérification sy decodage an'ilay token
-        const decoded = jwt.verify(token, process.env.SECRET_KEY) as { id: string | number };
-        // Convertit en string pour éviter l'erreur TS
-        req.userId = decoded.id.toString();
+        const decoded = jwt.verify(token, process.env.SECRET_KEY) as { matricule: string };
+        req.userId = decoded.matricule; // ou mieux : req.userMatricule
+        console.log("Token décodé :", decoded);
+        console.log("UserId mis dans req :", req.userId);
         next();
     } catch (error) {
         return res.status(403).json({ message: "Not Authorized" });

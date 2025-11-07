@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { User } from "../models/user.model.ts";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import type { AuthRequest } from "../middlewares/protectAuth.ts";
 
 
 export const register = async (req: Request, res: Response) => {
@@ -23,7 +24,8 @@ export const register = async (req: Request, res: Response) => {
 
         //Requete pour creer un utilisateur
         const user = await User.create({
-            username: req.body.username,
+            matricule: req.body.matricule,
+            poste: req.body.poste,
             email: req.body.email,
             password: hash
         })
@@ -33,10 +35,12 @@ export const register = async (req: Request, res: Response) => {
         }
         //Generation anle token
         const token = jwt.sign(
-            { id: (user as any).id },
+            { matricule: user.matricule },
             process.env.SECRET_KEY,
             { expiresIn: "1d" }
-        )
+        );
+
+
         //Fomba atao mba tsy i-affichena ny mdp any am'ny reponse JSON
         const { password, ...userData } = user.get({ plain: true });
 
@@ -51,9 +55,9 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
     try {
-        const { email, password } = req.body;
+        const { matricule, password } = req.body;
 
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne({ where: { matricule } });
         // console.log("Utilisateur trouvé :", user);
         if (!user) {
             return res.status(404).json({ message: "Utilisateur introuvable" });
@@ -63,7 +67,7 @@ export const login = async (req: Request, res: Response) => {
         const isPasswordValid = await bcrypt.compare(password, userPlain.password);
 
         if (!isPasswordValid) {
-            return res.status(400).json({ message: "Email ou mot de passe incorrect" });
+            return res.status(400).json({ message: "Matricule ou mot de passe incorrect" });
         }
         // Vérifie que le SECRET_KEY existe
         if (!process.env.SECRET_KEY) {
@@ -71,10 +75,11 @@ export const login = async (req: Request, res: Response) => {
         }
         // Génère un token
         const token = jwt.sign(
-            { id: (user as any).id },
+            { matricule: user.matricule },
             process.env.SECRET_KEY,
             { expiresIn: "1d" }
-        )
+        );
+
         // Supprime le mot de passe de la réponse
         const { password: pwd, ...userData } = user.get({ plain: true });
 
@@ -87,23 +92,16 @@ export const login = async (req: Request, res: Response) => {
     }
 };
 
-export const account = async (req: Request, res: Response) => {
+export const account = async (req: AuthRequest, res: Response) => {
     try {
-        const user = await User.findByPk(req.userId);
-
+        const user = await User.findByPk(req.userId); // req.userId contient maintenant le matricule
+        console.log("User matricule récupéré :", req.userId);
         if (!user) {
             return res.status(404).json({ message: "User is not found" });
         }
-        /*
-        //Ito zao erreur am ts
-        const { password, ...userData } = user._doc;
-        */
-        //Ito no solution any
         const { password, ...userData } = user.get({ plain: true });
-
         return res.status(200).json(userData);
     } catch (error) {
-        //Ito mila tadidiana
         if (error instanceof Error) {
             return res.status(500).json({
                 error: error.message

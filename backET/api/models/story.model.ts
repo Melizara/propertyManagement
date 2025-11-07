@@ -20,13 +20,14 @@ export const initStory = (sequelize: Sequelize) => {
                 primaryKey: true,
             },
             authorId: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.STRING,
                 allowNull: false,
                 references: {
-                    model: "users", // nom de la table de User
-                    key: "id",
+                    model: "users",
+                    key: "matricule",
                 },
-                onDelete: "CASCADE", // si un user est supprimé, ses stories le sont aussi
+                onDelete: "CASCADE",
+                onUpdate: "CASCADE",
             },
             title: {
                 type: DataTypes.STRING,

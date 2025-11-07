@@ -3,27 +3,32 @@ import { DataTypes, Model, Sequelize } from "sequelize";
 //Ity interface ity dia ampiasaina mba i-typena anle donnees anle modele
 // ny '?' dia midika fa optionnel
 export interface IUser {
-    id?: number;
-    username: string;
+    matricule: string;
+    poste: "Admin" | "Caissier" | "Operateur de saisie";
     email: string;
     password: string;
     createdAt?: Date;
 }
 //On cree la class User qui herite de l'interface IUser
-export class User extends Model<IUser> {}
+export class User extends Model<IUser> implements IUser {
+    public matricule!: string;
+    public poste!: "Admin" | "Caissier" | "Operateur de saisie";
+    public email!: string;
+    public password!: string;
+    public createdAt?: Date;
+}
 
 export const initUser = (sequelize: Sequelize) => {
     User.init(
         {
-            id: {
-                type: DataTypes.INTEGER,
-                autoIncrement: true,
-                primaryKey: true,
-            },
-            username: {
+            matricule: {
                 type: DataTypes.STRING,
+                primaryKey: true,
+                allowNull: false
+            },
+            poste: {
+                type: DataTypes.ENUM("Admin", "Caissier", "Operateur de saisie"),
                 allowNull: false,
-                unique: true,
             },
             email: {
                 type: DataTypes.STRING,
