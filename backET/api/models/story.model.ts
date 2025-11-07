@@ -1,8 +1,9 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
+import { User } from "./user.model.ts";
 
 export interface IStory {
     id?: number;
-    authorId: string;
+    authorMatricule: string;
     title: string,
     text: string,
     poster: string,
@@ -19,12 +20,21 @@ export const initStory = (sequelize: Sequelize) => {
                 autoIncrement: true,
                 primaryKey: true,
             },
+<<<<<<< HEAD
             authorId: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 references: {
                     model: "users",
                     key: "matricule",
+=======
+            authorMatricule: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                references: {
+                    model: User,
+                    key: "matricule"
+>>>>>>> 2c69140 (Nety ilay login aoha)
                 },
                 onDelete: "CASCADE",
                 onUpdate: "CASCADE",
