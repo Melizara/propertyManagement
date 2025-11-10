@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 
 export const register = async (req: Request, res: Response) => {
     try {
-        const { matricule, email, poste, password } = req.body;
+        const { matricule, pseudo, email, poste, password } = req.body;
 
         // Vérifie si l'utilisateur existe déjà par email ou matricule
         const isExists = await User.findOne({
@@ -30,6 +30,7 @@ export const register = async (req: Request, res: Response) => {
         // Création de l'utilisateur
         const user = await User.create({
             matricule,
+            pseudo,
             email,
             poste,
             password: hash

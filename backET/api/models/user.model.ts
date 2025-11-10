@@ -3,6 +3,7 @@ import { DataTypes, Model, Sequelize } from "sequelize";
 // Interface pour typer les données du modèle
 export interface IUser {
     matricule: string; // PK
+    pseudo: string;
     email: string;
     poste: "operateur de saisie" | "admin" | "caissier"; // tu peux limiter les valeurs possibles
     password: string;
@@ -10,7 +11,7 @@ export interface IUser {
 }
 
 // Classe User qui hérite de l'interface IUser
-export class User extends Model<IUser> {}
+export class User extends Model<IUser> { }
 
 export const initUser = (sequelize: Sequelize) => {
     User.init(
@@ -20,6 +21,10 @@ export const initUser = (sequelize: Sequelize) => {
                 primaryKey: true,
                 allowNull: false,
                 unique: true,
+            },
+            pseudo: {
+                type: DataTypes.STRING,
+                allowNull: false,
             },
             email: {
                 type: DataTypes.STRING,
