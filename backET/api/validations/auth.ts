@@ -6,7 +6,7 @@ export const registerValidation = [
     body("pseudo", "Le pseudo est obligatoire").notEmpty(),
     body("email", "Email non valide").isEmail(),
     body("poste", "Poste invalide, doit être 'operateur', 'admin' ou 'caissier'")
-        .isIn(["operateur", "admin", "caissier"]),
+        .isIn(["operateur de saisie", "admin", "caissier"]),
     body("password", "Mot de passe trop court (minimum 8 caractères)").isLength({ min: 8 })
 ];
 

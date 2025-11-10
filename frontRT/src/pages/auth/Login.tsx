@@ -12,7 +12,7 @@ function Login() {
   const error = useSelector((state: RootState) => state.auth.error);
 
   const [inputs, setInputs] = useState({
-    email: "",
+    matricule: "",
     password: "",
   })
 
@@ -60,14 +60,14 @@ function Login() {
           <form className="border p-5" onSubmit={handleSubmit}>
             <h4 className="text-secondary fw-bold fs-3 mb-5">Login</h4>
             <div className="mb-3">
-              <input type="email" placeholder="Email" className="form-control" name="email"
-                value={inputs.email}
+              <input type="text" placeholder="Matricule" className="form-control" name="matricule"
+                value={inputs.matricule}
                 onChange={handleChange}
                 required
               />
-              {error && Array.isArray(error) && error.some(err => err.path === "email") && (
+              {error && Array.isArray(error) && error.some(err => err.path === "matricule") && (
                 <div className="alert alert-danger">
-                  {error.find(err => err.path === "email").msg}
+                  {error.find(err => err.path === "matricule").msg}
                 </div>
               )}
             </div>

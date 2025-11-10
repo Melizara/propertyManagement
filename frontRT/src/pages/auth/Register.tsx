@@ -10,14 +10,19 @@ import { clearError } from "../../features/authSlice.tsx";
 function Register() {
   const user = useSelector((state: RootState) => state.auth.data);
   const error = useSelector((state: RootState) => state.auth.error);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState(""); // pour afficher l'erreur
+
 
   const [inputs, setInputs] = useState({
-    username: "",
+    matricule: "",
+    pseudo: "",
     email: "",
+    poste: "",
     password: "",
   })
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setInputs((prevState) => ({
       ...prevState,
@@ -35,6 +40,12 @@ function Register() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (inputs.password !== confirmPassword) {
+      setPasswordError("Les mots de passe ne correspondent pas");
+      return;
+    } else {
+      setPasswordError("");
+    }
     try {
       const data = await dispatch(register(inputs));
 
@@ -60,13 +71,24 @@ function Register() {
           <form className="border p-5" onSubmit={handleSubmit}>
             <h4 className="text-secondary fw-bold fs-3 mb-5">Register</h4>
             <div className="mb-3">
-              <input type="text" placeholder="username" className="form-control" name="username"
-                value={inputs.username}
+              <input type="text" placeholder="matricule" className="form-control" name="matricule"
+                value={inputs.matricule}
                 onChange={handleChange}
                 required />
-              {error && Array.isArray(error) && error.some(err => err.path === "username") && (
+              {error && Array.isArray(error) && error.some(err => err.path === "matricule") && (
                 <div className="alert alert-danger">
-                  {error.find(err => err.path === "username").msg}
+                  {error.find(err => err.path === "matricule").msg}
+                </div>
+              )}
+            </div>
+            <div className="mb-3">
+              <input type="text" placeholder="pseudo" className="form-control" name="pseudo"
+                value={inputs.pseudo}
+                onChange={handleChange}
+                required />
+              {error && Array.isArray(error) && error.some(err => err.path === "pseudo") && (
+                <div className="alert alert-danger">
+                  {error.find(err => err.path === "pseudo").msg}
                 </div>
               )}
             </div>
@@ -82,6 +104,25 @@ function Register() {
               )}
             </div>
             <div className="mb-3">
+              <select
+                className="form-select"
+                name="poste"
+                value={inputs.poste}
+                onChange={handleChange}
+                required
+              >
+                <option value="" disabled hidden>Poste</option>
+                <option value="admin">Admin</option>
+                <option value="operateur de saisie">Opérateur de saisie</option>
+                <option value="caissier">Caissier</option>
+              </select>
+              {error && Array.isArray(error) && error.some(err => err.path === "poste") && (
+                <div className="alert alert-danger">
+                  {error.find(err => err.path === "poste")?.msg}
+                </div>
+              )}
+            </div>
+            <div className="mb-3">
               <input type="password" placeholder="password" className="form-control" name="password"
                 value={inputs.password}
                 onChange={handleChange}
@@ -92,6 +133,22 @@ function Register() {
                 </div>
               )}
             </div>
+            <div className="mb-3">
+              <input
+                type="password"
+                placeholder="Confirmer le mot de passe"
+                className="form-control"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+              {passwordError && (
+                <div className="alert alert-danger">
+                  {passwordError}
+                </div>
+              )}
+            </div>
+
 
             {error && typeof error === "string" && error === "Utilisateur deja existant" && (
               <div className="alert alert-danger">

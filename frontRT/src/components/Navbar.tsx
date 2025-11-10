@@ -11,7 +11,7 @@ function Navbar() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    if (window.confirm("deconncter?")) {
+    if (window.confirm("deconnecter?")) {
       dispatch(logout());
       window.localStorage.removeItem("token")
       navigate("/")
@@ -32,7 +32,7 @@ function Navbar() {
             <div className="d-flex align-items-center justify-content-center">
               <div className="text-primary text-decoration-none d-flex align-text-center align-content-center">
                 <FaUserAlt className="me-2 mt-2 fs-5" />
-                <h4 className="mt-2 me-5 fs-5 lead fw-bold">{user.username}</h4>
+                <h4 className="mt-2 me-5 fs-5 lead fw-bold">{user.pseudo}</h4>
               </div>
               <div className="px-4 rounded-pill">
                 <button className="btn btn-primary text-white lead fw-bold" onClick={handleLogout}>
@@ -85,7 +85,7 @@ function Navbar() {
                   <>
                     <div className="text-primary text-decoration-none">
                       <li className="dropdown-item text-secondary fw-bold fs-6">
-                        <FaUserAlt className="me-2" />{user.username}
+                        <FaUserAlt className="me-2" />{user.pseudo}
                       </li>
                     </div>
                     <li className="dropdown-item text-secondary fw-bold fs-6" onClick={handleLogout}>

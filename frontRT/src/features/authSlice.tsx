@@ -5,16 +5,18 @@ import { AxiosError } from "axios";
 //Ces codes suivant sont des interfaces avec ts
 //Ca sert a connnaitre le type de chaque données pour eviter les erreurs
 interface RegisterParams {
-  username: string;
+  matricule:string;
+  pseudo: string;
+  poste:string;
   email: string;
   password: string;
 }
 interface LoginParams {
-  email: string;
+  matricule: string;
   password: string;
 }
 interface User {
-  username: string;
+  pseudo: string;
   email: string;
   token?: string; // Optional token field if your API returns it here
 }
