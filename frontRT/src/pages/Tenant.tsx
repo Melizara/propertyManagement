@@ -6,6 +6,7 @@ import type { AppDispatch, RootState } from "../apps/Store.tsx";
 import axios from "../axios.tsx"
 import { deleteTenant } from "../features/tenantSlice.tsx";
 
+
 function Tenant() {
     interface TenantType {
         name: string;

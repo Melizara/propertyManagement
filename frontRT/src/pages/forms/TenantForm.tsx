@@ -5,6 +5,7 @@ import axios from "../../axios";
 import type { RootState } from "../../apps/Store.tsx";
 import type { FormEvent } from "react";
 
+
 function TenantForm() {
   //Recuperation des infos de l'utilisateur dans le store Redux.
   const user = useSelector((state: RootState) => state.auth.data);
@@ -12,18 +13,29 @@ function TenantForm() {
   //Ces deux hoooks sert a creer des etats locaux pour stocker le titre et contenu du texte que l'utilisateur saisie
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [birthPlace, setBirthPlace] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [cin, setCin] = useState("");
+  const [cinPlace, setCinPlace] = useState("");
+  const [dateCin, setDateCin] = useState("");
+  const [father, setFather] = useState("");
+  const [mother, setMother] = useState("");
+  const [address, setAddress] = useState("");
+  const [neighborHood, setNeighborHood] = useState("");
+  const [municipality, setMunicipality] = useState("");
+
 
   const [loading, setLoading] = useState(false);
 
   //recuperer le id depuis l'URL
-  const { cin } = useParams();
-  const isUpdate = Boolean(cin);
+  const { cin: cinParam } = useParams<{ cin: string }>();
+  const isUpdate = Boolean(cinParam);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     if (cin) {
-      axios.get(`/api/tenants/${cin}`)
+      axios.get(`/api/tenants/${cinParam}`)
         .then(({ data }) => {
           setName(data.name);
           setLastName(data.lastName);
@@ -44,15 +56,33 @@ function TenantForm() {
     e.preventDefault();
     try {
       setLoading(true);
+      const tenantData = {
+        name,
+        lastName,
+        birthPlace,
+        birthDate: birthDate ? new Date(birthDate).toISOString() : null,
+        cin,
+        cinPlace,
+        dateCin: dateCin ? new Date(dateCin).toISOString() : null,
+        father,
+        mother,
+        address,
+        neighborHood,
+        municipality,
+        userMatricule: user?.matricule
+      };
 
       if (isUpdate) {
-        await axios.put(`/api/tenants/${cin}`, { name, lastName })
+        await axios.put(`/api/tenants/${cin}`, tenantData)
       } else {
-        await axios.post("/api/tenants", { name, lastName })
+        await axios.post("/api/tenants", tenantData);
+        window.alert("Locataire ajouté avec succès !");
       }
       navigate("/")
     } catch (error) {
       console.log(error)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -63,7 +93,7 @@ function TenantForm() {
         <div className="col-lg-8">
           <div className="text-center">
             <h2 className="fw-bold mb-5">
-              Write a story
+              Locataire
             </h2>
           </div>
         </div>
@@ -72,21 +102,88 @@ function TenantForm() {
       <div className="row justify-content-center text-center">
         <form onSubmit={handleSubmit} encType="multipart/form-data" >
           <div className="mb-5 rounded">
-            <input type="text" placeholder="title" className="form-control"
+            <input type="text" placeholder="Name" className="form-control"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
             />
           </div>
           <div className="mb-3 rounded">
-            <input type="text" placeholder="Story" className="form-control"
+            <input type="text" placeholder="Last Name" className="form-control"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               required
             />
           </div>
-          <div className="mb-3 rounded">
-            <input type="text" placeholder="Sary " className="form-control" />
+          <div className="mb-5 rounded">
+            <input type="date" placeholder="Date de naissance" className="form-control"
+              value={birthDate}
+              onChange={(e) => setBirthDate(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-5 rounded">
+            <input type="text" placeholder="Lieu de naissance" className="form-control"
+              value={birthPlace}
+              onChange={(e) => setBirthPlace(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-5 rounded">
+            <input type="text" placeholder="CIN" className="form-control"
+              value={cin}
+              onChange={(e) => setCin(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-5 rounded">
+            <input type="text" placeholder="Lieu du CIN" className="form-control"
+              value={cinPlace}
+              onChange={(e) => setCinPlace(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-5 rounded">
+            <input type="date" placeholder="Date du CIN" className="form-control"
+              value={dateCin}
+              onChange={(e) => setDateCin(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-5 rounded">
+            <input type="text" placeholder="Pere" className="form-control"
+              value={father}
+              onChange={(e) => setFather(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-5 rounded">
+            <input type="text" placeholder="Mere" className="form-control"
+              value={mother}
+              onChange={(e) => setMother(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-5 rounded">
+            <input type="text" placeholder="Addresse" className="form-control"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-5 rounded">
+            <input type="text" placeholder="Quartier" className="form-control"
+              value={neighborHood}
+              onChange={(e) => setNeighborHood(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-5 rounded">
+            <input type="text" placeholder="Commune" className="form-control"
+              value={municipality}
+              onChange={(e) => setMunicipality(e.target.value)}
+              required
+            />
           </div>
           {loading ? <div className="mb-3 rounded">Publishing...</div> : (
             <div className="mb-3 rounded">

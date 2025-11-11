@@ -15,6 +15,7 @@ interface Tenant {
     neighborHood: string;
     municipality: string;
 }
+
 interface TenantsState {
     tenants: Tenant[];
     status: "loading" | "success" | "error";

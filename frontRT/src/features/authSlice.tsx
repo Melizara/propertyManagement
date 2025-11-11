@@ -16,6 +16,7 @@ interface LoginParams {
   password: string;
 }
 interface User {
+  matricule:string;
   pseudo: string;
   email: string;
   token?: string; // Optional token field if your API returns it here
