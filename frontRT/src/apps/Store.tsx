@@ -3,12 +3,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/authSlice";
 //Reducer qui gère les stories
 import storiesReducer from "../features/storySlice";
+import tenantsReducer from "../features/tenantSlice";
 
 
 const Store = configureStore({
     reducer: {
         auth: authReducer,
-        stories:storiesReducer
+        stories:storiesReducer,
+        tenants:tenantsReducer
     }
 });
 

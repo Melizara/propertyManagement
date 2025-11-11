@@ -16,6 +16,9 @@ import type { AppDispatch } from "./apps/Store.tsx";
 import axios from "./axios"
 //Action Redux pour recuperer les informations de l'user connectee
 import { account } from "./features/authSlice";
+import Tenant from "./pages/Tenant.tsx";
+import TenantForm from "./pages/forms/TenantForm.tsx";
+import HomeTenant from "./pages/HomeTenant.tsx";
 
 //Layout est un modele de page commun,Outlet change selon la route
 const Layout = () => {
@@ -38,6 +41,10 @@ const router = createBrowserRouter([
         element: <Home />
       },
       {
+        path: "/locataire",
+        element: <HomeTenant />
+      },
+      {
         path: "/register",
         element: <Register />
       },
@@ -48,6 +55,14 @@ const router = createBrowserRouter([
       {
         path: "/story/:id",
         element: <Story />
+      },
+      {
+        path: "/tenant/:id",
+        element: <Tenant />
+      },
+      {
+        path:"/formTenant",
+        element:<TenantForm/>
       },
       {
         path: "/write",
