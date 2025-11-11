@@ -3,7 +3,7 @@ import { User } from "./user.model.ts";
 
 export interface IStory {
     id?: number;
-    authorMatricule: string;
+    userMatricule: string;
     title: string,
     text: string,
     poster: string,
@@ -20,7 +20,7 @@ export const initStory = (sequelize: Sequelize) => {
                 autoIncrement: true,
                 primaryKey: true,
             },
-            authorMatricule: {
+            userMatricule: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 references: {

@@ -7,13 +7,12 @@ import router from "./routes/user.route.ts";
 import storyRouter from "./routes/story.route.ts";
 import { initModels } from "./models/index.model.ts";
 import cors from "cors";
-
+import tenantRouter from "./routes/tenant.route.ts";
 
 dotenv.config();//Chargement variable avy any amin'ny .env
 
 const app = express();
 const port = process.env.PORT || 5000;
-
 
 app.use(cors());
 app.use(express.json());//Middleware mba ahafahan'ny express mahazo requete json
@@ -22,6 +21,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 app.use("/api/user", router);//Fampiasana ny routen'ny user
 app.use("/api/stories", storyRouter);
+app.use("/api/tenants", tenantRouter);
 
 const startServer = async () => {
     const sequelize = await initializeDatabase();//Creer et retourner  une instance connectee a la DB

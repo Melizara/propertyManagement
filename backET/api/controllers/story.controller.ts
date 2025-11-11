@@ -4,14 +4,14 @@ import { User } from "../models/user.model.ts";
 
 export const createStory = async (req: Request, res: Response) => {
     try {
-        if (!req.userId) {
+        if (!req.userMatricule) {
             return res.status(401).json({ error: "Utilisateur non authentifié" });
         }
         const story = await Story.create({
             title: req.body.title,
             text: req.body.text,
             poster: req.body.poster,
-            authorId: req.userId!
+            userMatricule: req.userMatricule!
         });
         return res.status(201).json(story);
     } catch (error) {
@@ -32,7 +32,7 @@ export const updateStory = async (req: Request, res: Response) => {
             title: req.body.title,
             text: req.body.text,
             poster: req.body.poster,
-            authorId: req.userId,
+            userMatricule: req.userMatricule!
         });
 
         return res.status(200).json(story);
@@ -77,7 +77,7 @@ export const getStories = async (req: Request, res: Response) => {
     try {
         const stories = await Story.findAll({
             order: [["id", "DESC"]],
-            include: [{ association: "author", attributes: { exclude: ["password"] } }],
+            include: [{ association: "author", attributes: { exclude: ["password"]}}],
         });
         return res.status(200).json(stories);
     } catch (error) {
