@@ -51,7 +51,7 @@ function Register() {
 
       if (data.payload && "token" in data.payload) {
         window.localStorage.setItem("token", data.payload.token);
-        navigate("/");
+        navigate("/login");
       }
 
     } catch (error) {
@@ -60,7 +60,7 @@ function Register() {
   };
 
   if (user && window.localStorage.getItem("token")) {
-    return <Navigate to="/" />
+    return <Navigate to="/locataire" />
   }
 
 
