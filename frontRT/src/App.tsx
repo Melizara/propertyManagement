@@ -4,7 +4,6 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
-import Home from "./pages/homes/Home.tsx";
 import HomeTenant from "./pages/homes/HomeTenant.tsx";
 import Story from "./pages/infos/Story.tsx";
 import Tenant from "./pages/infos/Tenant.tsx";
@@ -15,13 +14,16 @@ import { useDispatch } from "react-redux";//useDispatch permet d'envoyer une act
 import type { AppDispatch } from "./apps/Store.tsx";//AppDispatch sert a typer le dispatch avec typescript
 import axios from "./axios";//Tsy mila manoratra anle localhost:5000 iny tsony fa efa ato zay
 import { account } from "./features/authSlice";//Action Redux pour recuperer les informations de l'user connectee
+import Welcome from "./pages/homes/Welcome.tsx";
+import PrivateRoute from "./reducerComponent/PrivateRoute.tsx";
+import HomeStory from "./pages/homes/HomeStory.tsx";
 
 //Layout est un modele de page commun,Outlet change selon la route
 const Layout = () => {
   return (
     <div className="d-flex flex-column min-vh-100">
       <Navbar />
-      <main className="flex-grow-1">
+      <main className="flex-grow-1 d-flex justify-content-center align-items-center">
         <Outlet />
       </main>
       <Footer />
@@ -37,11 +39,23 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />
+        element: <Welcome />
+      },
+      {
+        path: "/story",
+        element: (
+          <PrivateRoute>
+            <HomeStory />
+          </PrivateRoute>
+        )
       },
       {
         path: "/locataire",
-        element: <HomeTenant />
+        element: (
+          <PrivateRoute>
+            <HomeTenant />
+          </PrivateRoute>
+        )
       },
       {
         path: "/register",

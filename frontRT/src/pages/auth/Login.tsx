@@ -54,7 +54,7 @@ function Login() {
 
 
   return (
-    <div className="contsiner-lg my-5">
+    <div className="container-lg my-5">
       <div className="text-center align-items-center align-content-center">
         <div className="d-flex justify-content-center">
           <form className="border p-5" onSubmit={handleSubmit}>

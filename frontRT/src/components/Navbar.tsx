@@ -25,11 +25,20 @@ function Navbar() {
             iwrite
           </div>
         </Link>
-        <Link to="/locataire" className="text-decoration-none">
-          <div className="navbar-brand text-primary fw-bold fst-italic fs-3">
-            Locataire
-          </div>
-        </Link>
+        {user && (
+          <>
+            <Link to="/locataire" className="text-decoration-none">
+              <div className="navbar-brand text-primary fw-bold fst-italic fs-3">
+                Locataire
+              </div>
+            </Link>
+            <Link to="/story" className="text-decoration-none">
+              <div className="navbar-brand text-primary fw-bold fst-italic fs-3">
+                STory
+              </div>
+            </Link>
+          </>
+        )}
         {/* Version desktop */}
         <div className="d-md-block d-none">
           {user ?

@@ -6,7 +6,7 @@ import type { RootState } from "../../apps/Store";
 import type { AppDispatch } from "../../apps/Store";
 
 
-function Home() {
+function HomeStory() {
   const { stories, status } = useSelector((state: RootState) => state.stories);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -73,4 +73,4 @@ function Home() {
   )
 }
 
-export default Home;
+export default HomeStory;

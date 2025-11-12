@@ -5,8 +5,6 @@ import type { RootState } from "../../apps/Store";
 import type { AppDispatch } from "../../apps/Store";
 import { fetchTenants } from "../../features/tenantSlice";
 
-
-
 function HomeTenant() {
   const { tenants, status } = useSelector((state: RootState) => state.tenants);
   const dispatch = useDispatch<AppDispatch>();
