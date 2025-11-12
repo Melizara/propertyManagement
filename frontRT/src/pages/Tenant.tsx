@@ -57,7 +57,7 @@ function Tenant() {
     const handleDelete = async (cin: number) => {
         if (window.confirm("sure?")) {
             await dispatch(deleteTenant(cin));
-            navigate("/");
+            navigate("/locataire");
         }
     };
 
@@ -78,7 +78,7 @@ function Tenant() {
                         <div className="mt-3">
                             <div className="d-flex flex-row justify-content-center text-center">
                                 <div>
-                                    <Link to={`/update/${tenant.cin}`}>
+                                    <Link to={`/updateTenant/${tenant.cin}`}>
                                         <button className="btn btn-secondary">
                                             Edit
                                         </button>
@@ -92,7 +92,7 @@ function Tenant() {
                     )}
                     <p>Auteur : {tenant?.user?.pseudo || "Inconnu"}</p>
                     <p className="text-secondary lead fw-bold mt-2" ><FaEye className="me-2" />Vue par</p>
-                    <p className="lead mt3">{tenant?.lastName || "Texte indisponible"}</p>
+                    <p className="lead mt3">{tenant?.name || "Texte indisponible"}</p>
                 </div>)
             }
         </div>

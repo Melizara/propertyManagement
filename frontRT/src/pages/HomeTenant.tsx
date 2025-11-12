@@ -65,7 +65,7 @@ function HomeTenant() {
                 rounded
               </div>
               <h2 className="lead fw-bold my-4">{tenant.name}</h2>
-              <Link to={`/story/${tenant.lastName}`}><button className="btn btn-primary text-white lead fw-bold mb-5">Read</button></Link>
+              <Link to={`/tenant/${tenant.cin}`}><button className="btn btn-primary text-white lead fw-bold mb-5">Read</button></Link>
             </div>
           ))}
         </div>

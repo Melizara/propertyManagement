@@ -23,7 +23,7 @@ export const createTenant = async (req: Request, res: Response) => {
             municipality: req.body.municipality,
             userMatricule: req.body.userMatricule!,
         });
-        return res.status(500).json(tenant)
+        return res.status(201).json(tenant);
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({ error: error.message });

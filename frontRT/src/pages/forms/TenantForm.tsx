@@ -34,17 +34,27 @@ function TenantForm() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (cin) {
+    if (cinParam) {
       axios.get(`/api/tenants/${cinParam}`)
         .then(({ data }) => {
           setName(data.name);
           setLastName(data.lastName);
+          setBirthDate(data.birthDate);
+          setBirthPlace(data.birthPlace);
+          setCin(data.cin);
+          setCinPlace(data.cinPlace);
+          setDateCin(data.dateCin);
+          setFather(data.father);
+          setMother(data.mother);
+          setAddress(data.address);
+          setNeighborHood(data.neighborHood);
+          setMunicipality(data.municipality);
         })
         .catch((error) => {
           console.log(error);
         })
     }
-  }, [cin]); // <-- important
+  }, [cinParam]); // <-- important
 
 
   if (!user && !window.localStorage.getItem("token")) {
@@ -73,12 +83,12 @@ function TenantForm() {
       };
 
       if (isUpdate) {
-        await axios.put(`/api/tenants/${cin}`, tenantData)
+        await axios.put(`/api/tenants/${cinParam}`, tenantData)
       } else {
         await axios.post("/api/tenants", tenantData);
         window.alert("Locataire ajouté avec succès !");
       }
-      navigate("/")
+      navigate("/locataire")
     } catch (error) {
       console.log(error)
     } finally {

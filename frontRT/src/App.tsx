@@ -57,20 +57,24 @@ const router = createBrowserRouter([
         element: <Story />
       },
       {
-        path: "/tenant/:id",
+        path: "/tenant/:cin",
         element: <Tenant />
-      },
-      {
-        path:"/formTenant",
-        element:<TenantForm/>
       },
       {
         path: "/write",
         element: <Write />
       },
       {
+        path: "/formTenant",
+        element: <TenantForm />
+      },
+      {
         path: "/update/:id",
         element: <Write />
+      },
+      {
+        path: "/updateTenant/:cin",
+        element: <TenantForm />
       }
     ]
   }
