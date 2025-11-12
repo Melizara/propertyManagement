@@ -4,6 +4,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import axios from "../../axios";
 import type { RootState } from "../../apps/Store.tsx";
 import type { FormEvent } from "react";
+import { AxiosError } from "axios";
 
 function TenantForm() {
   //Recuperation des infos de l'utilisateur dans le store Redux.
@@ -25,6 +26,9 @@ function TenantForm() {
   const isUpdate = Boolean(cinParam);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [birthDateError, setBirthDateError] = useState("");
+  const [dateCinError, setDateCinError] = useState("");
+  const [cinError, setCinError] = useState("");
 
   useEffect(() => {
     if (cinParam) {
@@ -55,6 +59,9 @@ function TenantForm() {
     e.preventDefault();
     try {
       setLoading(true);
+      setBirthDateError("");
+      setDateCinError("");
+      setCinError("");
       const tenantData = {
         name,
         lastName,
@@ -78,7 +85,19 @@ function TenantForm() {
       }
       navigate("/locataire")
     } catch (error) {
-      console.log(error)
+      const axiosError = error as AxiosError<{ error: string }>;
+      if (axiosError.response && axiosError.response.status === 400) {
+        const errorMessage = axiosError.response.data?.error || "Erreur";
+        if (errorMessage.includes("majeur")) {
+          setBirthDateError(errorMessage);
+        } else if (errorMessage.includes("plus")) {
+          setDateCinError(errorMessage);
+        } else if (errorMessage.includes("chiffres")) {
+          setCinError(errorMessage);
+        }
+      } else {
+        console.log(error);
+      }
     } finally {
       setLoading(false);
     }
@@ -114,6 +133,7 @@ function TenantForm() {
         <div className="row mb-3">
           <div className="col-md-6">
             <label className="form-label">Date de naissance</label>
+            {birthDateError && <div className="text-danger mb-1">{birthDateError}</div>}
             <input type="date" className="form-control" value={birthDate}
               onChange={e => setBirthDate(e.target.value)} required />
           </div>
@@ -131,13 +151,26 @@ function TenantForm() {
         <div className="row mb-3">
           <div className="col-md-4">
             <label className="form-label">CIN</label>
-            <input type="text" className="form-control" value={cin}
+            {cinError && <div className="text-danger mb-1">{cinError}</div>}
+            <input
+              type="text"
+              className="form-control"
+              value={cin}
+              maxLength={12} // limite à 12 caractères
               onChange={e => {
                 // On ne garde que les chiffres
-                const numbersOnly = e.target.value.replace(/\D/g, "");
+                let numbersOnly = e.target.value.replace(/\D/g, "");
+                // On limite à 12 chiffres
+                if (numbersOnly.length > 12) {
+                  numbersOnly = numbersOnly.slice(0, 12);
+                }
                 setCin(numbersOnly);
-              }} required />
+              }}
+              placeholder="Entrez 12 chiffres"
+              required
+            />
           </div>
+
           <div className="col-md-4">
             <label className="form-label">Lieu du CIN</label>
             <input type="text" className="form-control" value={cinPlace}
@@ -148,6 +181,7 @@ function TenantForm() {
           </div>
           <div className="col-md-4">
             <label className="form-label">Date du CIN</label>
+            {dateCinError && <div className="text-danger mb-1">{dateCinError}</div>}
             <input type="date" className="form-control" value={dateCin}
               onChange={e => setDateCin(e.target.value)} required />
           </div>

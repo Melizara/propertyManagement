@@ -6,6 +6,35 @@ export const createTenant = async (req: Request, res: Response) => {
     try {
         if (!req.userMatricule) {
             return res.status(401).json({ error: "Utilisateur non authentifié" })
+        };
+
+        const { birthDate, dateCin, cin } = req.body;
+
+        const birth = new Date(birthDate);
+        const today = new Date();
+        let age = today.getFullYear() - birth.getFullYear();
+        const m = today.getMonth() - birth.getMonth();
+
+        if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        };
+
+        if (age < 18) {
+            return res.status(400).json({ error: "le locataire doit etre majeur" })
+        }
+
+        const cinDate = new Date(dateCin);
+        const minCinDate = new Date(birth);
+        minCinDate.setFullYear(minCinDate.getFullYear() + 18);
+
+        if (cinDate < minCinDate) {
+            return res.status(400).json({ error: "La date du CIN doit être à 18 ans ou plus" })
+        }
+
+        const cinRegex = /^\d{12}$/;
+
+        if(!cinRegex.test(cin)){
+            return res.status(400).json({error: "Le CIN doit être une suite de 12 chiffres"})
         }
 
         const tenant = await Tenant.create({
