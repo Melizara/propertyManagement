@@ -1,23 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
-//Reducer qui gère toute ce qui est authentification
-import authReducer from "../features/authSlice";
-//Reducer qui gère les stories
-import storiesReducer from "../features/storySlice";
+import authReducer from "../features/authSlice";//Reducer qui gère toute ce qui est authentification
+import storiesReducer from "../features/storySlice";//Reducer qui gère les stories
 import tenantsReducer from "../features/tenantSlice";
-
 
 const Store = configureStore({
     reducer: {
         auth: authReducer,
-        stories:storiesReducer,
-        tenants:tenantsReducer
+        stories: storiesReducer,
+        tenants: tenantsReducer
     }
 });
 
-//Typage ts anle RootState
-export type RootState = ReturnType<typeof Store.getState>;
+export type RootState = ReturnType<typeof Store.getState>;//Typage ts anle RootState
 
-//Typage ts anle AppDispatch iny
-export type AppDispatch = typeof Store.dispatch;
+export type AppDispatch = typeof Store.dispatch;//Typage ts anle AppDispatch iny
 
 export default Store;

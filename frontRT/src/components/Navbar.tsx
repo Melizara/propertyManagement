@@ -4,14 +4,13 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../apps/Store";
 import { logout } from "../features/authSlice";
 
-
 function Navbar() {
   const user = useSelector((state: RootState) => state.auth.data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    if (window.confirm("deconnecter?")) {
+    if (window.confirm("Voulez-vous vous déconnecter?")) {
       dispatch(logout());
       window.localStorage.removeItem("token")
       navigate("/")

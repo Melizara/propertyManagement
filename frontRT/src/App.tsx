@@ -2,34 +2,33 @@
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Home from "./pages/homes/Home.tsx";
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
-import Story from "./pages/infos/Story.tsx";
-import Write from "./pages/forms/Write";
-import { useEffect } from "react";
-//useDispatch permet d'envoyer une action Redux
-import { useDispatch } from "react-redux";
-//AppDispatch sert a typer le dispatch avec typescript
-import type { AppDispatch } from "./apps/Store.tsx";
-//Tsy mila manoratra anle localhost:5000 iny tsony fa efa ato zay
-import axios from "./axios"
-//Action Redux pour recuperer les informations de l'user connectee
-import { account } from "./features/authSlice";
-import Tenant from "./pages/infos/Tenant.tsx";
-import TenantForm from "./pages/forms/TenantForm.tsx";
+import Home from "./pages/homes/Home.tsx";
 import HomeTenant from "./pages/homes/HomeTenant.tsx";
+import Story from "./pages/infos/Story.tsx";
+import Tenant from "./pages/infos/Tenant.tsx";
+import Write from "./pages/forms/Write";
+import TenantForm from "./pages/forms/TenantForm.tsx";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";//useDispatch permet d'envoyer une action Redux
+import type { AppDispatch } from "./apps/Store.tsx";//AppDispatch sert a typer le dispatch avec typescript
+import axios from "./axios";//Tsy mila manoratra anle localhost:5000 iny tsony fa efa ato zay
+import { account } from "./features/authSlice";//Action Redux pour recuperer les informations de l'user connectee
 
 //Layout est un modele de page commun,Outlet change selon la route
 const Layout = () => {
   return (
-    <>
+    <div className="d-flex flex-column min-vh-100">
       <Navbar />
-      <Outlet />
+      <main className="flex-grow-1">
+        <Outlet />
+      </main>
       <Footer />
-    </>
-  )
-}
+    </div>
+  );
+};
+
 
 //Creation de toute les routes
 const router = createBrowserRouter([
@@ -84,7 +83,7 @@ function App() {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    //Le token de l'utilisateur deja connecter est stocker dans le localStorage su navigateur
+    //Le token de l'utilisateur deja connecter est stocker dans le localStorage sur navigateur
     const token = localStorage.getItem("token");
 
     if (token) {
