@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import type { AppDispatch, RootState } from "../apps/Store.tsx";
-import axios from "../axios.tsx"
-import { deleteStory } from "../features/storySlice.tsx";
+import type { AppDispatch, RootState } from "../../apps/Store.tsx";
+import axios from "../../axios.tsx"
+import { deleteStory } from "../../features/storySlice.tsx";
 
 function Story() {
   interface StoryType {

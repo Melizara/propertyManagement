@@ -1,18 +1,17 @@
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../apps/Store";
-import type { AppDispatch } from "../apps/Store";
-import { fetchTenants } from "../features/tenantSlice";
+import { fetchStories } from "../../features/storySlice";
+import type { RootState } from "../../apps/Store";
+import type { AppDispatch } from "../../apps/Store";
 
 
-
-function HomeTenant() {
-  const { tenants, status } = useSelector((state: RootState) => state.tenants);
+function Home() {
+  const { stories, status } = useSelector((state: RootState) => state.stories);
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    dispatch(fetchTenants())
+    dispatch(fetchStories())
   }, [dispatch]);
 
   return (
@@ -29,9 +28,9 @@ function HomeTenant() {
               pussy
             </h1>
             <p className="mt-4 text-muted">
-              Locataire de terrain
+              pussssssssssyy
             </p>
-            <Link to={"/formTenant"}><button className="btn btn-primary px-3 my-3 fw-bold">Write man</button></Link>
+            <Link to={"/write"}><button className="btn btn-primary px-3 my-3 fw-bold">Write man</button></Link>
           </div>
         </div>
       </div>
@@ -59,13 +58,13 @@ function HomeTenant() {
           </div>
         )}
         <div className="row">
-          {status === "success" && tenants.map((tenant) => (
-            <div key={tenant.cin} className="col-md-6 col-lg-4 text-center text-decoration-none">
+          {status === "success" && stories.map((story) => (
+            <div key={story.id} className="col-md-6 col-lg-4 text-center text-decoration-none">
               <div className="shadow rounded">
                 rounded
               </div>
-              <h2 className="lead fw-bold my-4">{tenant.name}</h2>
-              <Link to={`/tenant/${tenant.cin}`}><button className="btn btn-primary text-white lead fw-bold mb-5">Read</button></Link>
+              <h2 className="lead fw-bold my-4">{story.title}</h2>
+              <Link to={`/story/${story.id}`}><button className="btn btn-primary text-white lead fw-bold mb-5">Read</button></Link>
             </div>
           ))}
         </div>
@@ -74,4 +73,4 @@ function HomeTenant() {
   )
 }
 
-export default HomeTenant;
+export default Home;

@@ -2,10 +2,10 @@
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Home from "./pages/Home";
+import Home from "./pages/homes/Home.tsx";
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
-import Story from "./pages/Story";
+import Story from "./pages/infos/Story.tsx";
 import Write from "./pages/forms/Write";
 import { useEffect } from "react";
 //useDispatch permet d'envoyer une action Redux
@@ -16,9 +16,9 @@ import type { AppDispatch } from "./apps/Store.tsx";
 import axios from "./axios"
 //Action Redux pour recuperer les informations de l'user connectee
 import { account } from "./features/authSlice";
-import Tenant from "./pages/Tenant.tsx";
+import Tenant from "./pages/infos/Tenant.tsx";
 import TenantForm from "./pages/forms/TenantForm.tsx";
-import HomeTenant from "./pages/HomeTenant.tsx";
+import HomeTenant from "./pages/homes/HomeTenant.tsx";
 
 //Layout est un modele de page commun,Outlet change selon la route
 const Layout = () => {
