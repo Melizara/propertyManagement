@@ -1,0 +1,10 @@
+/* Masquer complètement la scrollbar sur Chrome et Brave */
+::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+/* Optionnel : garder le défilement fluide */
+html, body {
+  scroll-behavior: smooth;
+}

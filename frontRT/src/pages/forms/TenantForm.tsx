@@ -104,6 +104,15 @@ function TenantForm() {
   };
   return (
     <div className="container-lg my-5">
+      <div className="mb-3">
+        <button
+          type="button"
+          className="btn btn-outline-secondary"
+          onClick={() => navigate("/locataire")}
+        >
+          ← Retour
+        </button>
+      </div>
       <div className="text-center mb-5">
         <h2 className="fw-bold">Formulaire Locataire</h2>
       </div>
