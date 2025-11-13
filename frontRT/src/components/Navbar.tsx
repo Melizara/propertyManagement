@@ -47,6 +47,12 @@ function Navbar() {
               >
                 Story
               </Link>
+              <Link
+                to="/terrain"
+                className="text-secondary text-decoration-none fw-semibold"
+              >
+                Terrain
+              </Link>
             </>
           )}
 

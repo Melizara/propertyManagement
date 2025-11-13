@@ -17,6 +17,7 @@ import { account } from "./features/authSlice";//Action Redux pour recuperer les
 import Welcome from "./pages/homes/Welcome.tsx";
 import PrivateRoute from "./reducerComponent/PrivateRoute.tsx";
 import HomeStory from "./pages/homes/HomeStory.tsx";
+import HomeLand from "./pages/homes/HomeLand.tsx";
 
 //Layout est un modele de page commun,Outlet change selon la route
 const Layout = () => {
@@ -54,6 +55,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <HomeTenant />
+          </PrivateRoute>
+        )
+      },
+      {
+        path:"/terrain",
+        element:(
+          <PrivateRoute>
+            <HomeLand/>
           </PrivateRoute>
         )
       },
