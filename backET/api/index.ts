@@ -8,6 +8,7 @@ import storyRouter from "./routes/story.route.ts";
 import { initModels } from "./models/index.model.ts";
 import cors from "cors";
 import tenantRouter from "./routes/tenant.route.ts";
+import landRouter from "./routes/land.route.ts";
 
 dotenv.config();//Chargement variable avy any amin'ny .env
 
@@ -22,6 +23,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/user", router);//Fampiasana ny routen'ny user
 app.use("/api/stories", storyRouter);
 app.use("/api/tenants", tenantRouter);
+app.use("/api/lands", landRouter);
 
 const startServer = async () => {
     const sequelize = await initializeDatabase();//Creer et retourner  une instance connectee a la DB

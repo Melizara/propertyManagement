@@ -3,12 +3,14 @@ import type { Sequelize } from "sequelize";
 import { initUser, User } from "./user.model.ts";
 import { initStory, Story } from "./story.model.ts";
 import { initTenant, Tenant } from "./tenant.model.ts";
+import { initLand, Land } from "./land.model.ts";
 
 export const initModels = (sequelize: Sequelize) => {
     // Initialiser les modèles
     initUser(sequelize);
     initStory(sequelize);
     initTenant(sequelize);
+    initLand(sequelize);
 
     // Définir les relations entre les modèles
     User.hasMany(Story, {
@@ -31,6 +33,16 @@ export const initModels = (sequelize: Sequelize) => {
         as: "user"
     });
 
+    User.hasMany(Land, {
+        foreignKey: "userMatricule",
+        as: "lands",
+    });
+
+    Land.belongsTo(User, {
+        foreignKey: "userMatricule",
+        as: "user"
+    });
+
 };
 
-export { User, Story, Tenant };
+export { User, Story, Tenant, Land };
