@@ -1,20 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LandForm from "../forms/LandForm.tsx";
+import axios from "../../axios.tsx";
+import LandModal from "../infos/Land.tsx";
 
-const initialTerrains = [
-    { id: 1, name: "Terrain A", pkFCE: 10, available: true, side: "left" },
-    { id: 2, name: "Terrain B", pkFCE: 25, available: false, side: "right" },
-    { id: 3, name: "Terrain C", pkFCE: 70, available: true, side: "left" },
-    { id: 4, name: "Terrain D", pkFCE: 120, available: false, side: "right" },
-    { id: 5, name: "Terrain E", pkFCE: 145, available: true, side: "left" },
-];
+interface Terrain {
+    codeLand: number;
+    name: string;
+    length: number; // en m
+    width: number;  // en m
+    startPk: number; // en km
+    position: number;
+    railwaySide: "gauche" | "droite";
+    available: boolean;
+    userMatricule: string;
+}
 
 function HomeLand() {
-    const [terrains] = useState(initialTerrains);
+    const [terrains, setTerrains] = useState<Terrain[]>([]);
     const [showModal, setShowModal] = useState(false);
+    const [selectedTerrain, setSelectedTerrain] = useState<Terrain | null>(null);
+
+
     const lengthKm = 163;
     const pixelsPerKm = 1512; // 25 m = 1 cm
-    const svgWidth = lengthKm * pixelsPerKm; // 163*378 ≈ 61614 px
+    const svgWidth = lengthKm * pixelsPerKm;
+
+    // Simulation de récupération des terrains depuis la DB
+    useEffect(() => {
+        axios.get("/api/lands")
+            .then(res => setTerrains(res.data))
+            .catch(err => console.error(err));
+    }, []);
+
+    useEffect(() => {
+        const container = document.getElementById("svg-container");
+        if (container) {
+            container.scrollTop = (1000 - container.clientHeight) / 2; // svgHeight - hauteur visible
+        }
+    }, []);
+
+
+    const svgHeight = 1000; // la nouvelle hauteur
+    const centerY = svgHeight / 2;
 
 
     return (
@@ -44,7 +71,6 @@ function HomeLand() {
                     }}
                     onClick={() => setShowModal(false)}
                 >
-
                     <div
                         style={{
                             backgroundColor: "#fff",
@@ -55,7 +81,7 @@ function HomeLand() {
                             maxHeight: "90vh",
                             overflowY: "auto",
                         }}
-                        onClick={(e) => e.stopPropagation()} // empêche la fermeture quand on clique à l'intérieur
+                        onClick={(e) => e.stopPropagation()}
                     >
                         <button
                             style={{
@@ -73,86 +99,70 @@ function HomeLand() {
                     </div>
                 </div>
             )}
+
             <h2>Carte des terrains le long de la FCE (25 m = 1 cm)</h2>
 
-            {/* Conteneur scrollable uniquement pour la carte */}
             <div
+                id="svg-container"
                 style={{
-                    width: "90vw", // largeur visible
-                    maxWidth: "100%",
-                    overflowX: "auto", // scroll horizontal seulement
-                    overflowY: "hidden", // pas de scroll vertical
+                    width: "68vw",
+                    height: "650px",
+                    overflow: "auto",
                     border: "1px solid #ccc",
                     borderRadius: "8px",
                     backgroundColor: "#f9f9f9",
-                    whiteSpace: "nowrap", // évite les retours à la ligne
+                    whiteSpace: "nowrap",
                 }}
             >
+
                 <svg
                     width={svgWidth}
-                    height={300}
-                    style={{
-                        display: "block",
-                    }}
+                    height={1000}    // ← plus d’espace pour les terrains
+                    style={{ display: "block" }}
                 >
                     {/* Ligne ferroviaire */}
                     <line
                         x1={0}
-                        y1={150}
+                        y1={centerY}
                         x2={svgWidth}
-                        y2={150}
+                        y2={centerY}
                         stroke="#444"
                         strokeWidth={6}
                         strokeLinecap="round"
                     />
-                    {[...Array(Math.floor(lengthKm * 10) + 1)].map((_, i) => {
-                        const x = i * 0.1 * pixelsPerKm; // 0,1 km = 100 m
-                        return (
-                            <line
-                                key={i}
-                                x1={x}
-                                y1={145}
-                                x2={x}
-                                y2={155}
-                                stroke="#161515ff"
-                                strokeWidth={1}
-                            />
-                        );
-                    })}
 
-                    {/* Repères de distance tous les 20 km */}
-                    {/* Repères tous les 1 km */}
-
+                    {/* Repères tous les 0.025 km (25 m) */}
                     {[...Array(Math.floor(lengthKm * 40) + 1)].map((_, i) => {
-                        const x = i * 0.025 * pixelsPerKm; // 25 m = 0,025 km
+                        const x = i * 0.025 * pixelsPerKm;
                         return (
                             <line
                                 key={i}
                                 x1={x}
-                                y1={145}
+                                y1={centerY - 5}
                                 x2={x}
-                                y2={155}
+                                y2={centerY + 5}
                                 stroke="#161515ff"
                                 strokeWidth={1}
                             />
                         );
                     })}
 
+                    {/* Repères tous les 1 km */}
                     {[...Array(lengthKm + 1)].map((_, i) => {
-                        const x = i * pixelsPerKm; // 1 km = pixelsPerKm
+                        const x = i * pixelsPerKm;
                         return (
                             <g key={i}>
                                 <line
                                     x1={x}
-                                    y1={140}
+                                    y1={centerY - 10}
                                     x2={x}
-                                    y2={160}
+                                    y2={centerY + 10}
                                     stroke="#555"
                                     strokeWidth={2}
                                 />
                                 <text
                                     x={x}
-                                    y={130}
+                                    y={centerY - 15}
                                     textAnchor="middle"
                                     fontSize={12}
                                     fill="#333"
@@ -163,42 +173,52 @@ function HomeLand() {
                         );
                     })}
 
-
                     {/* Terrains */}
                     {terrains.map((t) => {
-                        const x = t.pkFCE * pixelsPerKm - 20;
-                        const y = t.side === "left" ? 80 : 160;
+                        const x = t.startPk * pixelsPerKm;
+                        const width = (t.length / 1000) * pixelsPerKm; // m → km → pixels
+                        // tu peux adapter le scale si nécessaire // espace vertical entre plan 1 et plan 2
+
+                        const spacingBetweenPlans = 9; // espace entre plans
+                        const height = t.width; // ou adapte le scale si nécessaire
+
+                        let y;
+                        if (t.railwaySide === "gauche") {
+                            y = centerY - 10 - height - (t.position - 1) * (height + spacingBetweenPlans);
+                        } else {
+                            y = centerY + 10 + (t.position - 1) * (height + spacingBetweenPlans);
+                        }
+
                         const color = t.available ? "#3cb371" : "#e74c3c";
 
                         return (
-                            <g key={t.id}>
+                            <g key={t.codeLand}>
                                 <rect
                                     x={x}
                                     y={y}
-                                    width={40}
-                                    height={40}
+                                    width={width}
+                                    height={height}
                                     fill={color}
                                     stroke="#222"
                                     strokeWidth={1.5}
                                     rx={4}
                                     ry={4}
-                                    style={{ cursor: "pointer", transition: "transform 0.2s" }}
-                                    onClick={() =>
-                                        alert(
-                                            `Terrain: ${t.name}\nCôté: ${t.side}\nDisponible: ${t.available ? "Oui" : "Non"
-                                            }`
-                                        )
-                                    }
-                                    onMouseEnter={(e) =>
-                                        e.currentTarget.setAttribute("transform", "scale(1.2)")
-                                    }
-                                    onMouseLeave={(e) =>
-                                        e.currentTarget.removeAttribute("transform")
-                                    }
+                                    style={{
+                                        cursor: "pointer",
+                                        transition: "transform 0.6s ease", // ← animation douce
+                                    }}
+                                    onClick={() => setSelectedTerrain(t)}
+
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.transform = "scale(1.1)";
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.transform = "scale(1)";
+                                    }}
                                 />
                                 <text
-                                    x={x + 20}
-                                    y={t.side === "left" ? y - 5 : y + 60}
+                                    x={x + width / 2}
+                                    y={t.railwaySide === "gauche" ? y - 5 : y + height + 15}
                                     textAnchor="middle"
                                     fontSize={12}
                                     fill="#333"
@@ -211,7 +231,10 @@ function HomeLand() {
                 </svg>
             </div>
 
-            {/* Légende (reste fixe) */}
+            <LandModal land={selectedTerrain} onClose={() => setSelectedTerrain(null)} />
+
+
+            {/* Légende */}
             <div style={{ marginTop: "10px", display: "flex", gap: "20px" }}>
                 <div>
                     <span
@@ -240,6 +263,7 @@ function HomeLand() {
                     Loué
                 </div>
             </div>
+
         </div>
     );
 }
