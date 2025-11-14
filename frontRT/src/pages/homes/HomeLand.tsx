@@ -1,4 +1,5 @@
 import { useState } from "react";
+import LandForm from "../forms/LandForm.tsx";
 
 const initialTerrains = [
     { id: 1, name: "Terrain A", pkFCE: 10, available: true, side: "left" },
@@ -10,6 +11,7 @@ const initialTerrains = [
 
 function HomeLand() {
     const [terrains] = useState(initialTerrains);
+    const [showModal, setShowModal] = useState(false);
     const lengthKm = 163;
     const pixelsPerKm = 378; // 0,1 km = 1 cm → 1 km = 10 cm ≈ 378 px
     const svgWidth = lengthKm * pixelsPerKm; // 163*378 ≈ 61614 px
@@ -17,6 +19,60 @@ function HomeLand() {
 
     return (
         <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+            <button
+                className="btn btn-primary mb-3"
+                onClick={() => setShowModal(true)}
+            >
+                Ajouter un Terrain
+            </button>
+
+            {/* Modale */}
+            {showModal && (
+                <div
+                    style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        width: "100vw",
+                        height: "100vh",
+                        backgroundColor: "rgba(0,0,0,0.5)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        zIndex: 1000,
+                        animation: "fadeIn 0.3s ease-out",
+                    }}
+                    onClick={() => setShowModal(false)}
+                >
+
+                    <div
+                        style={{
+                            backgroundColor: "#fff",
+                            padding: "20px",
+                            borderRadius: "8px",
+                            width: "80%",
+                            maxWidth: "600px",
+                            maxHeight: "90vh",
+                            overflowY: "auto",
+                        }}
+                        onClick={(e) => e.stopPropagation()} // empêche la fermeture quand on clique à l'intérieur
+                    >
+                        <button
+                            style={{
+                                float: "right",
+                                fontSize: "1.2rem",
+                                border: "none",
+                                background: "none",
+                                cursor: "pointer",
+                            }}
+                            onClick={() => setShowModal(false)}
+                        >
+                            ✕
+                        </button>
+                        <LandForm onSuccess={() => setShowModal(false)} />
+                    </div>
+                </div>
+            )}
             <h2>Carte des terrains le long de la FCE (100 m = 1 cm)</h2>
 
             {/* Conteneur scrollable uniquement pour la carte */}

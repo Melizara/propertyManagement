@@ -18,6 +18,7 @@ import Welcome from "./pages/homes/Welcome.tsx";
 import PrivateRoute from "./reducerComponent/PrivateRoute.tsx";
 import HomeStory from "./pages/homes/HomeStory.tsx";
 import HomeLand from "./pages/homes/HomeLand.tsx";
+import LandForm from "./pages/forms/LandForm.tsx";
 
 //Layout est un modele de page commun,Outlet change selon la route
 const Layout = () => {
@@ -59,10 +60,10 @@ const router = createBrowserRouter([
         )
       },
       {
-        path:"/terrain",
-        element:(
+        path: "/terrain",
+        element: (
           <PrivateRoute>
-            <HomeLand/>
+            <HomeLand />
           </PrivateRoute>
         )
       },
@@ -91,12 +92,20 @@ const router = createBrowserRouter([
         element: <TenantForm />
       },
       {
+        path: "formLand",
+        element: <LandForm />
+      },
+      {
         path: "/update/:id",
         element: <Write />
       },
       {
         path: "/updateTenant/:cin",
         element: <TenantForm />
+      },
+      {
+        path: "updateLand/:codeLand",
+        element: <LandForm />
       }
     ]
   }
