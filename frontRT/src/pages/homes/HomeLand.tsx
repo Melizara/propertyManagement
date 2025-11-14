@@ -13,7 +13,7 @@ function HomeLand() {
     const [terrains] = useState(initialTerrains);
     const [showModal, setShowModal] = useState(false);
     const lengthKm = 163;
-    const pixelsPerKm = 378; // 0,1 km = 1 cm → 1 km = 10 cm ≈ 378 px
+    const pixelsPerKm = 1512; // 25 m = 1 cm
     const svgWidth = lengthKm * pixelsPerKm; // 163*378 ≈ 61614 px
 
 
@@ -73,7 +73,7 @@ function HomeLand() {
                     </div>
                 </div>
             )}
-            <h2>Carte des terrains le long de la FCE (100 m = 1 cm)</h2>
+            <h2>Carte des terrains le long de la FCE (25 m = 1 cm)</h2>
 
             {/* Conteneur scrollable uniquement pour la carte */}
             <div
@@ -122,6 +122,22 @@ function HomeLand() {
 
                     {/* Repères de distance tous les 20 km */}
                     {/* Repères tous les 1 km */}
+
+                    {[...Array(Math.floor(lengthKm * 40) + 1)].map((_, i) => {
+                        const x = i * 0.025 * pixelsPerKm; // 25 m = 0,025 km
+                        return (
+                            <line
+                                key={i}
+                                x1={x}
+                                y1={145}
+                                x2={x}
+                                y2={155}
+                                stroke="#161515ff"
+                                strokeWidth={1}
+                            />
+                        );
+                    })}
+
                     {[...Array(lengthKm + 1)].map((_, i) => {
                         const x = i * pixelsPerKm; // 1 km = pixelsPerKm
                         return (

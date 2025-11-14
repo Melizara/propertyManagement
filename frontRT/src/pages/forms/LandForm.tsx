@@ -110,14 +110,14 @@ function LandForm({ onSuccess }: LandFormProps) {
                     </div>
                 </div>
                 <div className="row mb-3">
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                         <label className="form-label">Railway side</label>
 
                         <input type="text" className="form-control" value={railwaySide}
                             onChange={(e) => setRailwaySide(e.target.value)} required />
                     </div>
 
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                         <label className="form-label">Position</label>
                         <input type="text" className="form-control" value={position}
                             onChange={(e) => setPosition(e.target.value)} required />
@@ -125,7 +125,7 @@ function LandForm({ onSuccess }: LandFormProps) {
                 </div>
                 {/* Adresse */}
                 <div className="row mb-3">
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                         <label className="form-label">Quartier</label>
                         <input type="text" className="form-control" value={neighborHood}
                             onChange={e => {
@@ -133,7 +133,7 @@ function LandForm({ onSuccess }: LandFormProps) {
                                 setNeighborHood(lettersOnly);
                             }} required />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                         <label className="form-label">Commune</label>
                         <input type="text" className="form-control" value={municipality}
                             onChange={e => {
