@@ -3,7 +3,7 @@ import LandForm from "../forms/LandForm.tsx";
 import axios from "../../axios.tsx";
 import LandModal from "../infos/Land.tsx";
 
-interface Terrain {
+interface Land {
     codeLand: number;
     name: string;
     length: number; // en m
@@ -16,9 +16,9 @@ interface Terrain {
 }
 
 function HomeLand() {
-    const [terrains, setTerrains] = useState<Terrain[]>([]);
+    const [lands, setLands] = useState<Land[]>([]);
     const [showModal, setShowModal] = useState(false);
-    const [selectedTerrain, setSelectedTerrain] = useState<Terrain | null>(null);
+    const [selectedTerrain, setSelectedTerrain] = useState<Land | null>(null);
 
 
     const lengthKm = 163;
@@ -28,7 +28,7 @@ function HomeLand() {
     // Simulation de récupération des terrains depuis la DB
     useEffect(() => {
         axios.get("/api/lands")
-            .then(res => setTerrains(res.data))
+            .then(res => setLands(res.data))
             .catch(err => console.error(err));
     }, []);
 
@@ -174,7 +174,7 @@ function HomeLand() {
                     })}
 
                     {/* Terrains */}
-                    {terrains.map((t) => {
+                    {lands.map((t) => {
                         const x = t.startPk * pixelsPerKm;
                         const width = (t.length / 1000) * pixelsPerKm; // m → km → pixels
                         // tu peux adapter le scale si nécessaire // espace vertical entre plan 1 et plan 2
