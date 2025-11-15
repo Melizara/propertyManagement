@@ -77,7 +77,7 @@ export const getStories = async (req: Request, res: Response) => {
     try {
         const stories = await Story.findAll({
             order: [["id", "DESC"]],
-            include: [{ association: "author", attributes: { exclude: ["password"]}}],
+            include: [{ association: "author", attributes: { exclude: ["password"] } }],
         });
         return res.status(200).json(stories);
     } catch (error) {
