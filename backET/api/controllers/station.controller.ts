@@ -51,8 +51,6 @@ export const createStation = async (req: Request, res: Response) => {
     }
 };
 
-// export const createStation = async (req: Request, res: Response) => { try { if (!req.userMatricule) { return res.status(401).json({ error: "Utilisateur non authentifié" }); } const station = await Station.create({ codeStation: req.body.codeStation, name: req.body.name, type: req.body.type, startPk: req.body.startPk, endPk: req.body.endPk, userMatricule: req.userMatricule! }); return res.status(201).json(station); } catch (error) { if (error instanceof Error) { return res.status(500).json({ error: error.message }); } } }
-
 
 export const updateStation = async (req: Request, res: Response) => {
     try {
@@ -111,7 +109,7 @@ export const getStation = async (req: Request, res: Response) => {
 export const getStations = async (req: Request, res: Response) => {
     try {
         const stations = await Station.findAll({
-            order: [["codeStation", "DESC"]],
+            order: [["codeStation", "ASC"]],
             include: [{ association: "user", attributes: { exclude: ["password"] } }],
         })
 

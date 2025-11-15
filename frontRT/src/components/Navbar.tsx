@@ -41,17 +41,23 @@ function Navbar() {
               >
                 Locataire
               </Link>
-              <Link
+              {/* <Link
                 to="/story"
                 className="text-secondary text-decoration-none fw-semibold"
               >
                 Story
-              </Link>
+              </Link> */}
               <Link
                 to="/terrain"
                 className="text-secondary text-decoration-none fw-semibold"
               >
                 Terrain
+              </Link>
+              <Link
+                to="/gare"
+                className="text-secondary text-decoration-none fw-semibold"
+              >
+                Gare
               </Link>
             </>
           )}

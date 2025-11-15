@@ -39,7 +39,6 @@ function HomeLand() {
         }
     }, []);
 
-
     const svgHeight = 1000; // la nouvelle hauteur
     const centerY = svgHeight / 2;
 
@@ -95,7 +94,13 @@ function HomeLand() {
                         >
                             ✕
                         </button>
-                        <LandForm onSuccess={() => setShowModal(false)} />
+                        <LandForm
+                            onSuccess={async () => {
+                                setShowModal(false);
+                                const res = await axios.get("/api/lands");
+                                setLands(res.data);
+                            }}
+                        />
                     </div>
                 </div>
             )}
@@ -231,7 +236,12 @@ function HomeLand() {
                 </svg>
             </div>
 
-            <LandModal land={selectedTerrain} onClose={() => setSelectedTerrain(null)} />
+            <LandModal
+                land={selectedTerrain}
+                onClose={() => setSelectedTerrain(null)}
+                onDelete={(codeLand) => setLands(lands.filter(l => l.codeLand !== codeLand))}
+            />
+
 
 
             {/* Légende */}

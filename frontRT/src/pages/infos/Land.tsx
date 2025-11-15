@@ -2,9 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../apps/Store.tsx";
-import { useNavigate } from "react-router-dom";
 import { deleteLand } from "../../features/landSlice.tsx";
-
 
 interface Land {
   codeLand: number;
@@ -25,7 +23,9 @@ interface Land {
 interface LandModalProps {
   land: Land | null;
   onClose: () => void;
+  onDelete: (codeLand: number) => void; // ← type précisé
 }
+
 interface User {
   matricule: string;
   pseudo: string;
@@ -33,17 +33,18 @@ interface User {
   poste: "operateur de saisie" | "admin" | "caissier";
 }
 
-const LandModal: React.FC<LandModalProps> = ({ land, onClose }) => {
-  const navigate = useNavigate();
+const LandModal: React.FC<LandModalProps> = ({ land, onClose,onDelete }) => {
   const user = useSelector((state: RootState) => state.auth.data) as User | null;
   const dispatch = useDispatch<AppDispatch>();
 
   const handleDelete = async (codeLand: number) => {
     if (window.confirm("Voulez-vous vraiment supprimer ce locataire ?")) {
       await dispatch(deleteLand(codeLand));
-      navigate("/locataire");
+      onDelete(codeLand); // ← met à jour le state dans HomeLand
+      onClose();
     }
   };
+
 
   if (!land) return null;
 

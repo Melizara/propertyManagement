@@ -19,6 +19,7 @@ import PrivateRoute from "./reducerComponent/PrivateRoute.tsx";
 import HomeStory from "./pages/homes/HomeStory.tsx";
 import HomeLand from "./pages/homes/HomeLand.tsx";
 import LandForm from "./pages/forms/LandForm.tsx";
+import HomeStation from "./pages/homes/HomeStation.tsx";
 
 //Layout est un modele de page commun,Outlet change selon la route
 const Layout = () => {
@@ -64,6 +65,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <HomeLand />
+          </PrivateRoute>
+        )
+      },
+      {
+        path: "/gare",
+        element: (
+          <PrivateRoute>
+            <HomeStation />
           </PrivateRoute>
         )
       },
