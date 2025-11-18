@@ -4,7 +4,8 @@ import { initStory, Story } from "./story.model.ts";
 import { initTenant, Tenant } from "./tenant.model.ts";
 import { initLand, Land } from "./land.model.ts";
 import { initStation, Station } from "./station.model.ts";
-import {initPrice ,Price} from "./price.model.ts";
+import { initPrice, Price } from "./price.model.ts";
+import { initLocation, Location } from "./location.model.ts";
 
 export const initModels = (sequelize: Sequelize) => {
     // Initialiser les modèles
@@ -14,6 +15,7 @@ export const initModels = (sequelize: Sequelize) => {
     initStation(sequelize);
     initLand(sequelize);
     initPrice(sequelize);
+    initLocation(sequelize);
 
     // Définir les relations entre les modèles
     User.hasMany(Story, {
@@ -64,11 +66,27 @@ export const initModels = (sequelize: Sequelize) => {
         foreignKey: "userMatricule",
         as: "user"
     });
+    User.hasMany(Location, {
+        foreignKey: "userMatricule",
+        as: "locations",
+    });
+
+    Location.belongsTo(User, {
+        foreignKey: "userMatricule",
+        as: "user"
+    });
 
     //Relation entre Land et Station
     Station.hasMany(Land, { foreignKey: "codeStation" });
-    Land.belongsTo(Station, { foreignKey: "codeStation",as:"station" });
+    Land.belongsTo(Station, { foreignKey: "codeStation", as: "station" });
+
+    Tenant.hasMany(Location, { foreignKey: "cin", sourceKey: "cin", as: "locations" });
+    Location.belongsTo(Tenant, { foreignKey: "cin", targetKey: "cin", as: "tenant" });
+
+    Land.hasMany(Location, { foreignKey: "codeLand", sourceKey: "codeLand", as: "locations" });
+    Location.belongsTo(Land, { foreignKey: "codeLand", targetKey: "codeLand", as: "land" });
+
 
 };
 
-export { User, Story, Tenant, Land, Station };
+export { User, Story, Tenant, Land, Station, Location };
