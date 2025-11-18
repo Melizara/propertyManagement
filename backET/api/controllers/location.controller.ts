@@ -34,7 +34,7 @@ export const createLocation = async (req: Request, res: Response) => {
 
 export const updateLocation = async (req: Request, res: Response) => {
     try {
-        const location = await Location.findByPk(req.params.codelocation);
+        const location = await Location.findByPk(req.params.codeLocation);
 
         if (!location) {
             return res.status(404).json({ message: "Location not found for update" });
@@ -66,11 +66,11 @@ export const updateLocation = async (req: Request, res: Response) => {
 
 export const getLocation = async (req: Request, res: Response) => {
     try {
-        const location = await Location.findByPk(req.params.codelocation, {
+        const location = await Location.findByPk(req.params.codeLocation, {
             include: [
-                { model: User, as: "user", attributes: ["matricule", "username", "email"] },
+                { model: User, as: "user", attributes: ["matricule", "pseudo", "email"] },
                 { model: Tenant, as: "tenant", attributes: ["cin", "name"] },
-                { model: Land, as: "land", attributes: ["codeLand", "name", "surfaceTotal"] }
+                { model: Land, as: "land", attributes: ["codeLand", "area"] }
             ],
         });
 
@@ -93,7 +93,7 @@ export const getLocations = async (req: Request, res: Response) => {
             include: [
                 { model: User, as: "user", attributes: { exclude: ["password"] } },
                 { model: Tenant, as: "tenant", attributes: ["cin", "name"] },
-                { model: Land, as: "land", attributes: ["codeLand", "name"] }
+                { model: Land, as: "land", attributes: ["codeLand","area"] }
             ],
         });
 
@@ -107,7 +107,7 @@ export const getLocations = async (req: Request, res: Response) => {
 
 export const deleteLocation = async (req: Request, res: Response) => {
     try {
-        const location = await Location.findByPk(req.params.codelocation);
+        const location = await Location.findByPk(req.params.codeLocation);
 
         if (!location) {
             return res.status(404).json({ message: "Location not found for delete" });
