@@ -11,8 +11,8 @@ export const createStation = async (req: Request, res: Response) => {
         // Liste des gares à insérer
         const stationsData = [
             // Grandes Gares
-            { codeStation: 480, name: "Fianarantsoa", type: "Grande", startPk: 0, endPk: 9 },
-            { codeStation: 497, name: "Manakara", type: "Grande", startPk: 163, endPk: 163 },
+            { codeStation: 480, name: "Fianarantsoa", type: "Grande FIA", startPk: 0, endPk: 9 },
+            { codeStation: 497, name: "Manakara", type: "Grande MKR", startPk: 163, endPk: 163 },
 
             // Moyennes Gares
             { codeStation: 481, name: "Vohimarina", type: "Moyenne", startPk: 9, endPk: 21 },

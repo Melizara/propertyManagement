@@ -59,6 +59,12 @@ function Navbar() {
               >
                 Gare
               </Link>
+              <Link
+                to="/location"
+                className="text-secondary text-decoration-none fw-semibold"
+              >
+                Location
+              </Link>
             </>
           )}
 

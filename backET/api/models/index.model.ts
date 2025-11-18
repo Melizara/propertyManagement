@@ -4,6 +4,7 @@ import { initStory, Story } from "./story.model.ts";
 import { initTenant, Tenant } from "./tenant.model.ts";
 import { initLand, Land } from "./land.model.ts";
 import { initStation, Station } from "./station.model.ts";
+import {initPrice ,Price} from "./price.model.ts";
 
 export const initModels = (sequelize: Sequelize) => {
     // Initialiser les modèles
@@ -12,6 +13,7 @@ export const initModels = (sequelize: Sequelize) => {
     initTenant(sequelize);
     initStation(sequelize);
     initLand(sequelize);
+    initPrice(sequelize);
 
     // Définir les relations entre les modèles
     User.hasMany(Story, {
@@ -50,6 +52,15 @@ export const initModels = (sequelize: Sequelize) => {
     });
 
     Station.belongsTo(User, {
+        foreignKey: "userMatricule",
+        as: "user"
+    });
+    User.hasMany(Price, {
+        foreignKey: "userMatricule",
+        as: "prices",
+    });
+
+    Price.belongsTo(User, {
         foreignKey: "userMatricule",
         as: "user"
     });

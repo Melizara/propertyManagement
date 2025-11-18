@@ -20,6 +20,8 @@ import HomeStory from "./pages/homes/HomeStory.tsx";
 import HomeLand from "./pages/homes/HomeLand.tsx";
 import LandForm from "./pages/forms/LandForm.tsx";
 import HomeStation from "./pages/homes/HomeStation.tsx";
+import HomeLocation from "./pages/homes/HomeLocation.tsx";
+import LocationForm from "./pages/forms/LocationForm.tsx";
 
 //Layout est un modele de page commun,Outlet change selon la route
 const Layout = () => {
@@ -77,6 +79,14 @@ const router = createBrowserRouter([
         )
       },
       {
+        path: "/location",
+        element: (
+          <PrivateRoute>
+            <HomeLocation />
+          </PrivateRoute>
+        )
+      },
+      {
         path: "/register",
         element: <Register />
       },
@@ -101,8 +111,12 @@ const router = createBrowserRouter([
         element: <TenantForm />
       },
       {
-        path: "formLand",
+        path: "/formLand",
         element: <LandForm />
+      },
+      {
+        path: "/formLocation",
+        element: <LocationForm/>
       },
       {
         path: "/update/:id",
