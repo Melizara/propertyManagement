@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Price } from "../models/price.model";
+import { Price } from "../models/price.model.ts";
 
 export const createPrice = async (req: Request, res: Response) => {
     try {
@@ -7,7 +7,7 @@ export const createPrice = async (req: Request, res: Response) => {
         const pricesData = [
             // ==== Grande FIA ====
             // Agricole
-            { secteur: "Grande FIA", usage: "Agricole", prix: 100 },
+            { secteur: "Grande FIA", usage: "Agricole", sousUsage: "", prix: 100 },
 
             // Commerciale
             { secteur: "Grande FIA", usage: "Commerciale", sousUsage: "terrain nu", prix: 400 },
@@ -26,7 +26,7 @@ export const createPrice = async (req: Request, res: Response) => {
 
             // ==== Grand MKR ====
             // Agricole
-            { secteur: "Grand MKR", usage: "Agricole", prix: 100 },
+            { secteur: "Grand MKR", usage: "Agricole", sousUsage: "", prix: 100 },
 
             // Commerciale
             { secteur: "Grand MKR", usage: "Commerciale", sousUsage: "terrain nu", prix: 300 },
@@ -45,7 +45,7 @@ export const createPrice = async (req: Request, res: Response) => {
 
             // ==== Moyenne ====
             // Agricole
-            { secteur: "Moyenne", usage: "Agricole", prix: 50 },
+            { secteur: "Moyenne", usage: "Agricole", sousUsage: "", prix: 50 },
 
             // Commerciale
             { secteur: "Moyenne", usage: "Commerciale", sousUsage: "terrain nu", prix: 100 },
@@ -64,7 +64,7 @@ export const createPrice = async (req: Request, res: Response) => {
 
             // ==== Petite ====
             // Agricole
-            { secteur: "Petite", usage: "Agricole", prix: 25 },
+            { secteur: "Petite", usage: "Agricole", sousUsage: "", prix: 25 },
 
             // Commerciale
             { secteur: "Petite", usage: "Commerciale", sousUsage: "terrain nu", prix: 50 },
@@ -92,7 +92,7 @@ export const createPrice = async (req: Request, res: Response) => {
                 },
                 defaults: {
                     ...priceData,
-                    prix: priceData.prixUnitaire, // correspond à la colonne 'prix' dans ton modèle
+                    prix: priceData.prix, // correspond à la colonne 'prix' dans ton modèle
                     userMatricule: req.userMatricule! // nécessaire selon le type
                 }
             });

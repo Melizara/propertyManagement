@@ -10,6 +10,7 @@ import cors from "cors";
 import tenantRouter from "./routes/tenant.route.ts";
 import landRouter from "./routes/land.route.ts";
 import stationRouter from "./routes/station.route.ts";
+import priceRouter from "./routes/price.route.ts";
 
 dotenv.config();//Chargement variable avy any amin'ny .env
 
@@ -25,7 +26,8 @@ app.use("/api/user", router);//Fampiasana ny routen'ny user
 app.use("/api/stories", storyRouter);
 app.use("/api/tenants", tenantRouter);
 app.use("/api/lands", landRouter);
-app.use("/api/stations",stationRouter)
+app.use("/api/stations", stationRouter);
+app.use("/api/prices", priceRouter);
 
 const startServer = async () => {
     const sequelize = await initializeDatabase();//Creer et retourner  une instance connectee a la DB
