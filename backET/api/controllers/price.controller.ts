@@ -106,3 +106,18 @@ export const createPrice = async (req: Request, res: Response) => {
         }
     }
 };
+
+export const getPrices = async (req: Request, res: Response) => {
+    try {
+        const prices = await Price.findAll({
+            order: [["codePrice", "ASC"]],
+            include: [{ association: "user", attributes: { exclude: ["password"] } }],
+        })
+
+        return res.status(200).json(prices);
+    } catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ error: error.message });
+        }
+    }
+};
