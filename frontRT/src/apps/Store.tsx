@@ -5,6 +5,7 @@ import tenantsReducer from "../features/tenantSlice";
 import stationReducer from "../features/stationSlice";
 import landReducer from "../features/landSlice";
 import priceReducer from "../features/priceSlice";
+import locationReducer from "../features/locationSlice";
 
 const Store = configureStore({
     reducer: {
@@ -13,7 +14,8 @@ const Store = configureStore({
         tenants: tenantsReducer,
         lands: landReducer,//ity nokitihako rag misy blem ny terrain
         stations: stationReducer,
-        prices:priceReducer
+        prices:priceReducer,
+        locations:locationReducer
     }
 });
 

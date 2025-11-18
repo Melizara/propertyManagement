@@ -1,17 +1,17 @@
 import { Link } from "react-router-dom";
-// import { useEffect } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import type { RootState } from "../../apps/Store";
-// import type { AppDispatch } from "../../apps/Store";
-// import { fetchLocations } from "../../features/locationSlice";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../apps/Store";
+import type { AppDispatch } from "../../apps/Store";
+import { fetchLocations } from "../../features/locationSlice";
 
 function HomeLocation() {
-    //   const { locations, status } = useSelector((state: RootState) => state.locations);
-    //   const dispatch = useDispatch<AppDispatch>();
+      const { locations, status } = useSelector((state: RootState) => state.locations);
+      const dispatch = useDispatch<AppDispatch>();
 
-    //   useEffect(() => {
-    //     dispatch(fetchLocations())
-    //   }, [dispatch]);
+      useEffect(() => {
+        dispatch(fetchLocations())
+      }, [dispatch]);
 
     return (
         <div className="container-lg my-5">
@@ -29,6 +29,7 @@ function HomeLocation() {
                     </div>
                 </div>
             </div>
+
 
             <div className="my-5">
                 <div className="row justify-content-center">
@@ -56,28 +57,28 @@ function HomeLocation() {
                 )}
 
                 <div className="row">
-                    {/* {status === "success" && locations.map((location) => (
-                        <div key={location.cin} className="col-md-6 col-lg-4 mb-4">
+                    {status === "success" && locations.map((location) => (
+                        <div key={location.codeLocation} className="col-md-6 col-lg-4 mb-4">
                             <div className="card shadow-sm h-100">
                                 <div className="card-header text-white bg-primary text-center">
-                                    <h5 className="fw-bold mb-0">{location.name} {location.lastName}</h5>
+                                    <h5 className="fw-bold mb-0">{location.codeLocation} {location.cin}</h5>
                                 </div>
                                 <div className="card-body text-start">
                                     <p><strong>code location :</strong> {location.codeLocation}</p>
                                     <p><strong>code terrain :</strong> {location.codeLand}</p>
                                     <p><strong>Cin du locataire :</strong> {location.cin}</p>
                                     <p><strong>Usage :</strong> {location.usage}</p>
-                                    <p><strong>Mère :</strong> {location.mother}</p>
-                                    <p><strong>Adresse :</strong> {location.address}, {location.neighborHood}, {location.municipality}</p>
+                                    <p><strong>Mère :</strong> {location.areaLandBare}</p>
+                                    <p><strong>Adresse :</strong> {location.areaPermanent}, {location.areaWood}, {location.pricePermanent}</p>
                                 </div>
                                 <div className="card-footer text-center bg-white">
-                                    <Link to={`/location/${location.cin}`}>
+                                    <Link to={`/location/${location.codeLocation}`}>
                                         <button className="btn btn-primary w-75 fw-bold">Voir</button>
                                     </Link>
                                 </div>
                             </div>
                         </div>
-                    ))} */}
+                    ))}
                 </div>
             </div>
         </div>
