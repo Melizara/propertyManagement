@@ -149,6 +149,14 @@ function LocationForm() {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        const totalLand = lands.find(l => String(l.codeLand) === String(codeLand))?.area || 0;
+        const totalEntered = Number(areaLandBare) + Number(areaWood) + Number(areaPermanent);
+
+        if (totalEntered > totalLand) {
+            window.alert(`La somme des surfaces (${totalEntered} m²) dépasse la surface totale du terrain (${totalLand} m²) !`);
+            return; // Empêche l'envoi
+        }
         try {
             setLoading(true);
 
