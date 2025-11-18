@@ -41,7 +41,7 @@ export const initLocation = (sequelize: Sequelize) => {
                 onUpdate: "CASCADE",
             },
             cin: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.STRING,
                 allowNull: false,
                 references: {
                     model: Tenant, // référence à la table Tenant

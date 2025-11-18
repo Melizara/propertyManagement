@@ -6,7 +6,7 @@ export interface ITenant {
     lastName: string;
     birthDate: Date;
     birthPlace: string;
-    cin: number;
+    cin: string;
     cinPlace: string;
     dateCin: Date;
     father: string;
@@ -39,7 +39,7 @@ export const initTenant = (sequelize: Sequelize) => {
                 allowNull:false
             },
             cin: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.STRING(12),
                 primaryKey: true,
                 allowNull:false
             },
