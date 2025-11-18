@@ -1,5 +1,6 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 import { User } from "./user.model.ts";
+import { Station } from "./station.model.ts";
 
 export interface ILand {
     codeLand?: number;
@@ -13,6 +14,7 @@ export interface ILand {
     neighborHood: string;
     municipality: string;
     userMatricule: string;
+    codeStation:number;
 }
 
 export class Land extends Model<ILand> { }
@@ -67,6 +69,16 @@ export const initLand = (sequelize: Sequelize) => {
                 references: {
                     model: User,
                     key: "matricule"
+                },
+                onDelete: "CASCADE",
+                onUpdate: "CASCADE",
+            },
+            codeStation: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: {
+                    model: Station,
+                    key: "codeStation"
                 },
                 onDelete: "CASCADE",
                 onUpdate: "CASCADE",

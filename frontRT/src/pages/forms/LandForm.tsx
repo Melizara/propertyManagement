@@ -6,7 +6,7 @@ import type { RootState } from "../../apps/Store.tsx";
 import type { FormEvent } from "react";
 
 interface LandFormProps {
-  onSuccess?: () => void;
+    onSuccess?: () => void;
 }
 
 function LandForm({ onSuccess }: LandFormProps) {
@@ -21,6 +21,7 @@ function LandForm({ onSuccess }: LandFormProps) {
     const [position, setPosition] = useState("");
     const [neighborHood, setNeighborHood] = useState("");
     const [municipality, setMunicipality] = useState("");
+    const [stationName, setStationName] = useState("");
 
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -44,6 +45,29 @@ function LandForm({ onSuccess }: LandFormProps) {
                 })
         }
     }, [codeLandParam]); // <-- important
+
+
+    useEffect(() => {
+        const fetchStation = async () => {
+            if (!startPk || !endPk) {
+                setStationName("");
+                return;
+            }
+            try {
+                const res = await axios.get("/api/lands/station", {
+                    params: { startPk, endPk },
+                });
+                setStationName(res.data.name); // nom de la gare récupéré
+            } catch (err) {
+                console.log(err);
+                setStationName(""); // pas de gare trouvée
+            }
+        };
+
+        fetchStation();
+    }, [startPk, endPk]);
+
+
 
     if (!user && !window.localStorage.getItem("token")) return <Navigate to="/login" />
 
@@ -101,7 +125,8 @@ function LandForm({ onSuccess }: LandFormProps) {
                     <div className="col-md-6">
                         <label className="form-label">Pk debut</label>
                         <input type="text" className="form-control" value={startPk}
-                            onChange={e => setStartPk(e.target.value)} required />
+                            onChange={e => setStartPk(e.target.value)}
+                            required />
                     </div>
                     <div className="col-md-6">
                         <label className="form-label">Pk fin</label>
@@ -140,6 +165,12 @@ function LandForm({ onSuccess }: LandFormProps) {
                                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                                 setMunicipality(lettersOnly);
                             }} required />
+                    </div>
+                </div>
+                <div className="row mb-3">
+                    <div className="col-md-6">
+                        <label className="form-label">Gare occupée</label>
+                        <input type="text" className="form-control" value={stationName} readOnly />
                     </div>
                 </div>
 

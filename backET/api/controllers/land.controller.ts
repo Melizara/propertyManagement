@@ -1,11 +1,30 @@
 import type { Request, Response } from "express";
 import { Land } from "../models/land.model.ts";
 import { User } from "../models/user.model.ts";
+import { Station } from "../models/station.model.ts";
+import { Op } from "sequelize";
+
 
 export const createLand = async (req: Request, res: Response) => {
     try {
         if (!req.userMatricule) {
             return res.status(401).json({ error: "Utilisateur non authentifié" });
+        }
+
+        const stations = await Station.findAll() as unknown as Array<{
+            codeStation: number;
+            name: string;
+            type: string;
+            startPk: number;
+            endPk: number;
+        }>;
+
+        const station = stations.find(s =>
+            req.body.startPk >= s.startPk && req.body.endPk <= s.endPk
+        );
+
+        if (!station) {
+            return res.status(400).json({ message: "Aucune gare correspondante pour ce terrain" });
         }
 
         const land = await Land.create({
@@ -18,7 +37,8 @@ export const createLand = async (req: Request, res: Response) => {
             position: req.body.position,
             neighborHood: req.body.neighborHood,
             municipality: req.body.municipality,
-            userMatricule: req.body.userMatricule!
+            userMatricule: req.body.userMatricule!,
+            codeStation: station.codeStation,
         });
         return res.status(201).json(land);
     } catch (error) {
@@ -36,6 +56,22 @@ export const updateLand = async (req: Request, res: Response) => {
             return res.status(404).json({ message: "not found land to update" });
         }
 
+        const stations = await Station.findAll() as unknown as Array<{
+            codeStation: number;
+            name: string;
+            type: string;
+            startPk: number;
+            endPk: number;
+        }>;
+
+        const station = stations.find(s =>
+            req.body.startPk >= s.startPk && req.body.endPk <= s.endPk
+        );
+
+        if (!station) {
+            return res.status(400).json({ message: "Aucune gare correspondante pour ce terrain" });
+        }
+
         await land.update({
             length: req.body.length,
             width: req.body.width,
@@ -46,7 +82,8 @@ export const updateLand = async (req: Request, res: Response) => {
             position: req.body.position,
             neighborHood: req.body.neighborHood,
             municipality: req.body.municipality,
-            userMatricule: req.body.userMatricule!
+            userMatricule: req.body.userMatricule!,
+            codeStation: station.codeStation
         });
 
         return res.status(200).json(land);
@@ -85,6 +122,11 @@ export const getLand = async (req: Request, res: Response) => {
                     as: "user",
                     attributes: ["matricule", "pseudo", "email"]
                 },
+                {
+                    model: Station,
+                    as: "station",
+                    attributes: ["codeStation", "name", "type"]
+                }
             ]
         });
         if (!land) {
@@ -104,7 +146,14 @@ export const getLands = async (req: Request, res: Response) => {
     try {
         const lands = await Land.findAll({
             order: [["codeLand", "DESC"]],
-            include: [{ association: "user", attributes: { exclude: ["password"] } }],
+            include: [
+                { association: "user", attributes: { exclude: ["password"] } },
+                {
+                    model: Station,
+                    as: "station",       // l’alias défini dans Land.belongsTo(Station)
+                    attributes: ["codeStation", "name", "type", "startPk", "endPk"]
+                }
+            ],
         });
 
         return res.status(200).json(lands);
@@ -114,3 +163,24 @@ export const getLands = async (req: Request, res: Response) => {
         }
     }
 }
+
+
+export const getStationForLand = async (req: Request, res: Response) => {
+    try {
+        const { startPk, endPk } = req.query;
+
+        const station = await Station.findOne({
+            where: {
+                startPk: { [Op.lte]: Number(startPk) },
+                endPk: { [Op.gte]: Number(endPk) },
+            },
+        });
+
+        if (!station) return res.status(404).json({ message: "Aucune station trouvée" });
+
+        res.json(station);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+};
