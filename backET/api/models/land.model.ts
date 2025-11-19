@@ -14,10 +14,14 @@ export interface ILand {
     neighborHood: string;
     municipality: string;
     userMatricule: string;
-    codeStation:number;
+    codeStation: number;
 }
 
-export class Land extends Model<ILand> { }
+export class Land extends Model<ILand> {
+    declare endPk: number;
+    declare startPk : number;
+    declare length :number
+}
 
 export const initLand = (sequelize: Sequelize) => {
     Land.init(

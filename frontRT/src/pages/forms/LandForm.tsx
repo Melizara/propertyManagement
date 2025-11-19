@@ -137,15 +137,30 @@ function LandForm({ onSuccess }: LandFormProps) {
                 <div className="row mb-3">
                     <div className="col-md-6">
                         <label className="form-label">Railway side</label>
-
-                        <input type="text" className="form-control" value={railwaySide}
-                            onChange={(e) => setRailwaySide(e.target.value)} required />
+                        <select
+                            className="form-control"
+                            value={railwaySide}
+                            onChange={(e) => setRailwaySide(e.target.value)}
+                            required
+                        >
+                            <option value="">Sélectionner</option>
+                            <option value="gauche">Gauche</option>
+                            <option value="droite">Droite</option>
+                        </select>
                     </div>
 
                     <div className="col-md-6">
                         <label className="form-label">Position</label>
-                        <input type="text" className="form-control" value={position}
-                            onChange={(e) => setPosition(e.target.value)} required />
+                        <select
+                            className="form-control"
+                            value={position}
+                            onChange={(e) => setPosition(e.target.value)}
+                            required
+                        >
+                            <option value="">Sélectionner</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                        </select>
                     </div>
                 </div>
                 {/* Adresse */}
