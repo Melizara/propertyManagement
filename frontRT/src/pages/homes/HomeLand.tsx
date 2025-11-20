@@ -20,27 +20,47 @@ function HomeLand() {
     const [showModal, setShowModal] = useState(false);
     const [selectedTerrain, setSelectedTerrain] = useState<Land | null>(null);
 
-
     const lengthKm = 163;
     const pixelsPerKm = 1512; // 25 m = 1 cm
     const svgWidth = lengthKm * pixelsPerKm;
+    const svgHeight = 1000;
+    const centerY = svgHeight / 2;
 
-    // Simulation de récupération des terrains depuis la DB
+    // Récupération des terrains
     useEffect(() => {
         axios.get("/api/lands")
             .then(res => setLands(res.data))
             .catch(err => console.error(err));
     }, []);
 
+    // Scroll initial
     useEffect(() => {
         const container = document.getElementById("svg-container");
         if (container) {
-            container.scrollTop = (1000 - container.clientHeight) / 2; // svgHeight - hauteur visible
+            container.scrollTop = (1000 - container.clientHeight) / 2;
         }
     }, []);
 
-    const svgHeight = 1000; // la nouvelle hauteur
-    const centerY = svgHeight / 2;
+    // Calcul des décalages horizontaux pour empiler côte à côte
+    const landsWithX = (() => {
+    const offsets: Record<string, number> = {};
+    // Tri par startPk puis par codeLand pour garantir l'ordre
+    const sortedLands = [...lands].sort((a, b) => a.startPk - b.startPk || a.codeLand - b.codeLand);
+
+    return sortedLands.map(t => {
+        const key = `${t.railwaySide}-${t.startPk}`;
+        if (!offsets[key]) offsets[key] = 0;
+
+        const xOffset = offsets[key];
+        const widthPx = (t.length / 1000) * pixelsPerKm;
+        offsets[key] += widthPx;
+
+        return {
+            ...t,
+            xOffset
+        };
+    });
+})();
 
 
     return (
@@ -52,7 +72,6 @@ function HomeLand() {
                 Ajouter un Terrain
             </button>
 
-            {/* Modale */}
             {showModal && (
                 <div
                     style={{
@@ -119,12 +138,7 @@ function HomeLand() {
                     whiteSpace: "nowrap",
                 }}
             >
-
-                <svg
-                    width={svgWidth}
-                    height={1000}    // ← plus d’espace pour les terrains
-                    style={{ display: "block" }}
-                >
+                <svg width={svgWidth} height={svgHeight} style={{ display: "block" }}>
                     {/* Ligne ferroviaire */}
                     <line
                         x1={0}
@@ -136,7 +150,7 @@ function HomeLand() {
                         strokeLinecap="round"
                     />
 
-                    {/* Repères tous les 0.025 km (25 m) */}
+                    {/* Repères tous les 0.025 km */}
                     {[...Array(Math.floor(lengthKm * 40) + 1)].map((_, i) => {
                         const x = i * 0.025 * pixelsPerKm;
                         return (
@@ -179,13 +193,11 @@ function HomeLand() {
                     })}
 
                     {/* Terrains */}
-                    {lands.map((t) => {
-                        const x = t.startPk * pixelsPerKm;
-                        const width = (t.length / 1000) * pixelsPerKm; // m → km → pixels
-                        // tu peux adapter le scale si nécessaire // espace vertical entre plan 1 et plan 2
-
-                        const spacingBetweenPlans = 9; // espace entre plans
-                        const height = t.width; // ou adapte le scale si nécessaire
+                    {landsWithX.map((t) => {
+                        const x = t.startPk * pixelsPerKm + t.xOffset;
+                        const width = (t.length / 1000) * pixelsPerKm;
+                        const spacingBetweenPlans = 9;
+                        const height = t.width;
 
                         let y;
                         if (t.railwaySide === "gauche") {
@@ -210,10 +222,9 @@ function HomeLand() {
                                     ry={4}
                                     style={{
                                         cursor: "pointer",
-                                        transition: "transform 0.6s ease", // ← animation douce
+                                        transition: "transform 0.6s ease",
                                     }}
                                     onClick={() => setSelectedTerrain(t)}
-
                                     onMouseEnter={(e) => {
                                         e.currentTarget.style.transform = "scale(1.1)";
                                     }}
@@ -241,8 +252,6 @@ function HomeLand() {
                 onClose={() => setSelectedTerrain(null)}
                 onDelete={(codeLand) => setLands(lands.filter(l => l.codeLand !== codeLand))}
             />
-
-
 
             {/* Légende */}
             <div style={{ marginTop: "10px", display: "flex", gap: "20px" }}>
@@ -273,7 +282,6 @@ function HomeLand() {
                     Loué
                 </div>
             </div>
-
         </div>
     );
 }
