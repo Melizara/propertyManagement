@@ -6,7 +6,7 @@ import { fetchStations } from "../../features/stationSlice.tsx";
 import axios from "axios";
 
 function HomeStation() {
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const user = useSelector((state: RootState) => state.auth.data);
     const { stations, status } = useSelector((state: RootState) => state.stations);
     const dispatch = useDispatch<AppDispatch>();
 

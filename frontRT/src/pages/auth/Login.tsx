@@ -41,7 +41,15 @@ function Login() {
 
       if (data.payload && "token" in data.payload) {
         window.localStorage.setItem("token", data.payload.token);
-        navigate("/locataire");
+
+        // Redirection selon le rôle
+        if (data.payload.poste === "admin") {
+          navigate("/locataire");
+        } else if (data.payload.poste === "caissier") {
+          navigate("/location");
+        } else if (data.payload.poste === "operateur de saisie") {
+          navigate("/locataire"); // ou autre page selon ton choix
+        }
       }
     } catch (error) {
       console.error("Registration failed:", error);
@@ -49,9 +57,10 @@ function Login() {
   };
 
   if (user && window.localStorage.getItem("token")) {
-    return <Navigate to="/locataire" />
-  }
-
+  if (user.poste === "admin") return <Navigate to="/locataire" />;
+  if (user.poste === "caissier") return <Navigate to="/location" />;
+  if (user.poste === "operateur de saisie") return <Navigate to="/locataire" />;
+}
 
   return (
     <div className="container-lg my-5">

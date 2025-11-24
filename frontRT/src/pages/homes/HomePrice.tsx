@@ -5,7 +5,7 @@ import { fetchPrices } from "../../features/priceSlice"; // ton slice pour les p
 import axios from "axios";
 
 function HomePrice() {
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const user = useSelector((state: RootState) => state.auth.data);
     const { prices, status } = useSelector((state: RootState) => state.prices);
     const dispatch = useDispatch<AppDispatch>();
 

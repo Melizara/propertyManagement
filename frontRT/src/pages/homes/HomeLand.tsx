@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import LandForm from "../forms/LandForm.tsx"; // Formulaire pour ajouter un terrain
 import axios from "../../axios.tsx"; // Instance axios pour faire des requêtes HTTP
 import LandModal from "../infos/Land.tsx"; // Composant modal pour afficher les infos d'un terrain
-
+import { useSelector } from "react-redux";
+import type { RootState } from "../../apps/Store.tsx";
 // Définition du type Land pour TypeScript
 interface Land {
     codeLand: number; // identifiant unique du terrain
@@ -19,7 +20,7 @@ interface Land {
 
 // Définition du composant principal HomeLand
 function HomeLand() {
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const user = useSelector((state: RootState) => state.auth.data);
     // State pour stocker la liste des terrains
     const [lands, setLands] = useState<Land[]>([]);
     // State pour contrôler l'affichage du modal d'ajout de terrain
