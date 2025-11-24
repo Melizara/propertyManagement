@@ -33,7 +33,7 @@ interface User {
   poste: "operateur de saisie" | "admin" | "caissier";
 }
 
-const LandModal: React.FC<LandModalProps> = ({ land, onClose,onDelete }) => {
+const LandModal: React.FC<LandModalProps> = ({ land, onClose, onDelete }) => {
   const user = useSelector((state: RootState) => state.auth.data) as User | null;
   const dispatch = useDispatch<AppDispatch>();
 
@@ -96,19 +96,21 @@ const LandModal: React.FC<LandModalProps> = ({ land, onClose,onDelete }) => {
         <p><strong>Largeur:</strong> {land.width} m</p>
         <p><strong>Position:</strong> {land.position}</p>
         <p><strong>Début PK:</strong> {land.startPk} km</p>
-        {user && user.matricule === land.userMatricule && (
-          <div className="d-flex justify-content-center mt-4">
-            <Link to={`/updateLand/${land.codeLand}`}>
-              <button className="btn btn-outline-secondary me-2">Modifier</button>
-            </Link>
-            <button
-              className="btn btn-outline-danger"
-              onClick={() => handleDelete(land.codeLand)}
-            >
-              Supprimer
-            </button>
-          </div>
-        )}
+        {user &&
+          user.poste === "admin" &&
+          user.matricule === land.userMatricule && (
+            <div className="d-flex justify-content-center mt-4">
+              <Link to={`/updateLand/${land.codeLand}`}>
+                <button className="btn btn-outline-secondary me-2">Modifier</button>
+              </Link>
+              <button
+                className="btn btn-outline-danger"
+                onClick={() => handleDelete(land.codeLand)}
+              >
+                Supprimer
+              </button>
+            </div>
+          )}
       </div>
 
     </div>

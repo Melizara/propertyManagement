@@ -19,6 +19,7 @@ interface Land {
 
 // Définition du composant principal HomeLand
 function HomeLand() {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
     // State pour stocker la liste des terrains
     const [lands, setLands] = useState<Land[]>([]);
     // State pour contrôler l'affichage du modal d'ajout de terrain
@@ -74,13 +75,14 @@ function HomeLand() {
     return (
         <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
             {/* Bouton pour ouvrir le modal d'ajout */}
-            <button
-                className="btn btn-primary mb-3"
-                onClick={() => setShowModal(true)}
-            >
-                Ajouter un Terrain
-            </button>
-
+            {user && user.poste === "admin" && (
+                <button
+                    className="btn btn-primary mb-3"
+                    onClick={() => setShowModal(true)}
+                >
+                    Ajouter un Terrain
+                </button>
+            )}
             {/* Modal pour ajouter un terrain */}
             {showModal && (
                 <div

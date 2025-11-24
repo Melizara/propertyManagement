@@ -5,6 +5,7 @@ import { fetchPrices } from "../../features/priceSlice"; // ton slice pour les p
 import axios from "axios";
 
 function HomePrice() {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
     const { prices, status } = useSelector((state: RootState) => state.prices);
     const dispatch = useDispatch<AppDispatch>();
 
@@ -38,9 +39,11 @@ function HomePrice() {
                 Prix des terrains
             </h1>
             <div className="text-center mb-4">
-                <button onClick={handleAddPrices} className="btn btn-success">
-                    Ajouter tous les prix
-                </button>
+                {user && user.poste === "admin" && (
+                    <button onClick={handleAddPrices} className="btn btn-success">
+                        Ajouter tous les prix
+                    </button>
+                )}
             </div>
 
             {status === "loading" && (

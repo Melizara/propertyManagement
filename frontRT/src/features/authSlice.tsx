@@ -20,6 +20,7 @@ interface User {
   pseudo: string;
   email: string;
   token?: string; // Optional token field if your API returns it here
+   poste: "admin" | "caissier" | "operateur de saisie"; // 👈 ajoute ceci
 }
 interface AuthState {
   data: User | null;

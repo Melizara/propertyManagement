@@ -6,6 +6,7 @@ import { fetchStations } from "../../features/stationSlice.tsx";
 import axios from "axios";
 
 function HomeStation() {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
     const { stations, status } = useSelector((state: RootState) => state.stations);
     const dispatch = useDispatch<AppDispatch>();
 
@@ -41,12 +42,14 @@ function HomeStation() {
                         <h1 className="text-primary text-uppercase fs-1 fw-bold">
                             Gares
                         </h1>
-                        <button
-                            onClick={handleAddStations}
-                            className="btn btn-success mt-3"
-                        >
-                            Ajouter les gares
-                        </button>
+                        {user && user.poste === "admin" && (
+                            <button
+                                onClick={handleAddStations}
+                                className="btn btn-success mt-3"
+                            >
+                                Ajouter les gares
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

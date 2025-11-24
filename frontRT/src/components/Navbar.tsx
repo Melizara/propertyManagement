@@ -35,45 +35,34 @@ function Navbar() {
         <div className="d-none d-md-flex align-items-center gap-4">
           {user && (
             <>
-              <Link
-                to="/locataire"
-                className="text-secondary text-decoration-none fw-semibold"
-              >
-                Locataire
-              </Link>
-              {/* <Link
-                to="/story"
-                className="text-secondary text-decoration-none fw-semibold"
-              >
-                Story
-              </Link> */}
-              <Link
-                to="/terrain"
-                className="text-secondary text-decoration-none fw-semibold"
-              >
-                Terrain
-              </Link>
-              <Link
-                to="/gare"
-                className="text-secondary text-decoration-none fw-semibold"
-              >
-                Gare
-              </Link>
-              <Link
-                to="/prix"
-                className="text-secondary text-decoration-none fw-semibold"
-              >
-                Prix
-              </Link>
-              <Link
-                to="/location"
-                className="text-secondary text-decoration-none fw-semibold"
-              >
-                Location
-              </Link>
+              {/* Si admin → afficher tout */}
+              {user.poste === "admin" && (
+                <>
+                  <Link to="/locataire" className="text-secondary text-decoration-none fw-semibold">Locataire</Link>
+                  <Link to="/terrain" className="text-secondary text-decoration-none fw-semibold">Terrain</Link>
+                  <Link to="/gare" className="text-secondary text-decoration-none fw-semibold">Gare</Link>
+                  <Link to="/prix" className="text-secondary text-decoration-none fw-semibold">Prix</Link>
+                  <Link to="/location" className="text-secondary text-decoration-none fw-semibold">Location</Link>
+                </>
+              )}
+
+              {/* Si caissier → afficher uniquement Location */}
+              {user.poste === "caissier" && (
+                <Link to="/location" className="text-secondary text-decoration-none fw-semibold">
+                  Location
+                </Link>
+              )}
+
+              {/* Si opérateur de saisie → tu peux choisir ce qu'il voit */}
+              {user.poste === "operateur de saisie" && (
+                <>
+                  <Link to="/locataire" className="text-secondary text-decoration-none fw-semibold">Locataire</Link>
+                  <Link to="/terrain" className="text-secondary text-decoration-none fw-semibold">Terrain</Link>
+                  <Link to="/location" className="text-secondary text-decoration-none fw-semibold">Location</Link>
+                </>
+              )}
             </>
           )}
-
           {user ? (
             // Cercle avatar + dropdown
             <div className="dropdown">
