@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import type { AuthRequest } from "../middlewares/protectAuth.ts";
 import { Location } from "../models/location.model.ts";
 import { User } from "../models/user.model.ts";
 import { Tenant } from "../models/tenant.model.ts";
@@ -22,6 +23,7 @@ export const createLocation = async (req: Request, res: Response) => {
             typePayment: req.body.typePayment,
             methodPayment: req.body.methodPayment,
             placePaymment: req.body.placePaymment,
+            statusPayment: false,
             userMatricule: req.userMatricule!
         });
         return res.status(201).json(location);
@@ -53,6 +55,7 @@ export const updateLocation = async (req: Request, res: Response) => {
             typePayment: req.body.typePayment,
             methodPayment: req.body.methodPayment,
             placePaymment: req.body.placePaymment,
+            statusPayment: false,
             userMatricule: req.userMatricule!
         });
 
@@ -93,7 +96,7 @@ export const getLocations = async (req: Request, res: Response) => {
             include: [
                 { model: User, as: "user", attributes: { exclude: ["password"] } },
                 { model: Tenant, as: "tenant", attributes: ["cin", "name"] },
-                { model: Land, as: "land", attributes: ["codeLand","area"] }
+                { model: Land, as: "land", attributes: ["codeLand", "area"] }
             ],
         });
 
@@ -121,3 +124,25 @@ export const deleteLocation = async (req: Request, res: Response) => {
         }
     }
 };
+
+export const confirmPayment = async (req: AuthRequest, res: Response) => {
+    try {
+        if (req.userPoste !== "caissier") {
+            return res.status(403).json({ error: "Accès refusé : seuls les caissiers peuvent confirmer le paiement" });
+        }
+
+        const location = await Location.findByPk(req.params.codeLocation);
+        if (!location) return res.status(404).json({ error: "Location non trouvée" });
+
+        location.statusPayment = true;
+        await location.save();
+
+        return res.status(200).json({ message: "Paiement confirmé", location });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Erreur serveur" });
+    }
+};
+
+
+

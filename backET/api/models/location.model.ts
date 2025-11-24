@@ -1,4 +1,6 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
+import type { Optional } from "sequelize";
+
 import { User } from "./user.model.ts";
 import { Land } from "./land.model.ts";
 import { Tenant } from "./tenant.model.ts";
@@ -17,10 +19,34 @@ export interface ILocation {
     typePayment: string,
     methodPayment: string,
     placePaymment: string,
+    statusPayment: boolean,
     userMatricule: string;
 };
 
-export class Location extends Model<ILocation> { }
+// export class Location extends Model<ILocation> { }
+
+// Rendre codeLocation et statusPayment optionnels lors de la création
+interface LocationCreationAttributes extends Optional<ILocation, "codeLocation" | "statusPayment"> { }
+
+// Déclaration de la classe
+export class Location extends Model<ILocation, LocationCreationAttributes> implements ILocation {
+    codeLocation?: number;
+    cin!: string;
+    codeLand!: number;
+    usage!: string;
+    areaLandBare!: number;
+    areaWood!: number;
+    areaPermanent!: number;
+    priceLandBare!: number;
+    priceWood!: number;
+    pricePermanent!: number;
+    typePayment!: string;
+    methodPayment!: string;
+    placePaymment!: string;
+    statusPayment!: boolean;
+    userMatricule!: string;
+}
+
 
 export const initLocation = (sequelize: Sequelize) => {
     Location.init(
@@ -50,7 +76,6 @@ export const initLocation = (sequelize: Sequelize) => {
                 onDelete: "CASCADE",
                 onUpdate: "CASCADE",
             },
-
             codeLand: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
@@ -74,6 +99,11 @@ export const initLocation = (sequelize: Sequelize) => {
             placePaymment: {
                 type: DataTypes.STRING,
             },
+            statusPayment: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: false,
+            },
             areaLandBare: {
                 type: DataTypes.INTEGER,
             },
@@ -92,6 +122,8 @@ export const initLocation = (sequelize: Sequelize) => {
             pricePermanent: {
                 type: DataTypes.INTEGER,
             },
+
+
         },
         {
             sequelize,

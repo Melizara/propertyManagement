@@ -21,6 +21,7 @@ function Location() {
         typePayment: string;
         methodPayment: string;
         placePaymment: string;
+        statusPayment: boolean;
         userMatricule: string;
     }
 
@@ -134,6 +135,11 @@ function Location() {
                         <strong>Prix Dure :</strong> {location.pricePermanent}
                     </div>
                 </div>
+                <div className="mt-3">
+                    <strong>Status du paiement :</strong>{" "}
+                    {location.statusPayment ? "Payé ✅" : "Non payé ❌"}
+                </div>
+
 
 
                 {user && user.matricule === location.userMatricule && (
@@ -149,6 +155,28 @@ function Location() {
                         </button>
                     </div>
                 )}
+
+                {user?.poste === "caissier" && !location.statusPayment && (
+                    <div className="d-flex justify-content-center mt-3">
+                        <button
+                            className="btn btn-success"
+                            onClick={async () => {
+                                if (!location.codeLocation) return;
+                                try {
+                                    await axios.put(`/api/locations/${location.codeLocation}/pay`);
+                                    setLocation({ ...location, statusPayment: true }); // Met à jour l'état local
+                                    alert("Paiement confirmé !");
+                                } catch (err) {
+                                    console.error(err);
+                                    alert("Erreur lors de la confirmation du paiement");
+                                }
+                            }}
+                        >
+                            Confirmer le paiement
+                        </button>
+                    </div>
+                )}
+
             </div>
         </div>
     );

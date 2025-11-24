@@ -3,7 +3,9 @@ import * as express from "express";
 declare global {
   namespace Express {
     interface Request {
-      userMatricule?: string; // on rend la propriété optionnelle
+      userMatricule?: string;
+      user?: { poste: string; matricule: string }; // ajoute cette ligne
     }
   }
 }
+

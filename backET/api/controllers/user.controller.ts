@@ -40,7 +40,11 @@ export const register = async (req: Request, res: Response) => {
 
         // Génération du token (on utilise matricule comme identifiant)
         const userPlain = user.get({ plain: true });
-        const token = jwt.sign({ matricule: userPlain.matricule }, process.env.SECRET_KEY, { expiresIn: "1d" });
+        const token = jwt.sign(
+            { matricule: userPlain.matricule, poste: userPlain.poste },
+            process.env.SECRET_KEY,
+            { expiresIn: "1d" }
+        );
 
         // On retire le mot de passe de la réponse
         const { password: pwd, ...userData } = user.get({ plain: true });
@@ -74,7 +78,11 @@ export const login = async (req: Request, res: Response) => {
         }
         // Génère un token
         const userPlain2 = user.get({ plain: true });
-        const token = jwt.sign({ matricule: userPlain2.matricule }, process.env.SECRET_KEY, { expiresIn: "1d" });
+        const token = jwt.sign(
+            { matricule: userPlain2.matricule, poste: userPlain2.poste },
+            process.env.SECRET_KEY,
+            { expiresIn: "1d" }
+        );
         // Supprime le mot de passe de la réponse
         const { password: pwd, ...userData } = user.get({ plain: true });
 
