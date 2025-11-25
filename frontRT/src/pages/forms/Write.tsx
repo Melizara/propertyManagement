@@ -4,6 +4,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import axios from "../../axios";
 import type { RootState } from "../../apps/Store.tsx";
 import type { FormEvent } from "react";
+import { toast } from "react-toastify";
 
 function Write() {
   //Recuperation des infos de l'utilisateur dans le store Redux.
@@ -36,7 +37,7 @@ function Write() {
 
 
   if (!user && !window.localStorage.getItem("token")) {
-    window.alert("You should login first !");
+    toast.success("You should login first !");
     return <Navigate to="/login" />
   }
 

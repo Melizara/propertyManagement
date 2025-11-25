@@ -12,27 +12,25 @@ function Navbar() {
 
   const handleLogout = () => {
     Swal.fire({
-      title: "Déconnexion",
-      text: "Voulez-vous vous déconnecter ?",
+      title: "Êtes-vous sûr ?",
+      text: "Vous allez vous déconnecter !",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Oui",
-      cancelButtonText: "Non",
-      reverseButtons: true, // met le bouton Annuler à gauche
+      confirmButtonColor: "#007bff",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Confirmer",
+      cancelButtonText: "Annuler",
+      reverseButtons: false,
+      focusCancel: true,
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(logout());
         window.localStorage.removeItem("token");
         navigate("/");
-        Swal.fire({
-          icon: "success",
-          title: "Déconnecté !",
-          timer: 1500,
-          showConfirmButton: false,
-        });
       }
     });
   };
+  
   const getInitial = (pseudo: string) => pseudo?.charAt(0)?.toUpperCase() || "?";
 
   return (

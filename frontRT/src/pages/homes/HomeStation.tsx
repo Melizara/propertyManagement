@@ -4,6 +4,7 @@ import type { RootState } from "../../apps/Store";
 import type { AppDispatch } from "../../apps/Store";
 import { fetchStations } from "../../features/stationSlice.tsx";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function HomeStation() {
     const user = useSelector((state: RootState) => state.auth.data);
@@ -27,10 +28,10 @@ function HomeStation() {
                 }
             ); // endpoint pour createStation
             dispatch(fetchStations()); // rafraîchir la liste après ajout
-            alert("Toutes les gares ont été ajoutées !");
+            toast.success("Toutes les gares ont été ajoutées !");
         } catch (error) {
             console.error(error);
-            alert("Erreur lors de l'ajout des gares !");
+            toast.success("Erreur lors de l'ajout des gares !");
         }
     };
 

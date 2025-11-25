@@ -4,6 +4,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import axios from "../../axios";
 import type { RootState } from "../../apps/Store.tsx";
 import type { FormEvent } from "react";
+import { toast } from "react-toastify";
 
 interface LandFormProps {
     onSuccess?: () => void;
@@ -87,10 +88,11 @@ function LandForm({ onSuccess }: LandFormProps) {
                 userMatricule: user?.matricule,
             };
             if (isUpdate) {
-                await axios.put(`/api/lands/${codeLandParam}`, landData)
+                await axios.put(`/api/lands/${codeLandParam}`, landData);
+                toast.success("Terrain modifié avec succès !");
             } else {
                 await axios.post("/api/lands", landData);
-                window.alert("Terrain ajouté avec succès !");
+                toast.success("Terrain ajouté avec succès !");
                 if (onSuccess) onSuccess();
             }
             navigate("/terrain")

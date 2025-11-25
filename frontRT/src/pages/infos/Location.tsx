@@ -5,6 +5,8 @@ import type { AppDispatch, RootState } from "../../apps/Store.tsx";
 import axios from "../../axios.tsx";
 import { deleteLocation } from "../../features/locationSlice.tsx";
 import { FaArrowLeft } from "react-icons/fa";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 function Location() {
     interface LocationType {
@@ -54,10 +56,24 @@ function Location() {
     }, [codeLocation]);
 
     const handleDelete = async (codelocation: number) => {
-        if (window.confirm("Voulez-vous vraiment supprimer cette location ?")) {
-            await dispatch(deleteLocation(codelocation));
-            navigate("/location");
-        }
+        Swal.fire({
+            title: "Êtes-vous sûr ?",
+            text: "Vous allez supprimer cet location !",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#007bff",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Confirmer",
+            cancelButtonText: "Annuler",
+            reverseButtons: false,
+            focusCancel: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                await dispatch(deleteLocation(codelocation));
+                navigate("/location");
+                toast.success("Locataire supprimé avec succès !");
+            }
+        });
     };
 
     if (loading) {
@@ -165,10 +181,10 @@ function Location() {
                                 try {
                                     await axios.put(`/api/locations/${location.codeLocation}/pay`);
                                     setLocation({ ...location, statusPayment: true }); // Met à jour l'état local
-                                    alert("Paiement confirmé !");
+                                    toast.success("Paiement confirmé !");
                                 } catch (err) {
                                     console.error(err);
-                                    alert("Erreur lors de la confirmation du paiement");
+                                    toast.error("Erreur lors de la confirmation du paiement");
                                 }
                             }}
                         >

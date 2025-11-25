@@ -5,6 +5,7 @@ import axios from "../../axios";
 import type { RootState } from "../../apps/Store.tsx";
 import type { FormEvent } from "react";
 import { AxiosError } from "axios";
+import { toast } from "react-toastify";
 
 type IPrice = {
     codePrice?: number;
@@ -154,7 +155,7 @@ function LocationForm() {
         const totalEntered = Number(areaLandBare) + Number(areaWood) + Number(areaPermanent);
 
         if (totalEntered > totalLand) {
-            window.alert(`La somme des surfaces (${totalEntered} m²) dépasse la surface totale du terrain (${totalLand} m²) !`);
+            toast.error(`La somme des surfaces (${totalEntered} m²) dépasse la surface totale du terrain (${totalLand} m²) !`);
             return; // Empêche l'envoi
         }
         try {
@@ -178,9 +179,10 @@ function LocationForm() {
 
             if (isUpdate) {
                 await axios.put(`/api/locations/${codeLocation}`, locationData);
+                toast.success("Location modifiée avec succès !");
             } else {
                 await axios.post("/api/locations", locationData);
-                window.alert("Location ajoutée avec succès !");
+                toast.success("Location ajoutée avec succès !");
             }
 
             navigate("/location");

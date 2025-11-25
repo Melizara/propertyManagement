@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../apps/Store";
 import { fetchPrices } from "../../features/priceSlice"; // ton slice pour les prix
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function HomePrice() {
     const user = useSelector((state: RootState) => state.auth.data);
@@ -26,10 +27,10 @@ function HomePrice() {
                 }
             );
             dispatch(fetchPrices());
-            alert("Tous les prix ont été ajoutés !");
+            toast.success("Tous les prix ont été ajoutés !");
         } catch (error) {
             console.error(error);
-            alert("Erreur lors de l'ajout des prix !");
+            toast.success("Erreur lors de l'ajout des prix !");
         }
     };
 

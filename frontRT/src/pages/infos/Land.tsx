@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../apps/Store.tsx";
 import { deleteLand } from "../../features/landSlice.tsx";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 interface Land {
   codeLand: number;
@@ -38,13 +40,26 @@ const LandModal: React.FC<LandModalProps> = ({ land, onClose, onDelete }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleDelete = async (codeLand: number) => {
-    if (window.confirm("Voulez-vous vraiment supprimer ce locataire ?")) {
-      await dispatch(deleteLand(codeLand));
-      onDelete(codeLand); // ← met à jour le state dans HomeLand
-      onClose();
-    }
+    Swal.fire({
+      title: "Êtes-vous sûr ?",
+      text: "Vous allez supprimer ce terrain !",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#007bff",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Confirmer",
+      cancelButtonText: "Annuler",
+      reverseButtons: false,
+      focusCancel: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await dispatch(deleteLand(codeLand));
+        onDelete(codeLand); // ← met à jour le state dans HomeLand
+        onClose();
+        toast.success("Terrain supprimé avec succès !");
+      }
+    });
   };
-
 
   if (!land) return null;
 

@@ -5,6 +5,9 @@ import type { AppDispatch, RootState } from "../../apps/Store.tsx";
 import axios from "../../axios.tsx";
 import { deleteTenant } from "../../features/tenantSlice.tsx";
 import { FaArrowLeft } from "react-icons/fa";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Tenant() {
     interface TenantType {
@@ -57,10 +60,24 @@ function Tenant() {
     }, [cin]);
 
     const handleDelete = async (cin: number) => {
-        if (window.confirm("Voulez-vous vraiment supprimer ce locataire ?")) {
-            await dispatch(deleteTenant(cin));
-            navigate("/locataire");
-        }
+        Swal.fire({
+            title: "Êtes-vous sûr ?",
+            text: "Vous allez supprimer ce locataire !",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#007bff",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Confirmer",
+            cancelButtonText: "Annuler",
+            reverseButtons: false,
+            focusCancel: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                await dispatch(deleteTenant(cin));
+                navigate("/locataire");
+                toast.success("Locataire supprimé avec succès !");
+            }
+        });
     };
 
     if (loading) {
@@ -83,13 +100,13 @@ function Tenant() {
         <div className="container-lg my-5 d-flex justify-content-center">
             <div className="card shadow-sm w-75 p-4 border-0">
                 <button
-          type="button"
-          className="btn btn-outline-secondary mb-3 d-flex align-items-center"
-          onClick={() => navigate("/locataire")}
-          style={{ width: "fit-content" }}
-        >
-          <FaArrowLeft className="me-2" /> Retour
-        </button>
+                    type="button"
+                    className="btn btn-outline-secondary mb-3 d-flex align-items-center"
+                    onClick={() => navigate("/locataire")}
+                    style={{ width: "fit-content" }}
+                >
+                    <FaArrowLeft className="me-2" /> Retour
+                </button>
                 <h2 className="text-center fw-bold mb-4 text-primary">
                     Fiche du locataire
                 </h2>
