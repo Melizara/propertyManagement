@@ -30,22 +30,23 @@ interface LocationCreationAttributes extends Optional<ILocation, "codeLocation" 
 
 // Déclaration de la classe
 export class Location extends Model<ILocation, LocationCreationAttributes> implements ILocation {
-    codeLocation?: number;
-    cin!: string;
-    codeLand!: number;
-    usage!: string;
-    areaLandBare!: number;
-    areaWood!: number;
-    areaPermanent!: number;
-    priceLandBare!: number;
-    priceWood!: number;
-    pricePermanent!: number;
-    typePayment!: string;
-    methodPayment!: string;
-    placePaymment!: string;
-    statusPayment!: boolean;
-    userMatricule!: string;
+    declare codeLocation?: number;
+    declare cin: string;
+    declare codeLand: number;
+    declare usage: string;
+    declare areaLandBare: number;
+    declare areaWood: number;
+    declare areaPermanent: number;
+    declare priceLandBare: number;
+    declare priceWood: number;
+    declare pricePermanent: number;
+    declare typePayment: string;
+    declare methodPayment: string;
+    declare placePaymment: string;
+    declare statusPayment: boolean;
+    declare userMatricule: string;
 }
+
 
 
 export const initLocation = (sequelize: Sequelize) => {

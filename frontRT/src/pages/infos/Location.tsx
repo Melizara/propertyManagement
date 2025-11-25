@@ -158,7 +158,7 @@ function Location() {
 
 
 
-                {user && user.matricule === location.userMatricule && (
+                {user?.poste === "operateur de saisie" && user.matricule === location.userMatricule && (
                     <div className="d-flex justify-content-center mt-4">
                         <Link to={`/updateLocation/${location.codeLocation}`}>
                             <button className="btn btn-outline-secondary me-2">Modifier</button>
@@ -171,9 +171,11 @@ function Location() {
                         </button>
                     </div>
                 )}
-
+                {/* --- Boutons PDF visibles seulement par l'opérateur de saisie --- */}
                 {user?.poste === "operateur de saisie" && (
                     <div className="d-flex justify-content-center mt-3 gap-2">
+
+                        {/* Bouton Convention PDF (toujours visible pour operateur de saisie) */}
                         <button
                             className="btn btn-outline-primary"
                             onClick={() => {
@@ -183,17 +185,19 @@ function Location() {
                             Convention PDF
                         </button>
 
-                        <button
-                            className="btn btn-outline-success"
-                            onClick={() => {
-                                console.log("Télécharger Facture PDF");
-                            }}
-                        >
-                            Facture PDF
-                        </button>
+                        {/* Bouton Facture PDF (visible seulement si payé) */}
+                        {location.statusPayment && (
+                            <button
+                                className="btn btn-outline-success"
+                                onClick={() => {
+                                    console.log("Télécharger Facture PDF");
+                                }}
+                            >
+                                Facture PDF
+                            </button>
+                        )}
                     </div>
                 )}
-
 
                 {user?.poste === "caissier" && !location.statusPayment && (
                     <div className="d-flex justify-content-center mt-3">
