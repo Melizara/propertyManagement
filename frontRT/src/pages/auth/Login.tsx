@@ -44,7 +44,7 @@ function Login() {
 
         // Redirection selon le rôle
         if (data.payload.poste === "admin") {
-          navigate("/locataire");
+          navigate("/terrain");
         } else if (data.payload.poste === "caissier") {
           navigate("/location");
         } else if (data.payload.poste === "operateur de saisie") {
@@ -57,9 +57,9 @@ function Login() {
   };
 
   if (user && window.localStorage.getItem("token")) {
-  if (user.poste === "admin") return <Navigate to="/locataire" />;
+  if (user.poste === "admin") return <Navigate to="/terrain" />;
   if (user.poste === "caissier") return <Navigate to="/location" />;
-  if (user.poste === "operateur de saisie") return <Navigate to="/locataire" />;
+  if (user.poste === "operateur de saisie") return <Navigate to="/terrain" />;
 }
 
   return (
@@ -70,6 +70,7 @@ function Login() {
             <h4 className="text-secondary fw-bold fs-3 mb-5">Login</h4>
             <div className="mb-3">
               <input type="text" placeholder="Matricule" className="form-control" name="matricule"
+              maxLength={5}
                 value={inputs.matricule}
                 onChange={handleChange}
                 required
@@ -82,6 +83,7 @@ function Login() {
             </div>
             <div className="mb-3">
               <input type="password" placeholder="password" className="form-control" name="password"
+              maxLength={8}
                 value={inputs.password}
                 onChange={handleChange}
                 required />

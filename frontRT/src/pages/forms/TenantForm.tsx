@@ -123,6 +123,7 @@ function TenantForm() {
           <div className="col-md-6">
             <label className="form-label">Nom</label>
             <input type="text" className="form-control" value={name}
+            maxLength={50}
               onChange={e => {
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                 setName(lettersOnly);
@@ -131,6 +132,7 @@ function TenantForm() {
           <div className="col-md-6">
             <label className="form-label">Prénom</label>
             <input type="text" className="form-control" value={lastName}
+            maxLength={70}
               onChange={e => {
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                 setLastName(lettersOnly);
@@ -149,6 +151,7 @@ function TenantForm() {
           <div className="col-md-6">
             <label className="form-label">Lieu de naissance</label>
             <input type="text" className="form-control" value={birthPlace}
+            maxLength={50}
               onChange={e => {
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                 setBirthPlace(lettersOnly);
@@ -183,6 +186,7 @@ function TenantForm() {
           <div className="col-md-4">
             <label className="form-label">Lieu du CIN</label>
             <input type="text" className="form-control" value={cinPlace}
+            maxLength={50}
               onChange={e => {
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                 setCinPlace(lettersOnly);
@@ -201,6 +205,7 @@ function TenantForm() {
           <div className="col-md-6">
             <label className="form-label">Père</label>
             <input type="text" className="form-control" value={father}
+            maxLength={70}
               onChange={e => {
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                 setFather(lettersOnly);
@@ -209,6 +214,7 @@ function TenantForm() {
           <div className="col-md-6">
             <label className="form-label">Mère</label>
             <input type="text" className="form-control" value={mother}
+             maxLength={70}
               onChange={e => {
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                 setMother(lettersOnly);
@@ -221,11 +227,13 @@ function TenantForm() {
           <div className="col-md-4">
             <label className="form-label">Adresse</label>
             <input type="text" className="form-control" value={address}
+             maxLength={50}
               onChange={e => setAddress(e.target.value)} required />
           </div>
           <div className="col-md-4">
             <label className="form-label">Quartier</label>
             <input type="text" className="form-control" value={neighborHood}
+             maxLength={30}
               onChange={e => {
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                 setNeighborHood(lettersOnly);
@@ -234,6 +242,7 @@ function TenantForm() {
           <div className="col-md-4">
             <label className="form-label">Commune</label>
             <input type="text" className="form-control" value={municipality}
+             maxLength={30}
               onChange={e => {
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                 setMunicipality(lettersOnly);

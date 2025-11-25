@@ -59,7 +59,7 @@ const router = createBrowserRouter([
       {
         path: "/locataire",
         element: (
-          <PrivateRoute>
+          <PrivateRoute allowedRoles={["admin", "operateur de saisie"]}>
             <HomeTenant />
           </PrivateRoute>
         )
@@ -67,7 +67,7 @@ const router = createBrowserRouter([
       {
         path: "/terrain",
         element: (
-          <PrivateRoute>
+          <PrivateRoute allowedRoles={["admin", "operateur de saisie"]}>
             <HomeLand />
           </PrivateRoute>
         )
@@ -75,7 +75,7 @@ const router = createBrowserRouter([
       {
         path: "/gare",
         element: (
-          <PrivateRoute>
+          <PrivateRoute allowedRoles={["admin", "operateur de saisie"]}>
             <HomeStation />
           </PrivateRoute>
         )
@@ -83,7 +83,7 @@ const router = createBrowserRouter([
       {
         path: "/location",
         element: (
-          <PrivateRoute>
+           <PrivateRoute allowedRoles={["admin", "caissier", "operateur de saisie"]}>
             <HomeLocation />
           </PrivateRoute>
         )
@@ -91,7 +91,7 @@ const router = createBrowserRouter([
       {
         path: "/prix",
         element: (
-          <PrivateRoute>
+          <PrivateRoute allowedRoles={["admin", "operateur de saisie"]}>
             <HomePrice />
           </PrivateRoute>
         )

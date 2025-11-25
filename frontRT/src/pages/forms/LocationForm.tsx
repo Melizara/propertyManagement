@@ -241,15 +241,15 @@ function LocationForm() {
                         <div className="row mb-3">
                             <div className="col-md-4">
                                 <label className="form-label">Surface Terrain Nu</label>
-                                <input type="text" className="form-control" value={areaLandBare} onChange={e => setAreaLandBare(e.target.value)} required />
+                                <input type="text" className="form-control" value={areaLandBare}  maxLength={9} onChange={e => setAreaLandBare(e.target.value)} required />
                             </div>
                             <div className="col-md-4">
                                 <label className="form-label">Surface Bois</label>
-                                <input type="text" className="form-control" value={areaWood} onChange={e => setAreaWood(e.target.value)} required />
+                                <input type="text" className="form-control" value={areaWood} maxLength={9} onChange={e => setAreaWood(e.target.value)} required />
                             </div>
                             <div className="col-md-4">
                                 <label className="form-label">Surface Dure</label>
-                                <input type="text" className="form-control" value={areaPermanent} onChange={e => setAreaPermanent(e.target.value)} required />
+                                <input type="text" className="form-control" value={areaPermanent} maxLength={9} onChange={e => setAreaPermanent(e.target.value)} required />
                             </div>
                         </div>
 
@@ -294,7 +294,7 @@ function LocationForm() {
 
                     <div className="col-md-4">
                         <label className="form-label">Lieu de paiement</label>
-                        <input type="text" className="form-control" value={placePaymment} onChange={e => setPlacePaymment(e.target.value)} required />
+                        <input type="text" className="form-control" value={placePaymment} maxLength={20} onChange={e => setPlacePaymment(e.target.value)} required />
                     </div>
                 </div>
 

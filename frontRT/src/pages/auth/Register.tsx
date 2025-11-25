@@ -60,7 +60,7 @@ function Register() {
   };
 
   if (user && window.localStorage.getItem("token")) {
-    return <Navigate to="/locataire" />
+    return <Navigate to="/terrain" />
   }
 
 
@@ -72,6 +72,7 @@ function Register() {
             <h4 className="text-secondary fw-bold fs-3 mb-5">Register</h4>
             <div className="mb-3">
               <input type="text" placeholder="matricule" className="form-control" name="matricule"
+                maxLength={5}
                 value={inputs.matricule}
                 onChange={handleChange}
                 required />
@@ -83,6 +84,7 @@ function Register() {
             </div>
             <div className="mb-3">
               <input type="text" placeholder="pseudo" className="form-control" name="pseudo"
+              maxLength={70}
                 value={inputs.pseudo}
                 onChange={handleChange}
                 required />
@@ -94,6 +96,7 @@ function Register() {
             </div>
             <div className="mb-3">
               <input type="email" placeholder="Email" className="form-control" name="email"
+              maxLength={50}
                 value={inputs.email}
                 onChange={handleChange}
                 required />
@@ -124,6 +127,7 @@ function Register() {
             </div>
             <div className="mb-3">
               <input type="password" placeholder="password" className="form-control" name="password"
+              maxLength={8}
                 value={inputs.password}
                 onChange={handleChange}
                 required />
@@ -136,6 +140,7 @@ function Register() {
             <div className="mb-3">
               <input
                 type="password"
+                maxLength={8}
                 placeholder="Confirmer le mot de passe"
                 className="form-control"
                 value={confirmPassword}

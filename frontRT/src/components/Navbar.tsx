@@ -38,11 +38,11 @@ function Navbar() {
               {/* Si admin → afficher tout */}
               {user.poste === "admin" && (
                 <>
-                  <Link to="/locataire" className="text-secondary text-decoration-none fw-semibold">Locataire</Link>
                   <Link to="/terrain" className="text-secondary text-decoration-none fw-semibold">Terrain</Link>
+                  <Link to="/locataire" className="text-secondary text-decoration-none fw-semibold">Locataire</Link>
+                  <Link to="/location" className="text-secondary text-decoration-none fw-semibold">Location</Link>
                   <Link to="/gare" className="text-secondary text-decoration-none fw-semibold">Gare</Link>
                   <Link to="/prix" className="text-secondary text-decoration-none fw-semibold">Prix</Link>
-                  <Link to="/location" className="text-secondary text-decoration-none fw-semibold">Location</Link>
                 </>
               )}
 
@@ -56,9 +56,11 @@ function Navbar() {
               {/* Si opérateur de saisie → tu peux choisir ce qu'il voit */}
               {user.poste === "operateur de saisie" && (
                 <>
-                  <Link to="/locataire" className="text-secondary text-decoration-none fw-semibold">Locataire</Link>
                   <Link to="/terrain" className="text-secondary text-decoration-none fw-semibold">Terrain</Link>
+                  <Link to="/locataire" className="text-secondary text-decoration-none fw-semibold">Locataire</Link>
                   <Link to="/location" className="text-secondary text-decoration-none fw-semibold">Location</Link>
+                  <Link to="/gare" className="text-secondary text-decoration-none fw-semibold">Gare</Link>
+                  <Link to="/prix" className="text-secondary text-decoration-none fw-semibold">Prix</Link>
                 </>
               )}
             </>
@@ -105,7 +107,7 @@ function Navbar() {
                 </button>
               </Link>
               <Link to="/register">
-                <button className="btn btn-outline-primary fw-semibold d-flex align-items-center">
+                <button className="btn btn-outline-primary fw-semibold d-flex align-items-center text-decoration-none">
                   <FaUserPlus className="me-2" /> Inscription
                 </button>
               </Link>

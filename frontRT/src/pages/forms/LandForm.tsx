@@ -113,11 +113,13 @@ function LandForm({ onSuccess }: LandFormProps) {
                     <div className="col-md-6">
                         <label className="form-label">Longueur</label>
                         <input type="text" className="form-control" value={length}
+                            maxLength={6}
                             onChange={(e) => setLength(e.target.value)} required />
                     </div>
                     <div className="col-md-6">
                         <label className="form-label">Largeur</label>
                         <input type="text" className="form-control" value={width}
+                            maxLength={4}
                             onChange={(e) => setWidth(e.target.value)} required />
                     </div>
                 </div>
@@ -125,12 +127,14 @@ function LandForm({ onSuccess }: LandFormProps) {
                     <div className="col-md-6">
                         <label className="form-label">Pk debut</label>
                         <input type="text" className="form-control" value={startPk}
+                            maxLength={3}
                             onChange={e => setStartPk(e.target.value)}
                             required />
                     </div>
                     <div className="col-md-6">
                         <label className="form-label">Pk fin</label>
                         <input type="text" className="form-control" value={endPk}
+                            maxLength={3}
                             onChange={(e) => setEndPk(e.target.value)} required />
                     </div>
                 </div>
@@ -168,6 +172,7 @@ function LandForm({ onSuccess }: LandFormProps) {
                     <div className="col-md-6">
                         <label className="form-label">Quartier</label>
                         <input type="text" className="form-control" value={neighborHood}
+                            maxLength={30}
                             onChange={e => {
                                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                                 setNeighborHood(lettersOnly);
@@ -176,6 +181,7 @@ function LandForm({ onSuccess }: LandFormProps) {
                     <div className="col-md-6">
                         <label className="form-label">Commune</label>
                         <input type="text" className="form-control" value={municipality}
+                            maxLength={30}
                             onChange={e => {
                                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                                 setMunicipality(lettersOnly);
@@ -183,7 +189,7 @@ function LandForm({ onSuccess }: LandFormProps) {
                     </div>
                 </div>
                 <div className="row mb-3">
-                    <div className="col-md-6">
+                    <div className="col-md-12">
                         <label className="form-label">Gare occupée</label>
                         <input type="text" className="form-control" value={stationName} readOnly />
                     </div>
