@@ -5,6 +5,9 @@ import axios from "../../axios";
 import type { RootState } from "../../apps/Store.tsx";
 import type { FormEvent } from "react";
 import { AxiosError } from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 function TenantForm() {
   //Recuperation des infos de l'utilisateur dans le store Redux.
@@ -78,10 +81,12 @@ function TenantForm() {
         userMatricule: user?.matricule
       };
       if (isUpdate) {
-        await axios.put(`/api/tenants/${cinParam}`, tenantData)
+        await axios.put(`/api/tenants/${cinParam}`, tenantData);
+        
+        toast.success("Locataire modifié avec succès !");
       } else {
         await axios.post("/api/tenants", tenantData);
-        window.alert("Locataire ajouté avec succès !");
+        toast.success("Locataire ajouté avec succès !");
       }
       navigate("/locataire")
     } catch (error) {

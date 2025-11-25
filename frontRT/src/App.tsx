@@ -25,6 +25,8 @@ import LocationForm from "./pages/forms/LocationForm.tsx";
 import HomePrice from "./pages/homes/HomePrice.tsx";
 import Location from "./pages/infos/Location.tsx";
 import Unauthorized from "./pages/homes/Unauthorized.tsx";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 //Layout est un modele de page commun,Outlet change selon la route
 const Layout = () => {
@@ -35,6 +37,16 @@ const Layout = () => {
         <Outlet />
       </main>
       <Footer />
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnHover
+        style={{ top: "3cm" }} // <== Ici tu descends le toast de 3 cm
+      />
     </div>
   );
 };
@@ -158,8 +170,8 @@ const router = createBrowserRouter([
         element: <LocationForm />
       },
       {
-        path:"/unauthorized",
-        element:<Unauthorized/>
+        path: "/unauthorized",
+        element: <Unauthorized />
       }
     ]
   }

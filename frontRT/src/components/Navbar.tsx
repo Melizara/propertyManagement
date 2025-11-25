@@ -3,6 +3,7 @@ import { FaBars, FaHome, FaSignInAlt, FaUserPlus, FaUserAlt, FaSignOutAlt } from
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../apps/Store";
 import { logout } from "../features/authSlice";
+import Swal from "sweetalert2";
 
 function Navbar() {
   const user = useSelector((state: RootState) => state.auth.data);
@@ -10,11 +11,27 @@ function Navbar() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    if (window.confirm("Voulez-vous vous déconnecter ?")) {
-      dispatch(logout());
-      window.localStorage.removeItem("token");
-      navigate("/");
-    }
+    Swal.fire({
+      title: "Déconnexion",
+      text: "Voulez-vous vous déconnecter ?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Oui",
+      cancelButtonText: "Non",
+      reverseButtons: true, // met le bouton Annuler à gauche
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(logout());
+        window.localStorage.removeItem("token");
+        navigate("/");
+        Swal.fire({
+          icon: "success",
+          title: "Déconnecté !",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      }
+    });
   };
   const getInitial = (pseudo: string) => pseudo?.charAt(0)?.toUpperCase() || "?";
 
