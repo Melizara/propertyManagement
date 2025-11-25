@@ -24,6 +24,7 @@ import HomeLocation from "./pages/homes/HomeLocation.tsx";
 import LocationForm from "./pages/forms/LocationForm.tsx";
 import HomePrice from "./pages/homes/HomePrice.tsx";
 import Location from "./pages/infos/Location.tsx";
+import Unauthorized from "./pages/homes/Unauthorized.tsx";
 
 //Layout est un modele de page commun,Outlet change selon la route
 const Layout = () => {
@@ -83,7 +84,7 @@ const router = createBrowserRouter([
       {
         path: "/location",
         element: (
-           <PrivateRoute allowedRoles={["admin", "caissier", "operateur de saisie"]}>
+          <PrivateRoute allowedRoles={["admin", "caissier", "operateur de saisie"]}>
             <HomeLocation />
           </PrivateRoute>
         )
@@ -126,7 +127,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/formLand",
-        element: <LandForm />
+        element: (
+          <PrivateRoute allowedRoles={["admin"]}>
+            <LandForm />
+          </PrivateRoute>
+        )
       },
       {
         path: "/formLocation",
@@ -141,13 +146,20 @@ const router = createBrowserRouter([
         element: <TenantForm />
       },
       {
-        path: "updateLand/:codeLand",
-        element: <LandForm />
-      
+        path: "/updateLand/:codeLand",
+        element: (
+          <PrivateRoute allowedRoles={["admin"]}>
+            <LandForm />
+          </PrivateRoute>
+        )
       },
       {
         path: "updateLocation/:codeLocation",
         element: <LocationForm />
+      },
+      {
+        path:"/unauthorized",
+        element:<Unauthorized/>
       }
     ]
   }
