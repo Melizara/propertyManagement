@@ -197,7 +197,7 @@ function LocationForm() {
     return (
         <div className="container-lg my-5">
             <div className="mb-3">
-                <button type="button" className="btn btn-outline-secondary" onClick={() => navigate("/location")}>
+                <button type="button" className="btn btn-outline-secondary" onClick={() => navigate(`/location/${codeLocation}`)}>
                     ← Retour
                 </button>
             </div>

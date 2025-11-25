@@ -113,7 +113,7 @@ function TenantForm() {
         <button
           type="button"
           className="btn btn-outline-secondary"
-          onClick={() => navigate("/locataire")}
+          onClick={() => navigate(`/tenant/${cin}`)}
         >
           ← Retour
         </button>

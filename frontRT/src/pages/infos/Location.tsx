@@ -172,6 +172,29 @@ function Location() {
                     </div>
                 )}
 
+                {user?.poste === "operateur de saisie" && (
+                    <div className="d-flex justify-content-center mt-3 gap-2">
+                        <button
+                            className="btn btn-outline-primary"
+                            onClick={() => {
+                                console.log("Télécharger Convention PDF");
+                            }}
+                        >
+                            Convention PDF
+                        </button>
+
+                        <button
+                            className="btn btn-outline-success"
+                            onClick={() => {
+                                console.log("Télécharger Facture PDF");
+                            }}
+                        >
+                            Facture PDF
+                        </button>
+                    </div>
+                )}
+
+
                 {user?.poste === "caissier" && !location.statusPayment && (
                     <div className="d-flex justify-content-center mt-3">
                         <button
