@@ -13,6 +13,7 @@ export interface ILand {
     position: string;
     neighborHood: string;
     municipality: string;
+    available?: boolean;
     userMatricule: string;
     codeStation: number;
 }
@@ -28,6 +29,7 @@ export class Land extends Model<ILand> {
     declare position: string;
     declare neighborHood: string;
     declare municipality: string;
+    declare available: boolean;
     declare userMatricule: string;
     declare codeStation: number;
 
@@ -79,6 +81,11 @@ export const initLand = (sequelize: Sequelize) => {
             municipality: {
                 type: DataTypes.STRING,
                 allowNull: false
+            },
+            available: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: false, // disponible par défaut
             },
             userMatricule: {
                 type: DataTypes.STRING,

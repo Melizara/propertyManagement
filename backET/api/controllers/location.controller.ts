@@ -28,6 +28,12 @@ export const createLocation = async (req: Request, res: Response) => {
             statusPayment: false,
             userMatricule: req.userMatricule!
         });
+
+        await Land.update(
+            { available: true },
+            { where: { codeLand: req.body.codeLand } } // ✅ utilise la valeur directement
+        );
+
         return res.status(201).json(location);
     } catch (error) {
         if (error instanceof Error) {
@@ -60,6 +66,11 @@ export const updateLocation = async (req: Request, res: Response) => {
             statusPayment: false,
             userMatricule: req.userMatricule!
         });
+
+        await Land.update(
+            { available: true },
+            { where: { codeLand: req.body.codeLand } } // ✅ utilise la valeur directement
+        );
 
         return res.status(200).json(location);
     } catch (error) {
