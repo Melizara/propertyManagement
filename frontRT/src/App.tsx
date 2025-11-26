@@ -59,7 +59,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Welcome />
+        element: (
+          <PrivateRoute>
+            <Welcome />
+          </PrivateRoute>
+        )
       },
       {
         path: "/story",

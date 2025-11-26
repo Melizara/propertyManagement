@@ -23,6 +23,12 @@ function PrivateRoute({ children, allowedRoles }: Props) {
     return <Navigate to="/unauthorized" replace />;
   }
 
+  if (location.pathname === "/") {
+    if (user?.poste === "admin") return <Navigate to="/terrain" replace />;
+    if (user?.poste === "operateur de saisie") return <Navigate to="/terrain" replace />;
+    if (user?.poste === "caissier") return <Navigate to="/location" replace />;
+  }
+
   // 🔹 Sinon il peut accéder
   return <>{children}</>;
 }
