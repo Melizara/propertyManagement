@@ -45,7 +45,12 @@ export class Location extends Model<ILocation, LocationCreationAttributes> imple
     declare placePaymment: string;
     declare statusPayment: boolean;
     declare userMatricule: string;
+
+    // 🔹 Déclarations pour les relations Sequelize
+    declare tenant?: Tenant;  // ← pour inclure le locataire
+    declare land?: Land;      // ← pour inclure le terrain
 }
+
 
 
 

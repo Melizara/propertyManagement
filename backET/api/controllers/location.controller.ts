@@ -2,8 +2,10 @@ import type { Request, Response } from "express";
 import type { AuthRequest } from "../middlewares/protectAuth.ts";
 import { Location } from "../models/location.model.ts";
 import { User } from "../models/user.model.ts";
+import PDFDocument from "pdfkit";
 import { Tenant } from "../models/tenant.model.ts";
 import { Land } from "../models/land.model.ts";
+import { Station } from "../models/station.model.ts";
 
 export const createLocation = async (req: Request, res: Response) => {
     try {
@@ -144,5 +146,81 @@ export const confirmPayment = async (req: AuthRequest, res: Response) => {
     }
 };
 
+export const generateConventionPdf = async (req: Request, res: Response) => {
+    try {
+        const location = await Location.findByPk(req.params.codeLocation, {
+            include: [
+                { model: Tenant, as: "tenant" },
+                { model: Land, as: "land", include: [{ model: Station, as: "station" }] },
+            ],
+        });
 
+        if (!location) return res.status(404).json({ error: "Location non trouvée" });
+
+        const tenant = location.tenant!;
+        const land = location.land!;
+        const station = land.station!;
+
+        // Créer un nouveau PDF
+        const doc = new PDFDocument({ margin: 50 });
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `attachment; filename=convention_${location.codeLocation}.pdf`);
+
+        doc.pipe(res);
+
+        doc.fontSize(18).text("Convention de Location", { align: "center" });
+        doc.moveDown();
+
+        // Infos gare
+        doc.fontSize(12).text(`Code Gare : ${station.codeStation}`);
+        doc.text(`Nom Gare : ${station.name}`);
+        doc.moveDown();
+
+        // Infos locataire
+        doc.text(`Nom : ${tenant.name}`);
+        doc.text(`Prénom : ${tenant.lastName}`);
+        doc.text(`Date de naissance : ${tenant.birthDate}`);
+        doc.text(`Lieu de naissance : ${tenant.birthPlace}`);
+        doc.text(`Père : ${tenant.father}`);
+        doc.text(`Mère : ${tenant.mother}`);
+        doc.text(`CIN : ${tenant.cin}`);
+        doc.text(`Date CIN : ${tenant.dateCin}`);
+        doc.text(`Lieu CIN : ${tenant.cinPlace}`);
+        doc.text(`Adresse : ${tenant.address}`);
+        doc.text(`Quartier : ${tenant.neighborHood}`);
+        doc.text(`Commune : ${tenant.municipality}`);
+        doc.moveDown();
+
+        // Infos terrain
+        const totalSurface = land.area;
+        doc.text(`Surface totale du terrain : ${totalSurface}`);
+        doc.text(`PK début : ${land.startPk}`);
+        doc.text(`PK fin : ${land.endPk}`);
+        doc.text(`Railway Side : ${land.railwaySide}`);
+        doc.text(`Position : ${land.position}`);
+        doc.text(`Quartier : ${land.neighborHood}`);
+        doc.text(`Commune : ${land.municipality}`);
+        doc.moveDown();
+
+        // Surface et prix
+        doc.text(`Surface terrain nu : ${location.areaLandBare} m²`);
+        doc.text(`Surface terrain construction dure : ${location.areaPermanent} m²`);
+        doc.text(`Surface terrain construction bois : ${location.areaWood} m²`);
+        doc.text(`Prix terrain nu : ${location.priceLandBare}`);
+        doc.text(`Prix terrain construction dure : ${location.pricePermanent}`);
+        doc.text(`Prix terrain construction bois : ${location.priceWood}`);
+        const totalPrice = location.priceLandBare + location.pricePermanent + location.priceWood;
+        doc.text(`Prix total du terrain : ${totalPrice}`);
+        doc.moveDown();
+
+        // Lieu de paiement
+        doc.text(`Lieu de paiement : ${location.placePaymment}`);
+
+        doc.end();
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Erreur serveur lors de la génération du PDF" });
+    }
+};
 

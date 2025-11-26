@@ -17,7 +17,22 @@ export interface ITenant {
     userMatricule:string;
 }
 
-export class Tenant extends Model<ITenant> { }
+export class Tenant extends Model<ITenant> {
+    declare name: string;
+    declare lastName: string;
+    declare birthDate: Date;
+    declare birthPlace: string;
+    declare father: string;
+    declare mother: string;
+    declare cin: string;
+    declare dateCin: Date;
+    declare cinPlace: string;
+    declare address: string;
+    declare neighborHood: string;
+    declare municipality: string;
+    declare userMatricule:string;
+}
+
 
 export const initTenant = (sequelize: Sequelize) => {
     Tenant.init(

@@ -18,10 +18,23 @@ export interface ILand {
 }
 
 export class Land extends Model<ILand> {
+    declare codeLand?: number;
+    declare length: number;
+    declare width: number;
+    declare area: number;
+    declare startPk: number;
     declare endPk: number;
-    declare startPk : number;
-    declare length :number
+    declare railwaySide: "gauche" | "droite";
+    declare position: string;
+    declare neighborHood: string;
+    declare municipality: string;
+    declare userMatricule: string;
+    declare codeStation: number;
+
+    // 🔹 Relation avec Station
+    declare station?: Station;
 }
+
 
 export const initLand = (sequelize: Sequelize) => {
     Land.init(

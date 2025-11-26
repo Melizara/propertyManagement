@@ -10,7 +10,15 @@ export interface IStation {
     userMatricule: string;
 }
 
-export class Station extends Model<IStation> { }
+export class Station extends Model<IStation> {
+    declare codeStation: number;
+    declare name: string;
+    declare type: string;
+    declare startPk: number;
+    declare endPk: number;
+    declare userMatricule: string;
+}
+
 
 export const initStation = (sequelize: Sequelize) => {
     Station.init(
