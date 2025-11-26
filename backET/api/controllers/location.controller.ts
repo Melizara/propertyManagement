@@ -171,6 +171,11 @@ export const generateConventionPdf = async (req: Request, res: Response) => {
         doc.fontSize(18).text("Convention de Location", { align: "center" });
         doc.moveDown();
 
+        const currentYear = new Date().getFullYear();
+        doc.fontSize(12).text(`Code Location : ${location.codeLocation}`);
+        doc.text(`Année de génération : ${currentYear}`);
+        doc.moveDown();
+
         // Infos gare
         doc.fontSize(12).text(`Code Gare : ${station.codeStation}`);
         doc.text(`Nom Gare : ${station.name}`);
@@ -221,6 +226,96 @@ export const generateConventionPdf = async (req: Request, res: Response) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Erreur serveur lors de la génération du PDF" });
+    }
+};
+
+export const generateInvoicePdf = async (req: Request, res: Response) => {
+    try {
+        const location = await Location.findByPk(req.params.codeLocation, {
+            include: [
+                { model: Tenant, as: "tenant" },
+                { model: Land, as: "land", include: [{ model: Station, as: "station" }] },
+            ],
+        });
+
+        if (!location) return res.status(404).json({ error: "Location non trouvée" });
+
+        const tenant = location.tenant!;
+        const land = location.land!;
+        const station = land.station!;
+
+        // Créer un nouveau PDF
+        const doc = new PDFDocument({ margin: 50 });
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename=facture_${location.codeLocation}.pdf`
+        );
+
+        doc.pipe(res);
+
+        const currentYear = new Date().getFullYear();
+
+        // Titre
+        doc.fontSize(18).text("Facture de Location", { align: "center" });
+        doc.moveDown();
+
+        // Infos générales
+        doc.fontSize(12);
+        doc.text(`Type de paiement : ${location.typePayment}`);
+        doc.text(`Code Location : ${location.codeLocation}`);
+        doc.text(`Année : ${currentYear}`);
+        doc.moveDown();
+
+        // Infos locataire
+        doc.text(`Nom : ${tenant.name}`);
+        doc.text(`Prénom : ${tenant.lastName}`);
+        doc.text(`Adresse : ${tenant.address}`);
+        doc.text(`Lieu de paiement : ${location.placePaymment}`);
+        doc.moveDown();
+
+        // Infos terrain
+        doc.text(`Code Gare : ${station.codeStation}`);
+        doc.text(`PK début : ${land.startPk}`);
+        doc.text(`PK fin : ${land.endPk}`);
+        doc.moveDown();
+
+        // Tableau des surfaces et prix
+        doc.text("Détails du terrain :", { underline: true });
+        doc.moveDown(0.5);
+
+        const tableTop = doc.y;
+        const itemSpacing = 150;
+
+        // Entêtes
+        doc.text("Type", 50, tableTop);
+        doc.text("Surface (m²)", 200, tableTop);
+        doc.text("Prix (USD)", 350, tableTop);
+
+        const row1Y = tableTop + 20;
+        doc.text("Terrain nu", 50, row1Y);
+        doc.text(location.areaLandBare.toString(), 200, row1Y);
+        doc.text(location.priceLandBare.toString(), 350, row1Y);
+
+        const row2Y = row1Y + 20;
+        doc.text("Construction dure", 50, row2Y);
+        doc.text(location.areaPermanent.toString(), 200, row2Y);
+        doc.text(location.pricePermanent.toString(), 350, row2Y);
+
+        const row3Y = row2Y + 20;
+        doc.text("Construction bois", 50, row3Y);
+        doc.text(location.areaWood.toString(), 200, row3Y);
+        doc.text(location.priceWood.toString(), 350, row3Y);
+
+        // Total
+        const totalPrice = location.priceLandBare + location.pricePermanent + location.priceWood;
+        doc.moveDown(5);
+        doc.fontSize(14).text(`Prix total : ${totalPrice} USD`, { align: "right" });
+
+        doc.end();
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Erreur serveur lors de la génération de la facture" });
     }
 };
 

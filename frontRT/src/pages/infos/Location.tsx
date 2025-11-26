@@ -176,10 +176,35 @@ function Location() {
                     <div className="d-flex justify-content-center mt-3 gap-2">
 
                         {/* Bouton Convention PDF (toujours visible pour operateur de saisie) */}
+                        {/* Bouton Convention PDF */}
                         <button
                             className="btn btn-outline-primary"
-                            onClick={() => {
-                                console.log("Télécharger Convention PDF");
+                            onClick={async () => {
+                                if (!location?.codeLocation) return;
+
+                                try {
+                                    const response = await axios.get(
+                                        `/api/locations/${location.codeLocation}/convention`,
+                                        {
+                                            responseType: "blob", // Important pour récupérer le PDF
+                                        }
+                                    );
+
+                                    // Crée un URL pour le blob
+                                    const fileURL = window.URL.createObjectURL(new Blob([response.data]));
+                                    const fileLink = document.createElement("a");
+                                    fileLink.href = fileURL;
+                                    fileLink.setAttribute(
+                                        "download",
+                                        `convention_${location.codeLocation}.pdf`
+                                    );
+                                    document.body.appendChild(fileLink);
+                                    fileLink.click();
+                                    fileLink.remove();
+                                } catch (err) {
+                                    console.error(err);
+                                    toast.error("Erreur lors du téléchargement du PDF");
+                                }
                             }}
                         >
                             Convention PDF
@@ -189,12 +214,33 @@ function Location() {
                         {location.statusPayment && (
                             <button
                                 className="btn btn-outline-success"
-                                onClick={() => {
-                                    console.log("Télécharger Facture PDF");
+                                onClick={async () => {
+                                    if (!location?.codeLocation) return;
+                                    try {
+                                        const response = await axios.get(
+                                            `/api/locations/${location.codeLocation}/facture`,
+                                            { responseType: "blob" } // Important pour les fichiers binaires
+                                        );
+
+                                        // Créer un blob et déclencher le téléchargement
+                                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                                        const link = document.createElement("a");
+                                        link.href = url;
+                                        link.setAttribute(
+                                            "download",
+                                            `facture_${location.codeLocation}.pdf`
+                                        );
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        link.remove();
+                                    } catch (error) {
+                                        console.error("Erreur lors du téléchargement de la facture :", error);
+                                    }
                                 }}
                             >
                                 Facture PDF
                             </button>
+
                         )}
                     </div>
                 )}
