@@ -1,136 +1,157 @@
+// Import de Redux Toolkit pour créer le slice et les actions asynchrones
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+// Import d'axios pour faire les requêtes HTTP
 import axios from "../axios";
+// Type pour gérer les erreurs Axios
 import { AxiosError } from "axios";
 
-//Ces codes suivant sont des interfaces avec ts
-//Ca sert a connnaitre le type de chaque données pour eviter les erreurs
+// Interfaces TypeScript pour typer les données
+// Sert à savoir quels types de données on attend pour éviter les erreurs
 interface RegisterParams {
-  matricule: string;
-  pseudo: string;
-  poste: string;
-  email: string;
-  password: string;
+  matricule: string; // matricule de l'utilisateur
+  pseudo: string; // pseudo
+  poste: string; // rôle de l'utilisateur
+  email: string; // email
+  password: string; // mot de passe
 }
+
 interface LoginParams {
-  matricule: string;
-  password: string;
+  matricule: string; // matricule pour login
+  password: string; // mot de passe
 }
+
 interface User {
   matricule: string;
   pseudo: string;
   email: string;
-  token?: string; // Optional token field if your API returns it here
-  poste: "admin" | "caissier" | "operateur de saisie"; // 👈 ajoute ceci
+  token?: string; // token optionnel (retourné par l'API après login)
+  poste: "admin" | "caissier" | "operateur de saisie"; // rôle de l'utilisateur
 }
+
 interface AuthError {
-  field: "matricule" | "password";
-  message: string;
+  [key: string]: string; // clé = nom du champ, valeur = message
 }
 
 interface AuthState {
-  data: User | null;
-  status: 'idle' | 'loading' | 'success' | 'error';
-  error: AuthError | null; // au lieu de string
+  data: User | null; // info utilisateur
+  status: 'idle' | 'loading' | 'success' | 'error'; // état de la requête
+  error: AuthError | null; // erreur éventuelle
+}
+
+// État initial du slice
+const initialState: AuthState = {
+  data: null, // pas d'utilisateur connecté au départ
+  status: "idle", // état initial
+  error: null, // pas d'erreur
+};
+
+interface ValidationErrorItem {
+  msg: string;      // message d'erreur
+  param: string;    // nom du champ
+  location: string; // "body", "query", etc.
+  value?: unknown;  // valeur envoyée (optionnelle)
 }
 
 
-//Ceci est l'etat initale qui herite du interface AuthState.
-const initialState: AuthState = {
-  data: null,
-  status: "idle",
-  error: null, // ✅ ajouté
+type BackendError = {
+  errors: ValidationErrorItem[];
 };
 
-//Ceci est une fonction asynchrone qui sert a appeller l'API
-//Regitser zao ity
-export const register = createAsyncThunk("/auth/register", async (params: RegisterParams, { dispatch, rejectWithValue }) => {
-  try {
-    const { data } = await axios.post("api/user/register", params);
 
-    if ("token" in data) {
-      window.localStorage.setItem("token", data.token);
-      dispatch(account());
+// Action asynchrone pour l'inscription (register)
+export const register = createAsyncThunk(
+  "/auth/register",
+  async (params: RegisterParams, { dispatch, rejectWithValue }) => {
+    const fieldErrors: AuthError = {};
+    try {
+      // Envoie les infos au serveur pour créer un utilisateur
+      const { data } = await axios.post("api/user/register", params);
+
+      // Si la réponse contient un token, on le stocke et on récupère le compte
+      if ("token" in data) {
+        window.localStorage.setItem("token", data.token);
+        dispatch(account());
+      }
+      return data; // renvoie les données à Redux
+    } catch (err) {
+      const error = err as AxiosError<BackendError>;
+
+      if (error.response?.status === 400 && error.response.data?.errors) {
+        error.response.data.errors.forEach((e) => {
+          fieldErrors[e.param] = e.msg; // typé correctement, pas de any
+        });
+        return rejectWithValue(fieldErrors);
+      }
+
+      return rejectWithValue({ general: error.message || "Erreur inconnue" });
     }
-    return data;
-  } catch (err) {
-    const error = err as AxiosError<{ message: string; field?: "matricule" | "password" }>;
-    if (error.response?.status === 400 || error.response?.status === 404) {
-      if (error.response.data?.message) {
+  }
+);
+
+// Action asynchrone pour le login
+export const login = createAsyncThunk(
+  "/auth/login",
+  async (params: LoginParams, { dispatch, rejectWithValue }) => {
+    try {
+      const { data } = await axios.post("api/user/login", params);
+      if (data && typeof data === "object" && "token" in data) {
+        window.localStorage.setItem("token", data.token);
+        dispatch(account()); // récupère les infos du compte
+      }
+      return data;
+    } catch (err) {
+      const error = err as AxiosError<{ message: string; field?: "matricule" | "password" }>;
+      if (error.response?.status === 400 || error.response?.status === 404) {
+        if (error.response.data?.message) {
+          return rejectWithValue({
+            field: error.response.data.field || "matricule",
+            message: error.response.data.message
+          });
+        }
         return rejectWithValue({
-          field: error.response.data.field || "matricule",
-          message: error.response.data.message
+          field: "matricule",
+          message: "Erreur inconnue"
         });
       }
       return rejectWithValue({
         field: "matricule",
-        message: "Erreur inconnue"
+        message: "Oops"
       });
     }
-    return rejectWithValue({
-      field: "matricule",
-      message: "Oops"
-    });
   }
-});
-//Login
-export const login = createAsyncThunk("/auth/login", async (params: LoginParams, { dispatch, rejectWithValue }) => {
-  try {
-    const { data } = await axios.post("api/user/login", params);
-    if (data && typeof data === "object" && "token" in data) {
-      window.localStorage.setItem("token", data.token);
-      dispatch(account());
-    }
-    return data;
-  } catch (err) {
-    const error = err as AxiosError<{ message: string; field?: "matricule" | "password" }>;
-    if (error.response?.status === 400 || error.response?.status === 404) {
-      if (error.response.data?.message) {
-        return rejectWithValue({
-          field: error.response.data.field || "matricule",
-          message: error.response.data.message
-        });
-      }
-      return rejectWithValue({
-        field: "matricule",
-        message: "Erreur inconnue"
-      });
-    }
-    return rejectWithValue({
-      field: "matricule",
-      message: "Oops"
-    });
-  }
-});
+);
 
-//Recuperation de l'infos du compte
+// Action asynchrone pour récupérer les infos du compte connecté
 export const account = createAsyncThunk("/auth/account", async () => {
-  const { data } = await axios.get("/api/user/account")
+  const { data } = await axios.get("/api/user/account"); // requête GET vers /account
   return data;
-})
+});
 
+// Création du slice Redux
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
     logout: (state) => {
-      state.data = null;
+      state.data = null; // supprime les infos de l'utilisateur
     },
     clearError(state) {
-      state.error = null;
+      state.error = null; // supprime les erreurs
     }
   },
   extraReducers: (builder) => {
+    // Gestion des différentes étapes des actions asynchrones
     builder
       .addCase(register.pending, (state) => {
         state.data = null;
-        state.status = "loading";
+        state.status = "loading"; // en cours
       })
       .addCase(register.rejected, (state, action) => {
-        state.error = action.payload as AuthError;
+        state.error = action.payload as AuthError; // stocke l'erreur
         state.status = "error";
       })
       .addCase(register.fulfilled, (state, action) => {
-        state.data = action.payload;
+        state.data = action.payload; // stocke l'utilisateur
         state.status = "success";
       })
       .addCase(login.pending, (state) => {
@@ -156,11 +177,12 @@ const authSlice = createSlice({
       .addCase(account.fulfilled, (state, action) => {
         state.data = action.payload;
         state.status = "success";
-      })
-
+      });
   },
 });
 
+// Export des actions pour pouvoir les utiliser dans les composants
 export const { logout } = authSlice.actions;
 export const { clearError } = authSlice.actions;
+// Export du reducer pour l'ajouter au store Redux
 export default authSlice.reducer;

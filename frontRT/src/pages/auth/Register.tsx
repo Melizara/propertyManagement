@@ -2,17 +2,14 @@ import { Link, useNavigate, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { register } from "../../features/authSlice.tsx";
-import type { AppDispatch } from "../../apps/Store.tsx";
-import type { RootState } from "../../apps/Store.tsx";
-import { clearError } from "../../features/authSlice.tsx";
+import { register, clearError } from "../../features/authSlice.tsx";
+import type { AppDispatch, RootState } from "../../apps/Store.tsx";
+import { User, Mail, Lock, Briefcase } from "lucide-react"; // icônes pour le formulaire
 
 function Register() {
   const user = useSelector((state: RootState) => state.auth.data);
-  const error = useSelector((state: RootState) => state.auth.error);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState(""); // pour afficher l'erreur
-
 
   const [inputs, setInputs] = useState({
     matricule: "",
@@ -20,21 +17,17 @@ function Register() {
     email: "",
     poste: "",
     password: "",
-  })
+  });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setInputs((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    setInputs((prevState) => ({ ...prevState, [name]: value }));
   };
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Reset error quand le composant Login est monté
     dispatch(clearError());
   }, [dispatch]);
 
@@ -48,128 +41,185 @@ function Register() {
     }
     try {
       const data = await dispatch(register(inputs));
-
       if (data.payload && "token" in data.payload) {
         window.localStorage.setItem("token", data.payload.token);
         navigate("/login");
       }
-
     } catch (error) {
       console.error("Registration failed:", error);
     }
   };
 
   if (user && window.localStorage.getItem("token")) {
-    return <Navigate to="/terrain" />
+    return <Navigate to="/terrain" />;
   }
 
-
   return (
-    <div className="container-lg my-5">
-      <div className="text-center align-items-center align-content-center">
-        <div className="d-flex justify-content-center">
-          <form className="border p-5" onSubmit={handleSubmit}>
-            <h4 className="text-secondary fw-bold fs-3 mb-5">Register</h4>
-            <div className="mb-3">
-              <input type="text" placeholder="matricule" className="form-control" name="matricule"
-                maxLength={5}
-                value={inputs.matricule}
-                onChange={handleChange}
-                required />
-              {error && Array.isArray(error) && error.some(err => err.path === "matricule") && (
-                <div className="alert alert-danger">
-                  {error.find(err => err.path === "matricule").msg}
-                </div>
-              )}
-            </div>
-            <div className="mb-3">
-              <input type="text" placeholder="pseudo" className="form-control" name="pseudo"
-              maxLength={70}
-                value={inputs.pseudo}
-                onChange={handleChange}
-                required />
-              {error && Array.isArray(error) && error.some(err => err.path === "pseudo") && (
-                <div className="alert alert-danger">
-                  {error.find(err => err.path === "pseudo").msg}
-                </div>
-              )}
-            </div>
-            <div className="mb-3">
-              <input type="email" placeholder="Email" className="form-control" name="email"
-              maxLength={50}
-                value={inputs.email}
-                onChange={handleChange}
-                required />
-              {error && Array.isArray(error) && error.some(err => err.path === "email") && (
-                <div className="alert alert-danger">
-                  {error.find(err => err.path === "email").msg}
-                </div>
-              )}
-            </div>
-            <div className="mb-3">
-              <select
-                className="form-select"
-                name="poste"
-                value={inputs.poste}
-                onChange={handleChange}
-                required
-              >
-                <option value="" disabled hidden>Poste</option>
-                <option value="admin">Admin</option>
-                <option value="operateur de saisie">Opérateur de saisie</option>
-                <option value="caissier">Caissier</option>
-              </select>
-              {error && Array.isArray(error) && error.some(err => err.path === "poste") && (
-                <div className="alert alert-danger">
-                  {error.find(err => err.path === "poste")?.msg}
-                </div>
-              )}
-            </div>
-            <div className="mb-3">
-              <input type="password" placeholder="password" className="form-control" name="password"
-              maxLength={8}
-                value={inputs.password}
-                onChange={handleChange}
-                required />
-              {error && Array.isArray(error) && error.some(err => err.path === "password") && (
-                <div className="alert alert-danger">
-                  {error.find(err => err.path === "password").msg}
-                </div>
-              )}
-            </div>
-            <div className="mb-3">
-              <input
-                type="password"
-                maxLength={8}
-                placeholder="Confirmer le mot de passe"
-                className="form-control"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-              {passwordError && (
-                <div className="alert alert-danger">
-                  {passwordError}
-                </div>
-              )}
-            </div>
+    <div className="d-flex justify-content-center align-items-center my-5">
+      <form
+        className="p-5 rounded-4 shadow-lg bg-white position-relative"
+        style={{ width: "400px", transition: "all 0.3s" }}
+        onSubmit={handleSubmit}
+      >
+        <h3 className="text-center mb-4 fw-bold" style={{ color: "#026da1" }}>
+          Create Account
+        </h3>
 
-
-            {error && typeof error === "string" && error === "Utilisateur deja existant" && (
-              <div className="alert alert-danger">
-                {error}
-              </div>
-            )}
-            <div className="mb-4">
-              <p>
-                Already have an account?
-                <Link to={"/login"}>Sign In</Link>
-              </p>
-            </div>
-            <button type="submit" className="btn btn-primary">SignUp</button>
-          </form>
+        {/* Matricule */}
+        <div className="mb-3 position-relative">
+          <User
+            className="position-absolute"
+            style={{ top: "62%", left: "15px", transform: "translateY(-50%)", color: "#026da1" }}
+            size={22}
+          />
+          <input
+            type="text"
+            name="matricule"
+            placeholder="Matricule"
+            maxLength={5}
+            value={inputs.matricule}
+            onChange={handleChange}
+            required
+            className="form-control rounded-pill ps-5 py-2 shadow-sm"
+            style={{ borderColor: "#026da1", transition: "all 0.3s" }}
+          />
         </div>
-      </div>
+
+        {/* Pseudo */}
+        <div className="mb-3 position-relative">
+          <User
+            className="position-absolute"
+            style={{ top: "62%", left: "15px", transform: "translateY(-50%)", color: "#026da1" }}
+            size={22}
+          />
+          <input
+            type="text"
+            name="pseudo"
+            placeholder="Pseudo"
+            maxLength={70}
+            value={inputs.pseudo}
+            onChange={handleChange}
+            required
+            className="form-control rounded-pill ps-5 py-2 shadow-sm"
+            style={{ borderColor: "#026da1", transition: "all 0.3s" }}
+          />
+        </div>
+
+        {/* Email */}
+        <div className="mb-3 position-relative">
+          <Mail
+            className="position-absolute"
+            style={{ top: "62%", left: "15px", transform: "translateY(-50%)", color: "#026da1" }}
+            size={22}
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            maxLength={50}
+            value={inputs.email}
+            onChange={handleChange}
+            required
+            className="form-control rounded-pill ps-5 py-2 shadow-sm"
+            style={{ borderColor: "#026da1", transition: "all 0.3s" }}
+          />
+        </div>
+
+        {/* Poste */}
+        <div className="mb-3 position-relative">
+          <Briefcase
+            className="position-absolute"
+            style={{ top: "50%", left: "15px", transform: "translateY(-50%)", color: "#026da1" }}
+            size={22}
+          />
+          <select
+            className="form-select rounded-pill ps-5 py-2 shadow-sm"
+            name="poste"
+            value={inputs.poste}
+            onChange={handleChange}
+            required
+            style={{ borderColor: "#026da1", transition: "all 0.3s" }}
+          >
+            <option value="" disabled hidden>Poste</option>
+            <option value="admin">Admin</option>
+            <option value="operateur de saisie">Opérateur de saisie</option>
+            <option value="caissier">Caissier</option>
+          </select>
+        </div>
+
+        {/* Password */}
+        <div className="mb-3 position-relative">
+          <Lock
+            className="position-absolute"
+            style={{ top: "62%", left: "15px", transform: "translateY(-50%)", color: "#026da1" }}
+            size={22}
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            maxLength={8}
+            value={inputs.password}
+            onChange={handleChange}
+            required
+            className="form-control rounded-pill ps-5 py-2 shadow-sm"
+            style={{ borderColor: "#026da1", transition: "all 0.3s" }}
+          />
+        </div>
+
+        {/* Confirm Password */}
+        <div className="mb-3 position-relative">
+          <Lock
+            className="position-absolute"
+            style={{ top: "62%", left: "15px", transform: "translateY(-50%)", color: "#026da1" }}
+            size={22}
+          />
+          <input
+            type="password"
+            placeholder="Confirmer le mot de passe"
+            maxLength={8}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            className="form-control rounded-pill ps-5 py-2 shadow-sm"
+            style={{ borderColor: "#026da1", transition: "all 0.3s" }}
+          />
+          {passwordError && (
+            <div className="text-danger small mt-1">{passwordError}</div>
+          )}
+        </div>
+
+        {/* Lien vers Login */}
+        <div className="text-center mb-4">
+          <p className="small">
+            Already have an account? <Link to="/login">Sign In</Link>
+          </p>
+        </div>
+
+        {/* Bouton Submit */}
+        <button
+          type="submit"
+          className="btn w-100 py-2 fw-bold"
+          style={{
+            background: "linear-gradient(135deg, #026da1, #4b3f72)",
+            color: "white",
+            border: "none",
+            borderRadius: "50px",
+            boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
+            transition: "all 0.3s",
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.opacity = "0.85";
+            e.currentTarget.style.transform = "translateY(-3px)";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.opacity = "1";
+            e.currentTarget.style.transform = "translateY(0)";
+          }}
+        >
+          Sign Up
+        </button>
+      </form>
     </div>
   );
 }
