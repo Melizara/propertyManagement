@@ -36,13 +36,13 @@ function Navbar() {
   return (
     <nav
       className="navbar navbar-expand-md navbar-light bg-white shadow-sm sticky-top border-bottom"
-      style={{ padding: "0.7rem 0" }}
+      style={{ padding: "0.7rem 0"}}
     >
       <div className="container-lg d-flex justify-content-between align-items-center">
         {/* Logo */}
         <Link to={user ? "/locataire" : "/"} className="navbar-brand text-decoration-none">
           <h2 className="fw-bold text-primary fst-italic mb-0">
-            i<span className="text-dark">write</span>
+            land<span className="text-dark">Loc</span>
           </h2>
         </Link>
 
