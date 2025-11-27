@@ -147,7 +147,7 @@ function Navbar() {
               aria-labelledby="dropdownMenuButton"
             >
               <li>
-                <Link to="/locataire" className="dropdown-item fw-semibold text-secondary">
+                <Link to="/" className="dropdown-item fw-semibold text-secondary">
                   <FaHome className="me-2" /> Accueil
                 </Link>
               </li>

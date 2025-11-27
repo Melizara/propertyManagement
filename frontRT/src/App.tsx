@@ -14,7 +14,6 @@ import { useDispatch } from "react-redux";//useDispatch permet d'envoyer une act
 import type { AppDispatch } from "./apps/Store.tsx";//AppDispatch sert a typer le dispatch avec typescript
 import axios from "./axios";//Tsy mila manoratra anle localhost:5000 iny tsony fa efa ato zay
 import { account } from "./features/authSlice";//Action Redux pour recuperer les informations de l'user connectee
-import Welcome from "./pages/homes/Welcome.tsx";
 import PrivateRoute from "./reducerComponent/PrivateRoute.tsx";
 import HomeStory from "./pages/homes/HomeStory.tsx";
 import HomeLand from "./pages/homes/HomeLand.tsx";
@@ -27,6 +26,8 @@ import Location from "./pages/infos/Location.tsx";
 import Unauthorized from "./pages/homes/Unauthorized.tsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import PublicRoute from "./reducerComponent/PuclicRoute.tsx";
+import Welcome from "./pages/homes/Welcome.tsx";
 
 //Layout est un modele de page commun,Outlet change selon la route
 const Layout = () => {
@@ -60,9 +61,9 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: (
-          <PrivateRoute>
+          <PublicRoute>
             <Welcome />
-          </PrivateRoute>
+          </PublicRoute>
         )
       },
       {

@@ -15,7 +15,7 @@ function PrivateRoute({ children, allowedRoles }: Props) {
 
   // 🔹 Si pas connecté → redirige vers /login
   if (!user && !token) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   // 🔹 Si connecté mais n'a pas le bon rôle → redirige vers /unauthorized
