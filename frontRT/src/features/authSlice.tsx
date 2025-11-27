@@ -5,9 +5,9 @@ import { AxiosError } from "axios";
 //Ces codes suivant sont des interfaces avec ts
 //Ca sert a connnaitre le type de chaque données pour eviter les erreurs
 interface RegisterParams {
-  matricule:string;
+  matricule: string;
   pseudo: string;
-  poste:string;
+  poste: string;
   email: string;
   password: string;
 }
@@ -16,17 +16,23 @@ interface LoginParams {
   password: string;
 }
 interface User {
-  matricule:string;
+  matricule: string;
   pseudo: string;
   email: string;
   token?: string; // Optional token field if your API returns it here
-   poste: "admin" | "caissier" | "operateur de saisie"; // 👈 ajoute ceci
+  poste: "admin" | "caissier" | "operateur de saisie"; // 👈 ajoute ceci
 }
+interface AuthError {
+  field: "matricule" | "password";
+  message: string;
+}
+
 interface AuthState {
   data: User | null;
   status: 'idle' | 'loading' | 'success' | 'error';
-  error: string | null; // ✅ ajouté
+  error: AuthError | null; // au lieu de string
 }
+
 
 //Ceci est l'etat initale qui herite du interface AuthState.
 const initialState: AuthState = {
@@ -47,36 +53,55 @@ export const register = createAsyncThunk("/auth/register", async (params: Regist
     }
     return data;
   } catch (err) {
-    const error = err as AxiosError<{ message: string }>;
-    if (error.response?.status === 400) {
+    const error = err as AxiosError<{ message: string; field?: "matricule" | "password" }>;
+    if (error.response?.status === 400 || error.response?.status === 404) {
       if (error.response.data?.message) {
-        return rejectWithValue(error.response.data.message)
+        return rejectWithValue({
+          field: error.response.data.field || "matricule",
+          message: error.response.data.message
+        });
       }
-      return rejectWithValue(error.response.data)
+      return rejectWithValue({
+        field: "matricule",
+        message: "Erreur inconnue"
+      });
     }
-    return rejectWithValue("Oops")
+    return rejectWithValue({
+      field: "matricule",
+      message: "Oops"
+    });
   }
 });
 //Login
 export const login = createAsyncThunk("/auth/login", async (params: LoginParams, { dispatch, rejectWithValue }) => {
   try {
     const { data } = await axios.post("api/user/login", params);
-    if ("token" in data) {
+    if (data && typeof data === "object" && "token" in data) {
       window.localStorage.setItem("token", data.token);
       dispatch(account());
     }
     return data;
   } catch (err) {
-    const error = err as AxiosError<{ message: string }>;
+    const error = err as AxiosError<{ message: string; field?: "matricule" | "password" }>;
     if (error.response?.status === 400 || error.response?.status === 404) {
       if (error.response.data?.message) {
-        return rejectWithValue(error.response.data.message)
+        return rejectWithValue({
+          field: error.response.data.field || "matricule",
+          message: error.response.data.message
+        });
       }
-      return rejectWithValue(error.response.data)
+      return rejectWithValue({
+        field: "matricule",
+        message: "Erreur inconnue"
+      });
     }
-    return rejectWithValue("Oops")
+    return rejectWithValue({
+      field: "matricule",
+      message: "Oops"
+    });
   }
 });
+
 //Recuperation de l'infos du compte
 export const account = createAsyncThunk("/auth/account", async () => {
   const { data } = await axios.get("/api/user/account")
@@ -101,7 +126,7 @@ const authSlice = createSlice({
         state.status = "loading";
       })
       .addCase(register.rejected, (state, action) => {
-        state.error = action.payload as string;
+        state.error = action.payload as AuthError;
         state.status = "error";
       })
       .addCase(register.fulfilled, (state, action) => {
@@ -113,7 +138,7 @@ const authSlice = createSlice({
         state.status = "loading";
       })
       .addCase(login.rejected, (state, action) => {
-        state.error = action.payload as string;
+        state.error = action.payload as AuthError;
         state.status = "error";
       })
       .addCase(login.fulfilled, (state, action) => {

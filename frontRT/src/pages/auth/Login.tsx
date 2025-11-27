@@ -8,9 +8,10 @@ import { User, Lock } from "lucide-react";
 
 function Login() {
   const user = useSelector((state: RootState) => state.auth.data);
-  const error = useSelector((state: RootState) => state.auth.error);
 
   const [inputs, setInputs] = useState({ matricule: "", password: "" });
+  const matriculeError = useSelector((state: RootState) => state.auth.error?.field === "matricule" ? state.auth.error.message : null);
+  const passwordError = useSelector((state: RootState) => state.auth.error?.field === "password" ? state.auth.error.message : null);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -60,6 +61,10 @@ function Login() {
 
         {/* Matricule */}
         <div className="mb-4 position-relative">
+          {/* Matricule */}
+          {matriculeError && (
+            <div className="text-danger small mb-1">{matriculeError}</div>
+          )}
           <User
             className="position-absolute"
             style={{
@@ -84,17 +89,13 @@ function Login() {
               transition: "all 0.3s",
             }}
           />
-          {error &&
-            Array.isArray(error) &&
-            error.some((err) => err.path === "matricule") && (
-              <div className="text-danger mt-1 small">
-                {error.find((err) => err.path === "matricule").msg}
-              </div>
-            )}
         </div>
-
         {/* Password */}
         <div className="mb-4 position-relative">
+          {/* Matricule */}
+          {passwordError && (
+    <div className="text-danger small mb-1">{passwordError}</div>
+  )}
           <Lock
             className="position-absolute"
             style={{
@@ -119,23 +120,7 @@ function Login() {
               transition: "all 0.3s",
             }}
           />
-          {error &&
-            Array.isArray(error) &&
-            error.some((err) => err.path === "password") && (
-              <div className="text-danger mt-1 small">
-                {error.find((err) => err.path === "password").msg}
-              </div>
-            )}
         </div>
-
-        {error && typeof error === "string" && (
-          <div className="alert alert-danger text-center">
-            {error === "Password is wrong"
-              ? "Password incorrect. Please check your password"
-              : "User not found. Check your credentials"}
-          </div>
-        )}
-
         <div className="text-center mb-4">
           <p className="small">
             Not a member? <Link to="/register">Sign up</Link>

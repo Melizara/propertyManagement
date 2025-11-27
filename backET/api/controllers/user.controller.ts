@@ -63,14 +63,16 @@ export const login = async (req: Request, res: Response) => {
         const user = await User.findByPk(matricule);
         // console.log("Utilisateur trouvé :", user);
         if (!user) {
-            return res.status(404).json({ message: "Utilisateur introuvable" });
+            return res.status(404).json({ field: "matricule", message: "Matricule introuvable" });
+
         }
         // Vérifie le mot de passe
         const userPlain = user.get({ plain: true });
         const isPasswordValid = await bcrypt.compare(password, userPlain.password);
 
         if (!isPasswordValid) {
-            return res.status(400).json({ message: "Email ou mot de passe incorrect" });
+            return res.status(400).json({ field: "password", message: "Mot de passe incorrect" });
+
         }
         // Vérifie que le SECRET_KEY existe
         if (!process.env.SECRET_KEY) {
