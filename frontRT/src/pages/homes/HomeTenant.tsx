@@ -10,13 +10,13 @@ function HomeTenant() {
   const { tenants, status } = useSelector((state: RootState) => state.tenants);
   const dispatch = useDispatch<AppDispatch>();
   const [search, setSearch] = useState("");
-  
+
   useEffect(() => {
     dispatch(fetchTenants())
   }, [dispatch]);
 
- const filteredTenants = tenants.filter((tenant) => {
-  const allData = `
+  const filteredTenants = tenants.filter((tenant) => {
+    const allData = `
     ${tenant.name}
     ${tenant.lastName}
     ${tenant.cin}
@@ -29,17 +29,23 @@ function HomeTenant() {
     ${tenant.municipality}
   `.toLowerCase();
 
-  return allData.includes(search.toLowerCase());
-});
+    return allData.includes(search.toLowerCase());
+  });
 
 
   return (
     <div className="container-lg" style={{ marginTop: "-280px" }}>
-
       <nav aria-label="breadcrumb">
-        <ol className="breadcrumb" style={{ backgroundColor: "#f8f9fa", padding: "10px 15px", borderRadius: "5px" }}>
-          <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
-          <li className="breadcrumb-item active" aria-current="page">Locataires</li>
+        <ol className="breadcrumb py-2 px-3 rounded-3">
+          <li className="breadcrumb-item" style={{ paddingTop: "4px" }}>
+            <Link to="/" className="text-decoration-none text-secondary" style={{ display: "inline-block" }}>
+              Accueil
+            </Link>
+          </li>
+          <span className="mx-2 mt-1">{" > "}</span>
+          <li className="breadcrumb-item active text-primary fs-5" aria-current="page">
+            Locataires
+          </li>
         </ol>
       </nav>
       <div className="my-2">  {/* au lieu de my-5 */}
@@ -55,16 +61,16 @@ function HomeTenant() {
           </div>
         </div>
         <div className="row align-items-center align-content-center">
-        <div className="col-md-6 mt-5 mt-md-0 order-md-first">
-          <div>
-            <Link to={"/formTenant"}>
-              <button className="btn btn-primary px-3 my-3 fw-bold">
-                Ajouter un locataire
-              </button>
-            </Link>
+          <div className="col-md-6 mt-5 mt-md-0 order-md-first">
+            <div>
+              <Link to={"/formTenant"}>
+                <button className="btn btn-primary px-3 my-3 fw-bold">
+                  Ajouter un locataire
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
 
         {status === "loading" && (
           <div className="text-center mt-5">

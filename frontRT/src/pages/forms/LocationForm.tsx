@@ -196,30 +196,38 @@ function LocationForm() {
     };
 
     return (
-        <div className="container-lg my-5">
+        <div className="container-lg" style={{ marginTop: "-240px" }}>
             <nav aria-label="breadcrumb" className="mb-3">
-                <ol className="breadcrumb" style={{ backgroundColor: "#f8f9fa", padding: "10px 15px", borderRadius: "5px" }}>
-                    <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
-                    <li className="breadcrumb-item"><Link to="/location">Locations</Link></li>
+                <ol className="breadcrumb py-2 px-3 rounded-3">
+                    <li className="breadcrumb-item" style={{ paddingTop: "4px" }}>
+                        <Link to="/" className="text-decoration-none text-secondary" style={{ display: "inline-block" }}>
+                            Accueil
+                        </Link>
+                    </li>
+                    <span className="mx-2 mt-1">{" > "}</span>
+                    <li className="breadcrumb-item" style={{ paddingTop: "4px" }}>
+                        <Link to="/location" className="text-decoration-none text-secondary" style={{ display: "inline-block" }}>
+                            Locations
+                        </Link>
+                    </li>
 
                     {codeLocation && (
-                        <li className="breadcrumb-item">
-                            <Link to={`/location/${codeLocation}`}>Information du location</Link>
-                        </li>
+                        <>
+                            <span className="mx-2 mt-1">{" > "}</span>
+                            <li className="breadcrumb-item" style={{ paddingTop: "4px" }}>
+                                <Link to={`/location/${codeLocation}`} className="text-decoration-none text-secondary" style={{ display: "inline-block" }}>
+                                    Information du location
+                                </Link>
+                            </li>
+                        </>
                     )}
 
-                    <li className="breadcrumb-item active" aria-current="page">
+                    <span className="mx-2 mt-1">{" > "}</span>
+                    <li className="breadcrumb-item active text-primary fs-5" aria-current="page">
                         Formulaire de location
                     </li>
                 </ol>
             </nav>
-
-            <div className="mb-3">
-                <button type="button" className="btn btn-outline-secondary" onClick={() => navigate(`/location/${codeLocation}`)}>
-                    ← Retour
-                </button>
-            </div>
-
             <h2 className="text-center mb-5 fw-bold">Formulaire Location</h2>
 
             <form onSubmit={handleSubmit}>

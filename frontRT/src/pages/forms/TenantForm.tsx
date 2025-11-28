@@ -83,7 +83,7 @@ function TenantForm() {
       };
       if (isUpdate) {
         await axios.put(`/api/tenants/${cinParam}`, tenantData);
-        
+
         toast.success("Locataire modifié avec succès !");
       } else {
         await axios.post("/api/tenants", tenantData);
@@ -109,35 +109,38 @@ function TenantForm() {
     }
   };
   return (
-    <div className="container-lg my-5">
+    <div className="container-lg" style={{ marginTop: "-330px" }}>
       <nav aria-label="breadcrumb" className="mb-3">
-                <ol className="breadcrumb" style={{ backgroundColor: "#f8f9fa", padding: "10px 15px", borderRadius: "5px" }}>
-                    <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
-                    <li className="breadcrumb-item"><Link to="/tenant">Locataires</Link></li>
+        <ol className="breadcrumb py-2 px-3 rounded-3">
+          <li className="breadcrumb-item" style={{ paddingTop: "4px" }}>
+            <Link to="/" className="text-decoration-none text-secondary" style={{ display: "inline-block" }}>
+              Accueil
+            </Link>
+          </li>
+          <span className="mx-2 mt-1">{" > "}</span>
+          <li className="breadcrumb-item" style={{ paddingTop: "4px" }}>
+            <Link to="/tenant" className="text-decoration-none text-secondary" style={{ display: "inline-block" }}>
+              Locataires
+            </Link>
+          </li>
 
-                    {cin && (
-                        <li className="breadcrumb-item">
-                            <Link to={`/tenant/${cin}`}>Information du locataire</Link>
-                        </li>
-                    )}
+          {cin && (
+            <>
+              <span className="mx-2 mt-1">{" > "}</span>
+              <li className="breadcrumb-item" style={{ paddingTop: "4px" }}>
+                <Link to={`/tenant/${cin}`} className="text-decoration-none text-secondary" style={{ display: "inline-block" }}>
+                  Information du locataire
+                </Link>
+              </li>
+            </>
+          )}
 
-                    <li className="breadcrumb-item active" aria-current="page">
-                        Formulaire du locataire
-                    </li>
-                </ol>
-            </nav>
-      <div className="mb-3">
-        <button
-          type="button"
-          className="btn btn-outline-secondary"
-          onClick={() => navigate(`/tenant/${cin}`)}
-        >
-          ← Retour
-        </button>
-      </div>
-      <div className="text-center mb-5">
-        <h2 className="fw-bold">Formulaire Locataire</h2>
-      </div>
+          <span className="mx-2 mt-1">{" > "}</span>
+          <li className="breadcrumb-item active text-primary fs-5" aria-current="page">
+            Formulaire du locataire
+          </li>
+        </ol>
+      </nav>
 
       <form onSubmit={handleSubmit}>
         {/* Nom et Prénom */}
@@ -145,7 +148,7 @@ function TenantForm() {
           <div className="col-md-6">
             <label className="form-label">Nom</label>
             <input type="text" className="form-control" value={name}
-            maxLength={50}
+              maxLength={50}
               onChange={e => {
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                 setName(lettersOnly);
@@ -154,7 +157,7 @@ function TenantForm() {
           <div className="col-md-6">
             <label className="form-label">Prénom</label>
             <input type="text" className="form-control" value={lastName}
-            maxLength={70}
+              maxLength={70}
               onChange={e => {
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                 setLastName(lettersOnly);
@@ -173,7 +176,7 @@ function TenantForm() {
           <div className="col-md-6">
             <label className="form-label">Lieu de naissance</label>
             <input type="text" className="form-control" value={birthPlace}
-            maxLength={50}
+              maxLength={50}
               onChange={e => {
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                 setBirthPlace(lettersOnly);
@@ -208,7 +211,7 @@ function TenantForm() {
           <div className="col-md-4">
             <label className="form-label">Lieu du CIN</label>
             <input type="text" className="form-control" value={cinPlace}
-            maxLength={50}
+              maxLength={50}
               onChange={e => {
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                 setCinPlace(lettersOnly);
@@ -227,7 +230,7 @@ function TenantForm() {
           <div className="col-md-6">
             <label className="form-label">Père</label>
             <input type="text" className="form-control" value={father}
-            maxLength={70}
+              maxLength={70}
               onChange={e => {
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                 setFather(lettersOnly);
@@ -236,7 +239,7 @@ function TenantForm() {
           <div className="col-md-6">
             <label className="form-label">Mère</label>
             <input type="text" className="form-control" value={mother}
-             maxLength={70}
+              maxLength={70}
               onChange={e => {
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                 setMother(lettersOnly);
@@ -249,13 +252,13 @@ function TenantForm() {
           <div className="col-md-4">
             <label className="form-label">Adresse</label>
             <input type="text" className="form-control" value={address}
-             maxLength={50}
+              maxLength={50}
               onChange={e => setAddress(e.target.value)} required />
           </div>
           <div className="col-md-4">
             <label className="form-label">Quartier</label>
             <input type="text" className="form-control" value={neighborHood}
-             maxLength={30}
+              maxLength={30}
               onChange={e => {
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                 setNeighborHood(lettersOnly);
@@ -264,7 +267,7 @@ function TenantForm() {
           <div className="col-md-4">
             <label className="form-label">Commune</label>
             <input type="text" className="form-control" value={municipality}
-             maxLength={30}
+              maxLength={30}
               onChange={e => {
                 const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                 setMunicipality(lettersOnly);

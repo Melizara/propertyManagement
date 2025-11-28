@@ -4,7 +4,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import type { AppDispatch, RootState } from "../../apps/Store.tsx";
 import axios from "../../axios.tsx";
 import { deleteTenant } from "../../features/tenantSlice.tsx";
-import { FaArrowLeft } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -98,25 +97,30 @@ function Tenant() {
 
     return (
 
-        <div className="container-lg my-5">
+         <div className="container-lg" style={{ marginTop: "-330px" }}>
             {/* Fil d'Ariane */}
             <nav aria-label="breadcrumb" className="mb-3">
-                <ol className="breadcrumb" style={{ backgroundColor: "#f8f9fa", padding: "10px 15px", borderRadius: "5px" }}>
-                    <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
-                    <li className="breadcrumb-item"><Link to="/tenant">Locataires</Link></li>
-                    <li className="breadcrumb-item active" aria-current="page">Information du locataire</li>
+                <ol className="breadcrumb py-2 px-3 rounded-3">
+                    <li className="breadcrumb-item" style={{ paddingTop: "4px" }}>
+                        <Link to="/" className="text-decoration-none text-secondary" style={{ display: "inline-block" }}>
+                            Accueil
+                        </Link>
+                    </li>
+                    <span className="mx-2 mt-1">{" > "}</span>
+                    <li className="breadcrumb-item" style={{ paddingTop: "4px" }}>
+                        <Link to="/tenant" className="text-decoration-none text-secondary" style={{ display: "inline-block" }}>
+                            Locataires
+                        </Link>
+                    </li>
+                    <span className="mx-2 mt-1">{" > "}</span>
+                    <li className="breadcrumb-item active text-primary fs-5" aria-current="page">
+                        Information du locataire
+                    </li>
                 </ol>
             </nav>
+
             <div className="d-flex justify-content-center">
                 <div className="card shadow-sm w-75 p-4 border-0">
-                    <button
-                        type="button"
-                        className="btn btn-outline-secondary mb-3 d-flex align-items-center"
-                        onClick={() => navigate("/tenant")}
-                        style={{ width: "fit-content" }}
-                    >
-                        <FaArrowLeft className="me-2" /> Retour
-                    </button>
                     <h2 className="text-center fw-bold mb-4 text-primary">
                         Fiche du locataire
                     </h2>
