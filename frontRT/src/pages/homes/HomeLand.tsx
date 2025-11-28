@@ -75,7 +75,7 @@ function HomeLand() {
 
     // Début du rendu du composant
     return (
-        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+       <div className="container-lg" style={{ marginTop: "-65px" }}>
 
             <nav aria-label="breadcrumb">
                 <ol className="breadcrumb" style={{ backgroundColor: "#f8f9fa", padding: "10px 15px", borderRadius: "5px" }}>

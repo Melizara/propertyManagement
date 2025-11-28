@@ -4,29 +4,59 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../apps/Store";
 import type { AppDispatch } from "../../apps/Store";
 import { fetchTenants } from "../../features/tenantSlice";
+import { useState } from "react";
 
 function HomeTenant() {
   const { tenants, status } = useSelector((state: RootState) => state.tenants);
   const dispatch = useDispatch<AppDispatch>();
-
+  const [search, setSearch] = useState("");
+  
   useEffect(() => {
     dispatch(fetchTenants())
   }, [dispatch]);
 
+ const filteredTenants = tenants.filter((tenant) => {
+  const allData = `
+    ${tenant.name}
+    ${tenant.lastName}
+    ${tenant.cin}
+    ${tenant.birthDate}
+    ${tenant.birthPlace}
+    ${tenant.father}
+    ${tenant.mother}
+    ${tenant.address}
+    ${tenant.neighborHood}
+    ${tenant.municipality}
+  `.toLowerCase();
+
+  return allData.includes(search.toLowerCase());
+});
+
+
   return (
-    <div className="container-lg my-5">
+    <div className="container-lg" style={{ marginTop: "-190px" }}>
+
       <nav aria-label="breadcrumb">
-                <ol className="breadcrumb" style={{ backgroundColor: "#f8f9fa", padding: "10px 15px", borderRadius: "5px" }}>
-                    <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
-                    <li className="breadcrumb-item active" aria-current="page">Locataires</li>
-                </ol>
-            </nav>
-      <div className="row align-items-center align-content-center">
+        <ol className="breadcrumb" style={{ backgroundColor: "#f8f9fa", padding: "10px 15px", borderRadius: "5px" }}>
+          <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
+          <li className="breadcrumb-item active" aria-current="page">Locataires</li>
+        </ol>
+      </nav>
+      <div className="my-5">
+        <div className="row justify-content-center mb-4">
+          <div className="col-lg-8">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Rechercher un locataire par nom, prénom ou CIN"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="row align-items-center align-content-center">
         <div className="col-md-6 mt-5 mt-md-0 order-md-first">
           <div>
-            <h1 className="text-primary text-uppercase fs-1 fw-bold">
-              Locataire
-            </h1>
             <Link to={"/formTenant"}>
               <button className="btn btn-primary px-3 my-3 fw-bold">
                 Ajouter un locataire
@@ -35,15 +65,6 @@ function HomeTenant() {
           </div>
         </div>
       </div>
-
-      <div className="my-5">
-        <div className="row justify-content-center">
-          <div className="col-lg-8">
-            <div className="text-center">
-              <h2 className="fw-bold mb-5">Derniers locataires</h2>
-            </div>
-          </div>
-        </div>
 
         {status === "loading" && (
           <div className="text-center mt-5">
@@ -62,7 +83,7 @@ function HomeTenant() {
         )}
 
         <div className="row">
-          {status === "success" && tenants.map((tenant) => (
+          {status === "success" && filteredTenants.map((tenant) => (
             <div key={tenant.cin} className="col-md-6 col-lg-4 mb-4">
               <div className="card shadow-sm h-100">
                 <div className="card-header text-white bg-primary text-center">

@@ -47,9 +47,7 @@ function HomeStation() {
             <div className="row align-items-center align-content-center">
                 <div className="col-md-6 mt-5 mt-md-0 order-md-first">
                     <div>
-                        <h1 className="text-primary text-uppercase fs-1 fw-bold">
-                            Gares
-                        </h1>
+                        
                         {user && user.poste === "admin" && (
                             <button
                                 onClick={handleAddStations}
@@ -63,13 +61,7 @@ function HomeStation() {
             </div>
 
             <div className="my-5">
-                <div className="row justify-content-center">
-                    <div className="col-lg-8">
-                        <div className="text-center">
-                            <h2 className="fw-bold mb-5">Les gares</h2>
-                        </div>
-                    </div>
-                </div>
+                
 
                 {status === "loading" && (
                     <div className="text-center mt-5">

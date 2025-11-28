@@ -42,9 +42,6 @@ function HomePrice() {
                     <li className="breadcrumb-item active" aria-current="page">Prix</li>
                 </ol>
             </nav>
-            <h1 className="text-primary text-uppercase fs-1 fw-bold text-center mb-4">
-                Prix des terrains
-            </h1>
             <div className="text-center mb-4">
                 {user && user.poste === "admin" && (
                     <button onClick={handleAddPrices} className="btn btn-success">
