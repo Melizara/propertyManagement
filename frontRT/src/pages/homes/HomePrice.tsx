@@ -42,7 +42,7 @@ function HomePrice() {
                     <li className="breadcrumb-item active" aria-current="page">Prix</li>
                 </ol>
             </nav>
-            <div className="text-center mb-4">
+            <div className="mt-2 mb-4">
                 {user && user.poste === "admin" && (
                     <button onClick={handleAddPrices} className="btn btn-success">
                         Ajouter tous les prix

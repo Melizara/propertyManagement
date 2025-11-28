@@ -51,7 +51,7 @@ function HomeStation() {
                         {user && user.poste === "admin" && (
                             <button
                                 onClick={handleAddStations}
-                                className="btn btn-success mt-3"
+                                className="btn btn-success mt-0"
                             >
                                 Ajouter les gares
                             </button>
@@ -60,9 +60,7 @@ function HomeStation() {
                 </div>
             </div>
 
-            <div className="my-5">
-                
-
+            <div className="my-3">
                 {status === "loading" && (
                     <div className="text-center mt-5">
                         <h3 className="text-secondary fw-bold fs-4">

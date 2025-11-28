@@ -34,7 +34,7 @@ function HomeTenant() {
 
 
   return (
-    <div className="container-lg" style={{ marginTop: "-190px" }}>
+    <div className="container-lg" style={{ marginTop: "-280px" }}>
 
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb" style={{ backgroundColor: "#f8f9fa", padding: "10px 15px", borderRadius: "5px" }}>
@@ -42,8 +42,8 @@ function HomeTenant() {
           <li className="breadcrumb-item active" aria-current="page">Locataires</li>
         </ol>
       </nav>
-      <div className="my-5">
-        <div className="row justify-content-center mb-4">
+      <div className="my-2">  {/* au lieu de my-5 */}
+        <div className="row justify-content-end mb-2">
           <div className="col-lg-8">
             <input
               type="text"

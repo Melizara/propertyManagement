@@ -75,7 +75,7 @@ function HomeLand() {
 
     // Début du rendu du composant
     return (
-       <div className="container-lg" style={{ marginTop: "-65px" }}>
+        <div className="container-lg" style={{ marginTop: "40px" }}>
 
             <nav aria-label="breadcrumb">
                 <ol className="breadcrumb" style={{ backgroundColor: "#f8f9fa", padding: "10px 15px", borderRadius: "5px" }}>
@@ -83,6 +83,26 @@ function HomeLand() {
                     <li className="breadcrumb-item active" aria-current="page">Terrains</li>
                 </ol>
             </nav>
+
+            <div className="d-flex justify-content-end align-items-center mb-3">
+                <label htmlFor="pkInput" className="me-2 mb-0 fw-bold">Aller au PK :</label>
+                <input
+                    type="number"
+                    id="pkInput"
+                    placeholder="Ex : 3"
+                    min={0}
+                    max={lengthKm}
+                    className="form-control"
+                    style={{ width: "120px" }}
+                    onChange={(e) => {
+                        const pk = Number(e.target.value);
+                        const container = document.getElementById("svg-container");
+                        if (container && !isNaN(pk)) {
+                            container.scrollLeft = pk * pixelsPerKm;
+                        }
+                    }}
+                />
+            </div>
 
             {/* Bouton pour ouvrir le modal d'ajout */}
             {user && user.poste === "admin" && (
@@ -152,7 +172,7 @@ function HomeLand() {
             <div
                 id="svg-container"
                 style={{
-                    width: "68vw",
+                    width: "61vw",
                     height: "650px",
                     overflow: "auto",
                     border: "1px solid #ccc",
