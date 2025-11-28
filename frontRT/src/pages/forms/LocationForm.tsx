@@ -228,110 +228,120 @@ function LocationForm() {
                     </li>
                 </ol>
             </nav>
-            <h2 className="text-center mb-5 fw-bold">Formulaire Location</h2>
+            <div className="mb-4 text-center">
+                <p className="fs-5 text-secondary">
+                    Veuillez remplir le formulaire ci-dessous correctement.
+                </p>
+            </div>
 
-            <form onSubmit={handleSubmit}>
-                {/* CIN et CodeLand */}
-                <div className="row mb-3">
-                    <div className="col-md-6">
-                        <label className="form-label">CIN</label>
-                        <select className="form-select" value={cin} onChange={e => setCin(e.target.value)} required>
-                            <option value="">Sélectionnez le CIN</option>
-                            {tenants.map(t => <option key={t.cin} value={t.cin}>{t.cin} - {t.name}</option>)}
-                        </select>
-                    </div>
-                    <div className="col-md-6">
-                        <label className="form-label">Code Land</label>
-                        <select className="form-select" value={codeLand} onChange={e => setCodeLand(e.target.value)} required>
-                            <option value="">Sélectionnez le terrain</option>
-                            {lands.map(l => <option key={l.codeLand} value={l.codeLand}>{l.codeLand} - {l.area} m²</option>)}
-                        </select>
-                    </div>
-                </div>
+            {/* Formulaire dans une Card */}
+            <div className="card shadow-sm">
+                <div className="card-body">
 
-                {/* Usage */}
-                <div className="mb-3">
-                    <label className="form-label">Usage</label>
-                    <select className="form-select" value={usage} onChange={e => setUsage(e.target.value)} required>
-                        <option value="">Sélectionnez</option>
-                        <option value="Agricole">Agricole</option>
-                        <option value="Commerciale">Commerciale</option>
-                        <option value="Culturel">Culturel</option>
-                        <option value="Habitation">Habitation</option>
-                    </select>
-
-                </div>
-
-                {/* Surfaces et prix */}
-                {usage !== "Agricole" && (
-                    <>
-
+                    <form onSubmit={handleSubmit}>
+                        {/* CIN et CodeLand */}
                         <div className="row mb-3">
-                            <div className="col-md-4">
-                                <label className="form-label">Surface Terrain Nu</label>
-                                <input type="text" className="form-control" value={areaLandBare} maxLength={9} onChange={e => setAreaLandBare(e.target.value)} required />
+                            <div className="col-md-6">
+                                <label className="form-label">CIN</label>
+                                <select className="form-select" value={cin} onChange={e => setCin(e.target.value)} required>
+                                    <option value="">Sélectionnez le CIN</option>
+                                    {tenants.map(t => <option key={t.cin} value={t.cin}>{t.cin} - {t.name}</option>)}
+                                </select>
                             </div>
-                            <div className="col-md-4">
-                                <label className="form-label">Surface Bois</label>
-                                <input type="text" className="form-control" value={areaWood} maxLength={9} onChange={e => setAreaWood(e.target.value)} required />
-                            </div>
-                            <div className="col-md-4">
-                                <label className="form-label">Surface Dure</label>
-                                <input type="text" className="form-control" value={areaPermanent} maxLength={9} onChange={e => setAreaPermanent(e.target.value)} required />
+                            <div className="col-md-6">
+                                <label className="form-label">Code Land</label>
+                                <select className="form-select" value={codeLand} onChange={e => setCodeLand(e.target.value)} required>
+                                    <option value="">Sélectionnez le terrain</option>
+                                    {lands.map(l => <option key={l.codeLand} value={l.codeLand}>{l.codeLand} - {l.area} m²</option>)}
+                                </select>
                             </div>
                         </div>
 
+                        {/* Usage */}
+                        <div className="mb-3">
+                            <label className="form-label">Usage</label>
+                            <select className="form-select" value={usage} onChange={e => setUsage(e.target.value)} required>
+                                <option value="">Sélectionnez</option>
+                                <option value="Agricole">Agricole</option>
+                                <option value="Commerciale">Commerciale</option>
+                                <option value="Culturel">Culturel</option>
+                                <option value="Habitation">Habitation</option>
+                            </select>
+
+                        </div>
+
+                        {/* Surfaces et prix */}
+                        {usage !== "Agricole" && (
+                            <>
+
+                                <div className="row mb-3">
+                                    <div className="col-md-4">
+                                        <label className="form-label">Surface Terrain Nu</label>
+                                        <input type="text" className="form-control" value={areaLandBare} maxLength={9} onChange={e => setAreaLandBare(e.target.value)} required />
+                                    </div>
+                                    <div className="col-md-4">
+                                        <label className="form-label">Surface Bois</label>
+                                        <input type="text" className="form-control" value={areaWood} maxLength={9} onChange={e => setAreaWood(e.target.value)} required />
+                                    </div>
+                                    <div className="col-md-4">
+                                        <label className="form-label">Surface Dure</label>
+                                        <input type="text" className="form-control" value={areaPermanent} maxLength={9} onChange={e => setAreaPermanent(e.target.value)} required />
+                                    </div>
+                                </div>
+
+                                <div className="row mb-3">
+                                    <div className="col-md-4">
+                                        <label className="form-label">Prix Terrain Nu</label>
+                                        <input type="text" className="form-control" value={priceLandBare} onChange={e => setPriceLandBare(e.target.value)} readOnly />
+                                    </div>
+                                    <div className="col-md-4">
+                                        <label className="form-label">Prix Bois</label>
+                                        <input type="text" className="form-control" value={priceWood} onChange={e => setPriceWood(e.target.value)} readOnly />
+                                    </div>
+                                    <div className="col-md-4">
+                                        <label className="form-label">Prix Dure</label>
+                                        <input type="text" className="form-control" value={pricePermanent} onChange={e => setPricePermanent(e.target.value)} readOnly />
+                                    </div>
+                                </div>
+                            </>
+                        )}
+
+                        {usage === "Agricole" && (
+                            <div className="mb-3">
+                                <label className="form-label">Prix Total Agricole</label>
+                                <input type="text" className="form-control" value={priceLandBare} readOnly />
+                            </div>
+                        )}
+
+                        {/* Paiement */}
                         <div className="row mb-3">
                             <div className="col-md-4">
-                                <label className="form-label">Prix Terrain Nu</label>
-                                <input type="text" className="form-control" value={priceLandBare} onChange={e => setPriceLandBare(e.target.value)} readOnly />
+                                <label className="form-label">Type de paiement</label>
+                                <input type="text" className="form-control" value={typePayment} readOnly />
                             </div>
                             <div className="col-md-4">
-                                <label className="form-label">Prix Bois</label>
-                                <input type="text" className="form-control" value={priceWood} onChange={e => setPriceWood(e.target.value)} readOnly />
+                                <label className="form-label">Méthode de paiement</label>
+                                <select className="form-select" value={methodPayment} onChange={e => setMethodPayment(e.target.value)} required>
+                                    <option value="">Sélectionnez</option>
+                                    <option value="Bancaire">Bancaire</option>
+                                    <option value="Liquide">Liquide</option>
+                                </select>
                             </div>
+
                             <div className="col-md-4">
-                                <label className="form-label">Prix Dure</label>
-                                <input type="text" className="form-control" value={pricePermanent} onChange={e => setPricePermanent(e.target.value)} readOnly />
+                                <label className="form-label">Lieu de paiement</label>
+                                <input type="text" className="form-control" value={placePaymment} maxLength={20} onChange={e => setPlacePaymment(e.target.value)} required />
                             </div>
                         </div>
-                    </>
-                )}
 
-                {usage === "Agricole" && (
-                    <div className="mb-3">
-                        <label className="form-label">Prix Total Agricole</label>
-                        <input type="text" className="form-control" value={priceLandBare} readOnly />
-                    </div>
-                )}
-
-                {/* Paiement */}
-                <div className="row mb-3">
-                    <div className="col-md-4">
-                        <label className="form-label">Type de paiement</label>
-                        <input type="text" className="form-control" value={typePayment} readOnly />
-                    </div>
-                    <div className="col-md-4">
-                        <label className="form-label">Méthode de paiement</label>
-                        <select className="form-select" value={methodPayment} onChange={e => setMethodPayment(e.target.value)} required>
-                            <option value="">Sélectionnez</option>
-                            <option value="Bancaire">Bancaire</option>
-                            <option value="Liquide">Liquide</option>
-                        </select>
-                    </div>
-
-                    <div className="col-md-4">
-                        <label className="form-label">Lieu de paiement</label>
-                        <input type="text" className="form-control" value={placePaymment} maxLength={20} onChange={e => setPlacePaymment(e.target.value)} required />
-                    </div>
+                        <div className="text-center mt-4">
+                            <button type="submit" className="btn btn-primary px-5" disabled={loading}>
+                                {loading ? "Enregistrement..." : isUpdate ? "Mettre à jour" : "Publier"}
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                <div className="text-center mt-4">
-                    <button type="submit" className="btn btn-primary px-5" disabled={loading}>
-                        {loading ? "Enregistrement..." : isUpdate ? "Mettre à jour" : "Publier"}
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
     );
 }

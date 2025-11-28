@@ -115,12 +115,12 @@ function Location() {
             </nav>
 
             <div className="d-flex justify-content-center">
-                <div className="card shadow-sm w-75 p-4 border-0">
+                <div className="card shadow-sm w-75 p-4 border-1">
 
 
-                    <h2 className="text-center fw-bold mb-4 text-primary">
-                        Fiche de la location
-                    </h2>
+                    <h3 className="fs-5 text-center mb-4 text-secondary">
+                        Fiche d'information complet du location
+                    </h3>
 
                     <div className="row">
                         <div className="col-md-6 mb-3">

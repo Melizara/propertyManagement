@@ -51,7 +51,7 @@ function HomePrice() {
             </nav>
             <div className="mt-2 mb-4">
                 {user && user.poste === "admin" && (
-                    <button onClick={handleAddPrices} className="btn btn-success">
+                    <button onClick={handleAddPrices} className="btn btn-primary">
                         Ajouter tous les prix
                     </button>
                 )}

@@ -58,7 +58,7 @@ function HomeStation() {
                         {user && user.poste === "admin" && (
                             <button
                                 onClick={handleAddStations}
-                                className="btn btn-success mt-0"
+                                className="btn btn-primary mt-0"
                             >
                                 Ajouter les gares
                             </button>
