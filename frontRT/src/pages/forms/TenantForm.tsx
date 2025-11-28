@@ -7,6 +7,7 @@ import type { FormEvent } from "react";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Link } from "react-router-dom";
 
 
 function TenantForm() {
@@ -88,7 +89,7 @@ function TenantForm() {
         await axios.post("/api/tenants", tenantData);
         toast.success("Locataire ajouté avec succès !");
       }
-      navigate("/locataire")
+      navigate("/tenant")
     } catch (error) {
       const axiosError = error as AxiosError<{ error: string }>;
       if (axiosError.response && axiosError.response.status === 400) {
@@ -109,6 +110,22 @@ function TenantForm() {
   };
   return (
     <div className="container-lg my-5">
+      <nav aria-label="breadcrumb" className="mb-3">
+                <ol className="breadcrumb" style={{ backgroundColor: "#f8f9fa", padding: "10px 15px", borderRadius: "5px" }}>
+                    <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
+                    <li className="breadcrumb-item"><Link to="/tenant">Locataires</Link></li>
+
+                    {cin && (
+                        <li className="breadcrumb-item">
+                            <Link to={`/tenant/${cin}`}>Information du locataire</Link>
+                        </li>
+                    )}
+
+                    <li className="breadcrumb-item active" aria-current="page">
+                        Formulaire du locataire
+                    </li>
+                </ol>
+            </nav>
       <div className="mb-3">
         <button
           type="button"

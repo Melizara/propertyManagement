@@ -4,7 +4,7 @@ import type { RootState, AppDispatch } from "../../apps/Store";
 import { fetchPrices } from "../../features/priceSlice"; // ton slice pour les prix
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import { Link } from "react-router-dom";
 function HomePrice() {
     const user = useSelector((state: RootState) => state.auth.data);
     const { prices, status } = useSelector((state: RootState) => state.prices);
@@ -36,6 +36,12 @@ function HomePrice() {
 
     return (
         <div className="container-lg my-5">
+            <nav aria-label="breadcrumb">
+                <ol className="breadcrumb" style={{ backgroundColor: "#f8f9fa", padding: "10px 15px", borderRadius: "5px" }}>
+                    <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
+                    <li className="breadcrumb-item active" aria-current="page">Prix</li>
+                </ol>
+            </nav>
             <h1 className="text-primary text-uppercase fs-1 fw-bold text-center mb-4">
                 Prix des terrains
             </h1>

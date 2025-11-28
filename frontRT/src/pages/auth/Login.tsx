@@ -50,7 +50,7 @@ function Login() {
         // redirige selon le rôle de l'utilisateur
         if (data.payload.poste === "admin") navigate("/terrain");
         else if (data.payload.poste === "caissier") navigate("/location");
-        else if (data.payload.poste === "operateur de saisie") navigate("/locataire");
+        else if (data.payload.poste === "operateur de saisie") navigate("/tenant");
       }
     } catch (err) {
       console.error("Login failed:", err); // affiche une erreur en console si le login échoue

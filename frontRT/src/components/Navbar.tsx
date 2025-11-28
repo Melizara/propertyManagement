@@ -37,7 +37,7 @@ function Navbar() {
     <nav className="navbar navbar-expand-md navbar-light bg-white shadow-sm sticky-top">
       <div className="container-lg">
         {/* Logo avec gradient */}
-        <Link to={user ? "/locataire" : "/"} className="navbar-brand text-decoration-none">
+        <Link to={user ? "/tenant" : "/"} className="navbar-brand text-decoration-none">
           <h2 className="fw-bold text-primary fst-italic mb-0">
             land<span className="text-dark">Loc</span>
           </h2>
@@ -70,7 +70,7 @@ function Navbar() {
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link to="/locataire" className="nav-link px-3 py-2 rounded-3 text-dark fw-semibold">
+                      <Link to="/tenant" className="nav-link px-3 py-2 rounded-3 text-dark fw-semibold">
                         Locataire
                       </Link>
                     </li>
@@ -110,7 +110,7 @@ function Navbar() {
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link to="/locataire" className="nav-link px-3 py-2 rounded-3 text-dark fw-semibold">
+                      <Link to="/tenant" className="nav-link px-3 py-2 rounded-3 text-dark fw-semibold">
                         Locataire
                       </Link>
                     </li>

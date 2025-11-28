@@ -93,179 +93,189 @@ function Location() {
     }
 
     return (
-        <div className="container-lg my-5 d-flex justify-content-center">
-            <div className="card shadow-sm w-75 p-4 border-0">
-                <button
-                    type="button"
-                    className="btn btn-outline-secondary mb-3 d-flex align-items-center"
-                    onClick={() => navigate("/location")}
-                    style={{ width: "fit-content" }}
-                >
-                    <FaArrowLeft className="me-2" /> Retour
-                </button>
+        <div className="container-lg my-5">
+            {/* Fil d'Ariane */}
+            <nav aria-label="breadcrumb" className="mb-3">
+                <ol className="breadcrumb" style={{ backgroundColor: "#f8f9fa", padding: "10px 15px", borderRadius: "5px" }}>
+                    <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
+                    <li className="breadcrumb-item"><Link to="/location">Locations</Link></li>
+                    <li className="breadcrumb-item active" aria-current="page">Information du location</li>
+                </ol>
+            </nav>
+            <div className="d-flex justify-content-center">
+                <div className="card shadow-sm w-75 p-4 border-0">
+                    <button
+                        type="button"
+                        className="btn btn-outline-secondary mb-3 d-flex align-items-center"
+                        onClick={() => navigate("/location")}
+                        style={{ width: "fit-content" }}
+                    >
+                        <FaArrowLeft className="me-2" /> Retour
+                    </button>
 
-                <h2 className="text-center fw-bold mb-4 text-primary">
-                    Fiche de la location
-                </h2>
+                    <h2 className="text-center fw-bold mb-4 text-primary">
+                        Fiche de la location
+                    </h2>
 
-                <div className="row">
-                    <div className="col-md-6 mb-3">
-                        <strong>CIN :</strong> {location.cin}
+                    <div className="row">
+                        <div className="col-md-6 mb-3">
+                            <strong>CIN :</strong> {location.cin}
+                        </div>
+                        <div className="col-md-6 mb-3">
+                            <strong>Code du terrain :</strong> {location.codeLand}
+                        </div>
+
+                        <div className="col-md-6 mb-3">
+                            <strong>Usage :</strong> {location.usage}
+                        </div>
+                        <div className="col-md-6 mb-3">
+                            <strong>Type de paiement :</strong> {location.typePayment}
+                        </div>
+
+                        <div className="col-md-6 mb-3">
+                            <strong>Méthode de paiement :</strong> {location.methodPayment}
+                        </div>
+                        <div className="col-md-6 mb-3">
+                            <strong>Lieu de paiement :</strong> {location.placePaymment}
+                        </div>
+
+                        <div className="col-md-6 mb-3">
+                            <strong>Surface Terrain Nu :</strong> {location.areaLandBare} m²
+                        </div>
+                        <div className="col-md-6 mb-3">
+                            <strong>Prix Terrain Nu :</strong> {location.priceLandBare}
+                        </div>
+
+                        <div className="col-md-6 mb-3">
+                            <strong>Surface Bois :</strong> {location.areaWood} m²
+                        </div>
+                        <div className="col-md-6 mb-3">
+                            <strong>Prix Bois :</strong> {location.priceWood}
+                        </div>
+
+                        <div className="col-md-6 mb-3">
+                            <strong>Surface Dure :</strong> {location.areaPermanent} m²
+                        </div>
+                        <div className="col-md-6 mb-3">
+                            <strong>Prix Dure :</strong> {location.pricePermanent}
+                        </div>
                     </div>
-                    <div className="col-md-6 mb-3">
-                        <strong>Code du terrain :</strong> {location.codeLand}
+                    <div className="mt-3">
+                        <strong>Status du paiement :</strong>{" "}
+                        {location.statusPayment ? "Payé ✅" : "Non payé ❌"}
                     </div>
-
-                    <div className="col-md-6 mb-3">
-                        <strong>Usage :</strong> {location.usage}
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <strong>Type de paiement :</strong> {location.typePayment}
-                    </div>
-
-                    <div className="col-md-6 mb-3">
-                        <strong>Méthode de paiement :</strong> {location.methodPayment}
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <strong>Lieu de paiement :</strong> {location.placePaymment}
-                    </div>
-
-                    <div className="col-md-6 mb-3">
-                        <strong>Surface Terrain Nu :</strong> {location.areaLandBare} m²
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <strong>Prix Terrain Nu :</strong> {location.priceLandBare}
-                    </div>
-
-                    <div className="col-md-6 mb-3">
-                        <strong>Surface Bois :</strong> {location.areaWood} m²
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <strong>Prix Bois :</strong> {location.priceWood}
-                    </div>
-
-                    <div className="col-md-6 mb-3">
-                        <strong>Surface Dure :</strong> {location.areaPermanent} m²
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <strong>Prix Dure :</strong> {location.pricePermanent}
-                    </div>
-                </div>
-                <div className="mt-3">
-                    <strong>Status du paiement :</strong>{" "}
-                    {location.statusPayment ? "Payé ✅" : "Non payé ❌"}
-                </div>
 
 
 
-                {user?.poste === "operateur de saisie" && user.matricule === location.userMatricule && (
-                    <div className="d-flex justify-content-center mt-4">
-                        <Link to={`/updateLocation/${location.codeLocation}`}>
-                            <button className="btn btn-outline-secondary me-2">Modifier</button>
-                        </Link>
-                        <button
-                            className="btn btn-outline-danger"
-                            onClick={() => handleDelete(location.codeLocation!)}
-                        >
-                            Supprimer
-                        </button>
-                    </div>
-                )}
-                {/* --- Boutons PDF visibles seulement par l'opérateur de saisie --- */}
-                {user?.poste === "operateur de saisie" && (
-                    <div className="d-flex justify-content-center mt-3 gap-2">
-
-                        {/* Bouton Convention PDF (toujours visible pour operateur de saisie) */}
-                        {/* Bouton Convention PDF */}
-                        <button
-                            className="btn btn-outline-primary"
-                            onClick={async () => {
-                                if (!location?.codeLocation) return;
-
-                                try {
-                                    const response = await axios.get(
-                                        `/api/locations/${location.codeLocation}/convention`,
-                                        {
-                                            responseType: "blob", // Important pour récupérer le PDF
-                                        }
-                                    );
-
-                                    // Crée un URL pour le blob
-                                    const fileURL = window.URL.createObjectURL(new Blob([response.data]));
-                                    const fileLink = document.createElement("a");
-                                    fileLink.href = fileURL;
-                                    fileLink.setAttribute(
-                                        "download",
-                                        `convention_${location.codeLocation}.pdf`
-                                    );
-                                    document.body.appendChild(fileLink);
-                                    fileLink.click();
-                                    fileLink.remove();
-                                } catch (err) {
-                                    console.error(err);
-                                    toast.error("Erreur lors du téléchargement du PDF");
-                                }
-                            }}
-                        >
-                            Convention PDF
-                        </button>
-
-                        {/* Bouton Facture PDF (visible seulement si payé) */}
-                        {location.statusPayment && (
+                    {user?.poste === "operateur de saisie" && user.matricule === location.userMatricule && (
+                        <div className="d-flex justify-content-center mt-4">
+                            <Link to={`/updateLocation/${location.codeLocation}`}>
+                                <button className="btn btn-outline-secondary me-2">Modifier</button>
+                            </Link>
                             <button
-                                className="btn btn-outline-success"
+                                className="btn btn-outline-danger"
+                                onClick={() => handleDelete(location.codeLocation!)}
+                            >
+                                Supprimer
+                            </button>
+                        </div>
+                    )}
+                    {/* --- Boutons PDF visibles seulement par l'opérateur de saisie --- */}
+                    {user?.poste === "operateur de saisie" && (
+                        <div className="d-flex justify-content-center mt-3 gap-2">
+
+                            {/* Bouton Convention PDF (toujours visible pour operateur de saisie) */}
+                            {/* Bouton Convention PDF */}
+                            <button
+                                className="btn btn-outline-primary"
                                 onClick={async () => {
                                     if (!location?.codeLocation) return;
+
                                     try {
                                         const response = await axios.get(
-                                            `/api/locations/${location.codeLocation}/facture`,
-                                            { responseType: "blob" } // Important pour les fichiers binaires
+                                            `/api/locations/${location.codeLocation}/convention`,
+                                            {
+                                                responseType: "blob", // Important pour récupérer le PDF
+                                            }
                                         );
 
-                                        // Créer un blob et déclencher le téléchargement
-                                        const url = window.URL.createObjectURL(new Blob([response.data]));
-                                        const link = document.createElement("a");
-                                        link.href = url;
-                                        link.setAttribute(
+                                        // Crée un URL pour le blob
+                                        const fileURL = window.URL.createObjectURL(new Blob([response.data]));
+                                        const fileLink = document.createElement("a");
+                                        fileLink.href = fileURL;
+                                        fileLink.setAttribute(
                                             "download",
-                                            `facture_${location.codeLocation}.pdf`
+                                            `convention_${location.codeLocation}.pdf`
                                         );
-                                        document.body.appendChild(link);
-                                        link.click();
-                                        link.remove();
-                                    } catch (error) {
-                                        console.error("Erreur lors du téléchargement de la facture :", error);
+                                        document.body.appendChild(fileLink);
+                                        fileLink.click();
+                                        fileLink.remove();
+                                    } catch (err) {
+                                        console.error(err);
+                                        toast.error("Erreur lors du téléchargement du PDF");
                                     }
                                 }}
                             >
-                                Facture PDF
+                                Convention PDF
                             </button>
 
-                        )}
-                    </div>
-                )}
+                            {/* Bouton Facture PDF (visible seulement si payé) */}
+                            {location.statusPayment && (
+                                <button
+                                    className="btn btn-outline-success"
+                                    onClick={async () => {
+                                        if (!location?.codeLocation) return;
+                                        try {
+                                            const response = await axios.get(
+                                                `/api/locations/${location.codeLocation}/facture`,
+                                                { responseType: "blob" } // Important pour les fichiers binaires
+                                            );
 
-                {user?.poste === "caissier" && !location.statusPayment && (
-                    <div className="d-flex justify-content-center mt-3">
-                        <button
-                            className="btn btn-success"
-                            onClick={async () => {
-                                if (!location.codeLocation) return;
-                                try {
-                                    await axios.put(`/api/locations/${location.codeLocation}/pay`);
-                                    setLocation({ ...location, statusPayment: true }); // Met à jour l'état local
-                                    toast.success("Paiement confirmé !");
-                                } catch (err) {
-                                    console.error(err);
-                                    toast.error("Erreur lors de la confirmation du paiement");
-                                }
-                            }}
-                        >
-                            Confirmer le paiement
-                        </button>
-                    </div>
-                )}
+                                            // Créer un blob et déclencher le téléchargement
+                                            const url = window.URL.createObjectURL(new Blob([response.data]));
+                                            const link = document.createElement("a");
+                                            link.href = url;
+                                            link.setAttribute(
+                                                "download",
+                                                `facture_${location.codeLocation}.pdf`
+                                            );
+                                            document.body.appendChild(link);
+                                            link.click();
+                                            link.remove();
+                                        } catch (error) {
+                                            console.error("Erreur lors du téléchargement de la facture :", error);
+                                        }
+                                    }}
+                                >
+                                    Facture PDF
+                                </button>
 
+                            )}
+                        </div>
+                    )}
+
+                    {user?.poste === "caissier" && !location.statusPayment && (
+                        <div className="d-flex justify-content-center mt-3">
+                            <button
+                                className="btn btn-success"
+                                onClick={async () => {
+                                    if (!location.codeLocation) return;
+                                    try {
+                                        await axios.put(`/api/locations/${location.codeLocation}/pay`);
+                                        setLocation({ ...location, statusPayment: true }); // Met à jour l'état local
+                                        toast.success("Paiement confirmé !");
+                                    } catch (err) {
+                                        console.error(err);
+                                        toast.error("Erreur lors de la confirmation du paiement");
+                                    }
+                                }}
+                            >
+                                Confirmer le paiement
+                            </button>
+                        </div>
+                    )}
+
+                </div>
             </div>
         </div>
     );

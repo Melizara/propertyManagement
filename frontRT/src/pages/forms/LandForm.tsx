@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams, Link } from "react-router-dom";
 import axios from "../../axios";
 import type { RootState } from "../../apps/Store.tsx";
 import type { FormEvent } from "react";
@@ -8,9 +8,11 @@ import { toast } from "react-toastify";
 
 interface LandFormProps {
     onSuccess?: () => void;
+    isModal?: boolean; // <-- nouveau prop
 }
 
-function LandForm({ onSuccess }: LandFormProps) {
+
+function LandForm({ onSuccess ,isModal}: LandFormProps) {
     const user = useSelector((state: RootState) => state.auth.data);
 
     const { codeLand: codeLandParam } = useParams<{ codeLand: string }>();
@@ -105,6 +107,16 @@ function LandForm({ onSuccess }: LandFormProps) {
 
     return (
         <div className="container-lg my-5">
+            {!isModal && (
+                <nav aria-label="breadcrumb" className="mb-4">
+                    <ol className="breadcrumb" style={{ backgroundColor: "#f8f9fa", padding: "10px 15px", borderRadius: "5px" }}>
+                        <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
+                        <li className="breadcrumb-item"><Link to="/tenant">Terrains</Link></li>
+                        <li className="breadcrumb-item active" aria-current="page">Formulaire</li>
+                    </ol>
+                </nav>
+            )}
+
             <div className="text-center mb-5">
                 <h2 className="fw-bold">Formulaire Terrain</h2>
             </div>

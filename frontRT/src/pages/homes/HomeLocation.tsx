@@ -15,6 +15,12 @@ function HomeLocation() {
 
     return (
         <div className="container-lg my-5">
+            <nav aria-label="breadcrumb">
+                <ol className="breadcrumb" style={{ backgroundColor: "#f8f9fa", padding: "10px 15px", borderRadius: "5px" }}>
+                    <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
+                    <li className="breadcrumb-item active" aria-current="page">Locations</li>
+                </ol>
+            </nav>
             <div className="row align-items-center align-content-center">
                 <div className="col-md-6 mt-5 mt-md-0 order-md-first">
                     <div>

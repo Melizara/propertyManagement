@@ -5,6 +5,7 @@ import axios from "../../axios.tsx"; // Instance axios pour faire des requêtes 
 import LandModal from "../infos/Land.tsx"; // Composant modal pour afficher les infos d'un terrain
 import { useSelector } from "react-redux";
 import type { RootState } from "../../apps/Store.tsx";
+import { Link } from "react-router-dom";
 // Définition du type Land pour TypeScript
 interface Land {
     codeLand: number; // identifiant unique du terrain
@@ -75,6 +76,14 @@ function HomeLand() {
     // Début du rendu du composant
     return (
         <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+
+            <nav aria-label="breadcrumb">
+                <ol className="breadcrumb" style={{ backgroundColor: "#f8f9fa", padding: "10px 15px", borderRadius: "5px" }}>
+                    <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
+                    <li className="breadcrumb-item active" aria-current="page">Terrains</li>
+                </ol>
+            </nav>
+
             {/* Bouton pour ouvrir le modal d'ajout */}
             {user && user.poste === "admin" && (
                 <button
@@ -130,6 +139,7 @@ function HomeLand() {
                                 const res = await axios.get("/api/lands"); // on recharge la liste des terrains
                                 setLands(res.data);
                             }}
+                            isModal={true}
                         />
                     </div>
                 </div>

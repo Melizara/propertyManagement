@@ -6,6 +6,7 @@ import type { RootState } from "../../apps/Store.tsx";
 import type { FormEvent } from "react";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 type IPrice = {
     codePrice?: number;
@@ -196,6 +197,23 @@ function LocationForm() {
 
     return (
         <div className="container-lg my-5">
+            <nav aria-label="breadcrumb" className="mb-3">
+                <ol className="breadcrumb" style={{ backgroundColor: "#f8f9fa", padding: "10px 15px", borderRadius: "5px" }}>
+                    <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
+                    <li className="breadcrumb-item"><Link to="/location">Locations</Link></li>
+
+                    {codeLocation && (
+                        <li className="breadcrumb-item">
+                            <Link to={`/location/${codeLocation}`}>Information du location</Link>
+                        </li>
+                    )}
+
+                    <li className="breadcrumb-item active" aria-current="page">
+                        Formulaire de location
+                    </li>
+                </ol>
+            </nav>
+
             <div className="mb-3">
                 <button type="button" className="btn btn-outline-secondary" onClick={() => navigate(`/location/${codeLocation}`)}>
                     ← Retour
@@ -243,7 +261,7 @@ function LocationForm() {
                         <div className="row mb-3">
                             <div className="col-md-4">
                                 <label className="form-label">Surface Terrain Nu</label>
-                                <input type="text" className="form-control" value={areaLandBare}  maxLength={9} onChange={e => setAreaLandBare(e.target.value)} required />
+                                <input type="text" className="form-control" value={areaLandBare} maxLength={9} onChange={e => setAreaLandBare(e.target.value)} required />
                             </div>
                             <div className="col-md-4">
                                 <label className="form-label">Surface Bois</label>

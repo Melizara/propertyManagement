@@ -75,7 +75,7 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: "/locataire",
+        path: "/tenant",
         element: (
           <PrivateRoute allowedRoles={["admin", "operateur de saisie"]}>
             <HomeTenant />

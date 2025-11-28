@@ -5,6 +5,7 @@ import type { AppDispatch } from "../../apps/Store";
 import { fetchStations } from "../../features/stationSlice.tsx";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 function HomeStation() {
     const user = useSelector((state: RootState) => state.auth.data);
@@ -37,6 +38,12 @@ function HomeStation() {
 
     return (
         <div className="container-lg my-5">
+            <nav aria-label="breadcrumb">
+                <ol className="breadcrumb" style={{ backgroundColor: "#f8f9fa", padding: "10px 15px", borderRadius: "5px" }}>
+                    <li className="breadcrumb-item"><Link to="/">Accueil</Link></li>
+                    <li className="breadcrumb-item active" aria-current="page">Gares</li>
+                </ol>
+            </nav>
             <div className="row align-items-center align-content-center">
                 <div className="col-md-6 mt-5 mt-md-0 order-md-first">
                     <div>
