@@ -72,7 +72,7 @@ function HomeLocation() {
                     </div>
                 )}
 
-                <div className="row">
+                <div className="row" style={{ minHeight: "400px" }}>
                     {status === "success" && filteredLocations.map((location) => (
                         <div key={location.codeLocation} className="col-md-6 col-lg-4 mb-4">
                             <div className="card shadow-sm h-100">
