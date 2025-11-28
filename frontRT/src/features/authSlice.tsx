@@ -45,48 +45,40 @@ const initialState: AuthState = {
   error: null, // pas d'erreur
 };
 
-interface ValidationErrorItem {
-  msg: string;      // message d'erreur
-  param: string;    // nom du champ
-  location: string; // "body", "query", etc.
-  value?: unknown;  // valeur envoyée (optionnelle)
-}
-
-
-type BackendError = {
-  errors: ValidationErrorItem[];
-};
-
-
 // Action asynchrone pour l'inscription (register)
 export const register = createAsyncThunk(
   "/auth/register",
   async (params: RegisterParams, { dispatch, rejectWithValue }) => {
-    const fieldErrors: AuthError = {};
     try {
-      // Envoie les infos au serveur pour créer un utilisateur
       const { data } = await axios.post("api/user/register", params);
 
-      // Si la réponse contient un token, on le stocke et on récupère le compte
       if ("token" in data) {
         window.localStorage.setItem("token", data.token);
         dispatch(account());
       }
-      return data; // renvoie les données à Redux
-    } catch (err) {
-      const error = err as AxiosError<BackendError>;
 
-      if (error.response?.status === 400 && error.response.data?.errors) {
-        error.response.data.errors.forEach((e) => {
-          fieldErrors[e.param] = e.msg; // typé correctement, pas de any
-        });
+      return data;
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      const fieldErrors: AuthError = {};
+
+      if (error.response?.data?.message) {
+        const message = error.response.data.message;
+        if (message.includes("Email")) {
+          fieldErrors.email = message;
+        } else if (message.includes("Matricule")) {
+          fieldErrors.matricule = message;
+        } else {
+          fieldErrors.general = message;
+        }
+
         return rejectWithValue(fieldErrors);
       }
-
       return rejectWithValue({ general: error.message || "Erreur inconnue" });
     }
   }
 );
+
 
 // Action asynchrone pour le login
 export const login = createAsyncThunk(

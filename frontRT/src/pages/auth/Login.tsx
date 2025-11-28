@@ -72,21 +72,27 @@ function Login() {
         style={{ width: "380px", transition: "all 0.3s" }}
         onSubmit={handleSubmit} // relie la soumission à handleSubmit
       >
-        <h3 className="text-center mb-4 fw-bold" style={{ color: "#026da1" }}>
-          Welcome Back
+        <h3 className="text-center mb-2 fw-bold" style={{ color: "#026da1" }}>
+          Connectez-vous
         </h3>
+        <p className="text-center small mb-2">
+          Veuillez entrer vos identifiants pour continuer.
+        </p>
 
         {/* Champ Matricule */}
-        <div className="mb-4 position-relative">
+        <div className="mb-3 position-relative">
           {/* Affiche l'erreur de matricule si elle existe */}
-          <div className="text-danger small mb-1" style={{ minHeight: "18px" }}>
+          <div
+            className="text-danger small mb-1"
+            style={{ minHeight: "24px", lineHeight: "1.2" }}
+          >
             {matriculeError && matriculeError}
           </div>
           {/* Icône utilisateur */}
           <User
             className="position-absolute"
             style={{
-              top: "62%",
+              top: "65%",
               left: "15px",
               transform: "translateY(-50%)",
               color: "#026da1",
@@ -113,14 +119,17 @@ function Login() {
         {/* Champ Password */}
         <div className="mb-4 position-relative">
           {/* Affiche l'erreur de password si elle existe */}
-          <div className="text-danger small mb-1" style={{ minHeight: "18px" }}>
+          <div
+            className="text-danger small mb-1"
+            style={{ minHeight: "24px", lineHeight: "1.2" }}
+          >
             {passwordError && passwordError}
           </div>
           {/* Icône cadenas */}
           <Lock
             className="position-absolute"
             style={{
-              top: "62%",
+              top: "65%",
               left: "15px",
               transform: "translateY(-50%)",
               color: "#026da1",
@@ -146,8 +155,8 @@ function Login() {
 
         {/* Lien vers la page d'inscription */}
         <div className="text-center mb-4">
-          <p className="small">
-            Not a member? <Link to="/register">Sign up</Link>
+           <p className="small">
+            Pas encore membre ? <Link to="/register">Inscrivez-vous ici</Link>
           </p>
         </div>
 
