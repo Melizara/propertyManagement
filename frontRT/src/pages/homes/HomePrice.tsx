@@ -5,6 +5,7 @@ import { fetchPrices } from "../../features/priceSlice"; // ton slice pour les p
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import { Layers, Layers2, PlusCircle, TrainFront } from "lucide-react";
 function HomePrice() {
     const user = useSelector((state: RootState) => state.auth.data);
     const { prices, status } = useSelector((state: RootState) => state.prices);
@@ -51,7 +52,11 @@ function HomePrice() {
             </nav>
             <div className="mt-2 mb-4">
                 {user && user.poste === "admin" && (
-                    <button onClick={handleAddPrices} className="btn btn-primary">
+                    <button
+                        onClick={handleAddPrices}
+                        className="btn btn-primary d-flex align-items-center gap-2"
+                    >
+                        <PlusCircle size={18} />
                         Ajouter tous les prix
                     </button>
                 )}
@@ -72,31 +77,54 @@ function HomePrice() {
             )}
 
             {status === "success" && prices.length > 0 && (
-                <div className="row">
+                <div className="row g-4">
                     {prices.map((price) => (
-                        <div className="col-md-4 mb-4" key={price.codePrice}>
-                            <div className="card shadow-sm border-0 rounded-3 h-100">
+                        <div className="col-12 col-md-6 col-lg-3" key={price.codePrice}>
+                            <div className="card shadow-sm border-0 h-100" style={{ borderRadius: "15px" }}>
+                                {/* Header */}
+                                <div
+                                    className="p-3 text-white d-flex align-items-center gap-2"
+                                    style={{
+                                        background: "linear-gradient(90deg, #007bff, #0056b3)",
+                                        borderTopLeftRadius: "15px",
+                                        borderTopRightRadius: "15px",
+                                    }}
+                                >
+                                    <TrainFront size={25} /> {/* icône gauche */}
+                                    <h5 className="mb-0 text-center flex-grow-1 fs-5">{price.secteur}</h5>
+                                </div>
+
+                                {/* Body */}
                                 <div className="card-body">
-                                    <h5 className="card-title text-primary fw-bold">
-                                        {price.secteur}
-                                    </h5>
-                                    <p className="card-text mb-1">
-                                        <strong>Usage : </strong>{price.usage}
-                                    </p>
-                                    <p className="card-text mb-1">
-                                        <strong>Sous-usage : </strong>{price.sousUsage || "-"}
-                                    </p>
-                                    <p className="card-text fw-bold fs-5 mt-3 text-success">
-                                        {price.prix.toLocaleString()} Ar
-                                    </p>
+                                    <div className="d-flex mb-3 align-items-center">
+                                        <div className="p-2 bg-light rounded me-2">
+                                            <Layers2 size={18} className="text-primary" />
+                                        </div>
+                                        <div>
+                                            <small className="text-secondary text-uppercase fw-bold">Usage</small>
+                                            <p className="mb-0 fw-semibold">{price.usage}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="d-flex mb-3 align-items-center">
+                                        <div className="p-2 bg-light rounded me-2">
+                                            <Layers size={18} className="text-success" />
+                                        </div>
+                                        <div>
+                                            <small className="text-secondary text-uppercase fw-bold">Sous-usage</small>
+                                            <p className="mb-0 fw-semibold">{price.sousUsage || "-"}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-3 text-center">
+                                        <p className="fw-bold fs-5 text-success mb-0">{price.prix.toLocaleString()} Ar</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
-
             )}
-
             {status === "success" && prices.length === 0 && (
                 <div className="text-center mt-5">
                     <h4 className="text-secondary">Aucun prix trouvé.</h4>

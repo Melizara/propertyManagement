@@ -6,6 +6,7 @@ import LandModal from "../infos/Land.tsx"; // Composant modal pour afficher les 
 import { useSelector } from "react-redux";
 import type { RootState } from "../../apps/Store.tsx";
 import { Link } from "react-router-dom";
+import { PlusCircle } from "lucide-react";
 // Définition du type Land pour TypeScript
 interface Land {
     codeLand: number; // identifiant unique du terrain
@@ -94,11 +95,15 @@ function HomeLand() {
                 <input
                     type="number"
                     id="pkInput"
-                    placeholder="Ex : 3"
                     min={0}
                     max={lengthKm}
                     className="form-control"
-                    style={{ width: "120px" }}
+                    style={{
+                        width: "120px",
+                        outline: "none",      // supprime le contour bleu
+                        boxShadow: "none",    // supprime l’ombre au focus
+                        borderColor: "#ced4da" // garde la bordure grise par défaut
+                    }}
                     onChange={(e) => {
                         const pk = Number(e.target.value);
                         const container = document.getElementById("svg-container");
@@ -112,11 +117,13 @@ function HomeLand() {
             {/* Bouton pour ouvrir le modal d'ajout */}
             {user && user.poste === "admin" && (
                 <button
-                    className="btn btn-primary mb-3"
+                    className="btn btn-primary mb-3 d-flex align-items-center gap-2"
                     onClick={() => setShowModal(true)}
                 >
+                    <PlusCircle size={18} />
                     Ajouter un Terrain
                 </button>
+
             )}
             {/* Modal pour ajouter un terrain */}
             {showModal && (
