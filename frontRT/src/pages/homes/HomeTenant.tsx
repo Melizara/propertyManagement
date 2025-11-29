@@ -5,7 +5,7 @@ import type { RootState } from "../../apps/Store";
 import type { AppDispatch } from "../../apps/Store";
 import { fetchTenants } from "../../features/tenantSlice";
 import { useState } from "react";
-import { User, MapPin, Calendar, Eye, IdCard, Search, PlusCircle, RefreshCcw } from "lucide-react";
+import { User, MapPin, Calendar, Eye, IdCard, Search, PlusCircle } from "lucide-react";
 
 function HomeTenant() {
   const { tenants, status } = useSelector((state: RootState) => state.tenants);
@@ -201,21 +201,12 @@ function HomeTenant() {
         {status === "success" && filteredTenants.length === 0 && (
           <div
             className="d-flex flex-column justify-content-center align-items-center"
-            style={{ minHeight: "90vh" }}
           >
-            <div className="card shadow-sm p-4" style={{ maxWidth: "350px" }}>
+            <div className="card shadow-sm p-4 mt-5" style={{ maxWidth: "350px" }}>
               <User size={50} className="text-muted mx-auto mb-3" />
               <h5 className="fw-bold">Aucun locataire trouvé</h5>
               <p className="text-muted">Commencez par ajouter des locataires à votre liste</p>
             </div>
-
-            <button
-              className="btn btn-outline-secondary mt-3 d-flex align-items-center justify-content-center"
-              style={{ width: "38px", height: "38px", borderRadius: "50%" }}
-              onClick={() => window.location.reload()}
-            >
-              <RefreshCcw size={18} />
-            </button>
           </div>
         )}
       </div>

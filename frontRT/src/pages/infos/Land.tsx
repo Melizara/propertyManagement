@@ -5,7 +5,7 @@ import type { AppDispatch, RootState } from "../../apps/Store.tsx";
 import { deleteLand } from "../../features/landSlice.tsx";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Info } from "lucide-react";
 
 interface Land {
   codeLand: number;
@@ -26,7 +26,7 @@ interface Land {
 interface LandModalProps {
   land: Land | null;
   onClose: () => void;
-  onDelete: (codeLand: number) => void; // ← type précisé
+  onDelete: (codeLand: number) => void;
 }
 
 interface User {
@@ -55,7 +55,7 @@ const LandModal: React.FC<LandModalProps> = ({ land, onClose, onDelete }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await dispatch(deleteLand(codeLand));
-        onDelete(codeLand); // ← met à jour le state dans HomeLand
+        onDelete(codeLand);
         onClose();
         toast.success("Terrain supprimé avec succès !");
       }
@@ -77,23 +77,28 @@ const LandModal: React.FC<LandModalProps> = ({ land, onClose, onDelete }) => {
         justifyContent: "center",
         alignItems: "center",
         zIndex: 1000,
+        padding: "10px"
       }}
       onClick={onClose}
     >
       <div
         style={{
           backgroundColor: "#fff",
-          padding: "20px",
-          borderRadius: "8px",
+          padding: "25px",
+          borderRadius: "12px",
           width: "400px",
-          maxHeight: "80vh",
+          maxHeight: "85vh",
           overflowY: "auto",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
+          position: "relative"
         }}
         onClick={(e) => e.stopPropagation()}
       >
         <button
           style={{
-            float: "right",
+            position: "absolute",
+            top: "15px",
+            right: "15px",
             fontSize: "1.2rem",
             border: "none",
             background: "none",
@@ -104,30 +109,39 @@ const LandModal: React.FC<LandModalProps> = ({ land, onClose, onDelete }) => {
           ✕
         </button>
 
-        <h3>{land.name}</h3>
-        <p><strong>Côté:</strong> {land.railwaySide}</p>
-        <p><strong>Disponible:</strong> {land.available ? "Oui" : "Non"}</p>
-        <p><strong>Code:</strong> {land.codeLand}</p>
-        <p><strong>Longueur:</strong> {land.length} m</p>
-        <p><strong>Largeur:</strong> {land.width} m</p>
-        <p><strong>Position:</strong> {land.position}</p>
-        <p><strong>Début PK:</strong> {land.startPk} km</p>
-        {user &&
-          user?.poste === "admin" && user.matricule === land.userMatricule && (
-            <div className="d-flex justify-content-center mt-4 gap-3">
-              <Link to={`/updateLand/${land.codeLand}`} className="btn btn-outline-secondary d-flex align-items-center gap-2">
-                <Pencil size={18} /> Modifier
-              </Link>
-              <button
-                className="btn btn-outline-danger d-flex align-items-center gap-2"
-                onClick={() => handleDelete(land.codeLand)}
-              >
-                <Trash2 size={18} /> Supprimer
-              </button>
-            </div>
-          )}
-      </div>
+        <div className="text-center mb-3">
+          <Info size={30} className="text-primary mb-2" />
+          <h4 className="fw-bold">{land.name}</h4>
+          <p className="text-muted mb-3">Détails du terrain</p>
+        </div>
 
+        <div style={{ backgroundColor: "#f9f9f9", padding: "15px", borderRadius: "8px" }}>
+          <p><strong>Côté:</strong> {land.railwaySide}</p>
+          <p><strong>Disponible:</strong> {land.available ? "Oui ✅" : "Non ❌"}</p>
+          <p><strong>Code:</strong> {land.codeLand}</p>
+          <p><strong>Longueur:</strong> {land.length} m</p>
+          <p><strong>Largeur:</strong> {land.width} m</p>
+          <p><strong>Position:</strong> {land.position}</p>
+          <p><strong>Début PK:</strong> {land.startPk} km</p>
+        </div>
+
+        {user && user.poste === "admin" && user.matricule === land.userMatricule && (
+          <div className="d-flex justify-content-center mt-4 gap-3">
+            <Link
+              to={`/updateLand/${land.codeLand}`}
+              className="btn btn-outline-secondary d-flex align-items-center gap-2"
+            >
+              <Pencil size={18} /> Modifier
+            </Link>
+            <button
+              className="btn btn-outline-danger d-flex align-items-center gap-2"
+              onClick={() => handleDelete(land.codeLand)}
+            >
+              <Trash2 size={18} /> Supprimer
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
