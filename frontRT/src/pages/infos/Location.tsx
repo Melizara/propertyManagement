@@ -6,6 +6,8 @@ import axios from "../../axios.tsx";
 import { deleteLocation } from "../../features/locationSlice.tsx";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import { Pencil, Trash2, FileText, FileCheck, CheckCircle } from "lucide-react";
+
 
 function Location() {
     interface LocationType {
@@ -173,18 +175,26 @@ function Location() {
 
 
                     {user?.poste === "operateur de saisie" && user.matricule === location.userMatricule && (
-                        <div className="d-flex justify-content-center mt-4">
-                            <Link to={`/updateLocation/${location.codeLocation}`}>
-                                <button className="btn btn-outline-secondary me-2">Modifier</button>
+                        <div className="d-flex justify-content-center mt-3 gap-2">
+                            <Link
+                                to={`/updateLocation/${location.codeLocation}`}
+                                className="btn btn-outline-secondary d-flex align-items-center gap-2 text-decoration-none"
+                            >
+                                <Pencil size={18} /> Modifier
                             </Link>
+                        </div>
+                    )}
+                    {user?.poste === "admin" && (
+                        <div className="d-flex justify-content-center mt-3 gap-2">
                             <button
-                                className="btn btn-outline-danger"
+                                className="btn btn-outline-danger d-flex align-items-center gap-2"
                                 onClick={() => handleDelete(location.codeLocation!)}
                             >
-                                Supprimer
+                                <Trash2 size={18} /> Supprimer
                             </button>
                         </div>
                     )}
+
                     {/* --- Boutons PDF visibles seulement par l'opérateur de saisie --- */}
                     {user?.poste === "operateur de saisie" && (
                         <div className="d-flex justify-content-center mt-3 gap-2">
@@ -192,7 +202,7 @@ function Location() {
                             {/* Bouton Convention PDF (toujours visible pour operateur de saisie) */}
                             {/* Bouton Convention PDF */}
                             <button
-                                className="btn btn-outline-primary"
+                                className="btn btn-outline-primary d-flex align-items-center gap-2"
                                 onClick={async () => {
                                     if (!location?.codeLocation) return;
 
@@ -221,13 +231,13 @@ function Location() {
                                     }
                                 }}
                             >
-                                Convention PDF
+                                <FileText size={18} /> Convention PDF
                             </button>
 
                             {/* Bouton Facture PDF (visible seulement si payé) */}
                             {location.statusPayment && (
                                 <button
-                                    className="btn btn-outline-success"
+                                    className="btn btn-outline-success d-flex align-items-center gap-2"
                                     onClick={async () => {
                                         if (!location?.codeLocation) return;
                                         try {
@@ -252,7 +262,7 @@ function Location() {
                                         }
                                     }}
                                 >
-                                    Facture PDF
+                                    <FileCheck size={18} /> Facture PDF
                                 </button>
 
                             )}
@@ -260,9 +270,10 @@ function Location() {
                     )}
 
                     {user?.poste === "caissier" && !location.statusPayment && (
-                        <div className="d-flex justify-content-center mt-3">
+                        <div className="d-flex justify-content-center mt-3 gap-2">
                             <button
-                                className="btn btn-success"
+                                className="btn btn-success d-flex align-items-center gap-2"
+
                                 onClick={async () => {
                                     if (!location.codeLocation) return;
                                     try {
@@ -275,7 +286,7 @@ function Location() {
                                     }
                                 }}
                             >
-                                Confirmer le paiement
+                                <CheckCircle size={18} /> Confirmer le paiement
                             </button>
                         </div>
                     )}
