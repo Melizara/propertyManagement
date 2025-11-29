@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../apps/Store";
 import { fetchLocations } from "../../features/locationSlice";
-import { MapPin, Eye, Tag, IdCard, Layers2, DollarSign, FileCheck2, Search } from "lucide-react";
+import { MapPin, Eye, Tag, IdCard, Layers2, DollarSign, FileCheck2, Search, RefreshCcw } from "lucide-react";
 
 function HomeLocation() {
     const { locations, status } = useSelector((state: RootState) => state.locations);
@@ -197,14 +197,24 @@ function HomeLocation() {
 
                     {/* Aucun résultat */}
                     {status === "success" && filteredLocations.length === 0 && (
-                        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "80vh" }}>
+                        <div className="d-flex flex-column justify-content-center align-items-center" style={{ minHeight: "80vh" }}>
                             <div className="card shadow-sm p-4" style={{ maxWidth: "350px" }}>
                                 <Tag size={50} className="text-muted mx-auto mb-3" />
                                 <h5 className="fw-bold">Aucune location trouvée</h5>
                                 <p className="text-muted">Commencez par ajouter des locations.</p>
                             </div>
+
+                            {/* Bouton de rafraîchissement */}
+                            <button
+                                className="btn btn-outline-secondary mt-3 d-flex align-items-center justify-content-center"
+                                style={{ width: "38px", height: "38px", borderRadius: "50%" }}
+                                onClick={() => window.location.reload()}
+                            >
+                                <RefreshCcw size={18} />
+                            </button>
                         </div>
                     )}
+
 
                 </div>
             </div>

@@ -95,17 +95,24 @@ function HomeLand() {
                 <input
                     type="number"
                     id="pkInput"
-                    min={0}
-                    max={lengthKm}
+                    min={1}
+                    max={163}
                     className="form-control"
                     style={{
                         width: "120px",
-                        outline: "none",      // supprime le contour bleu
-                        boxShadow: "none",    // supprime l’ombre au focus
-                        borderColor: "#ced4da" // garde la bordure grise par défaut
+                        outline: "none",
+                        boxShadow: "none",
+                        borderColor: "#ced4da"
                     }}
                     onChange={(e) => {
-                        const pk = Number(e.target.value);
+                        let pk = Number(e.target.value);
+
+                        // Empêcher d'aller en dehors de [1 - 163]
+                        if (pk < 1) pk = 1;
+                        if (pk > 163) pk = 163;
+
+                        e.target.value = pk.toString();
+
                         const container = document.getElementById("svg-container");
                         if (container && !isNaN(pk)) {
                             container.scrollLeft = pk * pixelsPerKm;
@@ -113,6 +120,9 @@ function HomeLand() {
                     }}
                 />
             </div>
+
+
+
 
             {/* Bouton pour ouvrir le modal d'ajout */}
             <button

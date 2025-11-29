@@ -5,6 +5,7 @@ import type { AppDispatch, RootState } from "../../apps/Store.tsx";
 import { deleteLand } from "../../features/landSlice.tsx";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import { Pencil, Trash2 } from "lucide-react";
 
 interface Land {
   codeLand: number;
@@ -112,17 +113,16 @@ const LandModal: React.FC<LandModalProps> = ({ land, onClose, onDelete }) => {
         <p><strong>Position:</strong> {land.position}</p>
         <p><strong>Début PK:</strong> {land.startPk} km</p>
         {user &&
-          user.poste === "admin" &&
-          user.matricule === land.userMatricule && (
-            <div className="d-flex justify-content-center mt-4">
-              <Link to={`/updateLand/${land.codeLand}`}>
-                <button className="btn btn-outline-secondary me-2">Modifier</button>
+          user?.poste === "admin" && user.matricule === land.userMatricule && (
+            <div className="d-flex justify-content-center mt-4 gap-3">
+              <Link to={`/updateLand/${land.codeLand}`} className="btn btn-outline-secondary d-flex align-items-center gap-2">
+                <Pencil size={18} /> Modifier
               </Link>
               <button
-                className="btn btn-outline-danger"
+                className="btn btn-outline-danger d-flex align-items-center gap-2"
                 onClick={() => handleDelete(land.codeLand)}
               >
-                Supprimer
+                <Trash2 size={18} /> Supprimer
               </button>
             </div>
           )}

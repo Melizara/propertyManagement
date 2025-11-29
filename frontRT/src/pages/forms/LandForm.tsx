@@ -5,6 +5,7 @@ import axios from "../../axios";
 import type { RootState } from "../../apps/Store.tsx";
 import type { FormEvent } from "react";
 import { toast } from "react-toastify";
+import { RefreshCcw, Save } from "lucide-react";
 
 interface LandFormProps {
     onSuccess?: () => void;
@@ -222,9 +223,25 @@ function LandForm({ onSuccess, isModal }: LandFormProps) {
                 </div>
 
                 {/* Bouton */}
-                <div className="text-center mt-4">
-                    <button type="submit" className="btn btn-primary px-5" disabled={loading}>
-                        {loading ? "Enregistrement..." : isUpdate ? "Mettre à jour" : "Publier"}
+                <div className="d-flex justify-content-center mt-4">
+                    <button
+                        type="submit"
+                        className="btn btn-primary d-flex align-items-center justify-content-center px-5"
+                        disabled={loading}
+                    >
+                        {loading ? (
+                            <>
+                                <RefreshCcw size={18} className="me-2 spin" /> Enregistrement...
+                            </>
+                        ) : isUpdate ? (
+                            <>
+                                <Save size={18} className="me-2" /> Mettre à jour
+                            </>
+                        ) : (
+                            <>
+                                <Save size={18} className="me-2" /> Ajouter
+                            </>
+                        )}
                     </button>
                 </div>
             </form>
