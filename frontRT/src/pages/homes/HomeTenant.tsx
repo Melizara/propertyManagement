@@ -88,7 +88,7 @@ function HomeTenant() {
             <div>
               <Link to={"/formTenant"}>
                 <button
-                  className="btn btn-primary px-3 my-3 fw-bold d-flex align-items-center gap-2"
+                  className="btn btn-success px-3 my-3 fw-bold d-flex align-items-center gap-2"
                   style={{
                     visibility: user && user.poste === "operateur de saisie" ? "visible" : "hidden"
                   }}

@@ -180,7 +180,7 @@ export const confirmPayment = async (req: AuthRequest, res: Response) => {
     }
 };
 
-export const generateConventionPdf = async (req: Request, res: Response) => {
+export const generateConventionPdf = async (req: AuthRequest, res: Response) => {
     try {
         const location = await Location.findByPk(req.params.codeLocation, {
             include: [
@@ -260,11 +260,12 @@ export const generateConventionPdf = async (req: Request, res: Response) => {
         if (req.userMatricule && location.codeLocation !== undefined) {
             await logActivity(
                 req.userMatricule,
-                "GENERATE_PDF",
+                "CONVENTION",
                 "Location",
-                location.codeLocation.toString() // ✅ on sait qu'il n'est plus undefined
+                location.codeLocation.toString()
             );
         }
+
 
     } catch (error) {
         console.error(error);
@@ -272,7 +273,7 @@ export const generateConventionPdf = async (req: Request, res: Response) => {
     }
 };
 
-export const generateInvoicePdf = async (req: Request, res: Response) => {
+export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
     try {
         const location = await Location.findByPk(req.params.codeLocation, {
             include: [
@@ -360,11 +361,12 @@ export const generateInvoicePdf = async (req: Request, res: Response) => {
         if (req.userMatricule && location.codeLocation !== undefined) {
             await logActivity(
                 req.userMatricule,
-                "GENERATE_INVOICE",
+                "FACTURE",
                 "Location",
                 location.codeLocation.toString()
             );
         }
+
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Erreur serveur lors de la génération de la facture" });

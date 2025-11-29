@@ -53,7 +53,7 @@ function HomePrice() {
             <div className="mt-2 mb-4">
                 <button
                     onClick={handleAddPrices}
-                    className="btn btn-primary d-flex align-items-center gap-2"
+                    className="btn btn-success d-flex align-items-center gap-2"
                     style={{
                         visibility: user && user.poste === "admin" ? "visible" : "hidden"
                     }}

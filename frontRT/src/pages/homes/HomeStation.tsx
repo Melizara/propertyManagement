@@ -59,7 +59,7 @@ function HomeStation() {
                 <div className="col-md-6">
                     <button
                         onClick={handleAddStations}
-                        className="btn btn-primary d-flex align-items-center gap-2"
+                        className="btn btn-success d-flex align-items-center gap-2"
                         style={{
                             visibility: user && user.poste === "admin" ? "visible" : "hidden"
                         }}

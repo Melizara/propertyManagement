@@ -11,9 +11,9 @@ locationRouter.get("/", getLocations);
 locationRouter.get("/:codeLocation", getLocation);
 locationRouter.put("/:codeLocation", protectAuth, updateLocation);
 locationRouter.delete("/:codeLocation", protectAuth, deleteLocation);
-locationRouter.put("/:codeLocation/pay", protectAuth,confirmPayment);
-locationRouter.get("/:codeLocation/convention", generateConventionPdf);
-locationRouter.get("/:codeLocation/facture", generateInvoicePdf);
+locationRouter.put("/:codeLocation/pay", protectAuth, confirmPayment);
+locationRouter.get("/:codeLocation/convention", protectAuth, generateConventionPdf);
+locationRouter.get("/:codeLocation/facture", protectAuth, generateInvoicePdf);
 
 
 export default locationRouter;

@@ -88,7 +88,7 @@ function HomeLocation() {
                     <div className="col-md-6 mt-5 mt-md-0 order-md-first">
                         <Link to={"/formLocation"}>
                             <button
-                                className="btn btn-primary px-3 my-3 fw-bold"
+                                className="btn btn-success px-3 my-3 fw-bold"
                                 style={{
                                     visibility: user && user.poste === "operateur de saisie" ? "visible" : "hidden"
                                 }}

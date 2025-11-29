@@ -126,7 +126,7 @@ function HomeLand() {
 
             {/* Bouton pour ouvrir le modal d'ajout */}
             <button
-                className="btn btn-primary mb-3 d-flex align-items-center gap-2"
+                className="btn btn-success mb-3 d-flex align-items-center gap-2"
                 onClick={() => setShowModal(true)}
                 style={{ visibility: user && user.poste === "admin" ? "visible" : "hidden" }}
             >
@@ -190,6 +190,7 @@ function HomeLand() {
             <h2>Carte des terrains le long de la FCE (25 m = 1 cm)</h2>
 
             {/* Conteneur scrollable pour le SVG */}
+            {/* Conteneur scrollable pour le SVG */}
             <div
                 id="svg-container"
                 style={{
@@ -203,6 +204,23 @@ function HomeLand() {
                 }}
             >
                 <svg width={svgWidth} height={svgHeight} style={{ display: "block" }}>
+                    <defs>
+                        {/* Dégradés pour terrains */}
+                        <linearGradient id="grad-available" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#3cb371" stopOpacity={0.8} />
+                            <stop offset="100%" stopColor="#2e8b57" stopOpacity={0.8} />
+                        </linearGradient>
+                        <linearGradient id="grad-rented" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#e74c3c" stopOpacity={0.8} />
+                            <stop offset="100%" stopColor="#c0392b" stopOpacity={0.8} />
+                        </linearGradient>
+
+                        {/* Ombre portée */}
+                        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#000" floodOpacity="0.3" />
+                        </filter>
+                    </defs>
+
                     {/* Ligne ferroviaire centrale */}
                     <line
                         x1={0}
@@ -214,14 +232,14 @@ function HomeLand() {
                         strokeLinecap="round"
                     />
 
-                    {/* Petits repères tous les 25 m (0.025 km) */}
+                    {/* Petits repères tous les 25 m */}
                     {[...Array(Math.floor(lengthKm * 40) + 1)].map((_, i) => {
                         const x = i * 0.025 * pixelsPerKm;
                         return (
                             <line
                                 key={i}
-                                x1={x} y1={centerY - 5} x2={x} y2={centerY + 5}
-                                stroke="#161515ff"
+                                x1={x} y1={centerY - 4} x2={x} y2={centerY + 4}
+                                stroke="#bbb"
                                 strokeWidth={1}
                             />
                         );
@@ -243,6 +261,7 @@ function HomeLand() {
                                     textAnchor="middle"
                                     fontSize={12}
                                     fill="#333"
+                                    style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.2)" }}
                                 >
                                     {i} km
                                 </text>
@@ -250,14 +269,24 @@ function HomeLand() {
                         );
                     })}
 
+                    {/* Ligne séparatrice gauche/droite */}
+                    <line
+                        x1={0}
+                        y1={centerY}
+                        x2={svgWidth}
+                        y2={centerY}
+                        stroke="#999"
+                        strokeWidth={1}
+                        strokeDasharray="4 4"
+                    />
+
                     {/* Affichage des terrains */}
                     {landsWithX.map((t) => {
-                        const x = t.startPk * pixelsPerKm + t.xOffset; // position X du terrain
-                        const width = (t.length / 1000) * pixelsPerKm; // largeur du terrain
-                        const spacingBetweenPlans = 9; // espacement vertical entre terrains
-                        const height = t.width; // hauteur = largeur du terrain en m
+                        const x = t.startPk * pixelsPerKm + t.xOffset;
+                        const width = (t.length / 1000) * pixelsPerKm;
+                        const spacingBetweenPlans = 9;
+                        const height = t.width;
 
-                        // Calcul Y selon le côté du rail et position verticale
                         let y;
                         if (t.railwaySide === "gauche") {
                             y = centerY - 10 - height - (t.position - 1) * (height + spacingBetweenPlans);
@@ -265,40 +294,56 @@ function HomeLand() {
                             y = centerY + 10 + (t.position - 1) * (height + spacingBetweenPlans);
                         }
 
-                        const color = t.available ? "#3cb371" : "#e74c3c"; // vert = dispo, rouge = loué
+                        const fillColor = t.available ? "url(#grad-available)" : "url(#grad-rented)";
+                        const icon = t.available ? "✓" : "X";
+                        // pictogramme simple
 
                         return (
                             <g key={t.codeLand}>
-                                {/* Rectangle représentant le terrain */}
+                                {/* Rectangle terrain avec ombre et coins arrondis */}
                                 <rect
                                     x={x} y={y} width={width} height={height}
-                                    fill={color}
-                                    stroke="#222"
-                                    strokeWidth={1.5}
-                                    rx={4} ry={4} // coins arrondis
+                                    fill={fillColor}
+                                    stroke="white"
+                                    strokeWidth={1}
+                                    rx={6} ry={6}
+                                    filter="url(#shadow)"
                                     style={{
                                         cursor: "pointer",
-                                        transition: "transform 0.6s ease",
+                                        transition: "transform 0.3s, fill 0.3s",
                                     }}
-                                    onClick={() => setSelectedTerrain(t)} // click ouvre le modal info
-                                    onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.1)"; }} // hover effet zoom
-                                    onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }} // hover out
+                                    onClick={() => setSelectedTerrain(t)}
+                                    onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.05)"; }}
+                                    onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
                                 />
                                 {/* Nom du terrain */}
                                 <text
                                     x={x + width / 2}
-                                    y={t.railwaySide === "gauche" ? y - 5 : y + height + 15}
+                                    y={t.railwaySide === "gauche" ? y - 5 : y + height + 12}
                                     textAnchor="middle"
                                     fontSize={12}
-                                    fill="#333"
+                                    fill="#fff"
+                                    style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.5)", pointerEvents: "none" }}
                                 >
                                     {t.name}
+                                </text>
+                                {/* Pictogramme état */}
+                                <text
+                                    x={x + width - 10}
+                                    y={t.railwaySide === "gauche" ? y + 12 : y + height - 2}
+                                    fontSize={10}
+                                    textAnchor="end"
+                                    fill="#fff"
+                                    style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.5)", pointerEvents: "none" }}
+                                >
+                                    {icon}
                                 </text>
                             </g>
                         );
                     })}
                 </svg>
             </div>
+
 
             {/* Modal pour afficher les détails d'un terrain sélectionné */}
             <LandModal

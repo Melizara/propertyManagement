@@ -33,7 +33,7 @@ import HomeActivity from "./pages/homes/HomeActivity.tsx";
 //Layout est un modele de page commun,Outlet change selon la route
 const Layout = () => {
   return (
-    <div className="d-flex flex-column min-vh-100">
+    <div className="d-flex flex-column min-vh-100" style={{background:"#f8f9fa"}}>
       <Navbar />
       <main className="flex-grow-1 d-flex justify-content-center align-items-center">
         <Outlet />
