@@ -3,7 +3,7 @@ import { Land } from "../models/land.model.ts";
 import { User } from "../models/user.model.ts";
 import { Station } from "../models/station.model.ts";
 import { Op } from "sequelize";
-
+import { logActivity } from "../middlewares/activityLogs.ts";
 
 export const createLand = async (req: Request, res: Response) => {
     try {
@@ -40,6 +40,11 @@ export const createLand = async (req: Request, res: Response) => {
             userMatricule: req.body.userMatricule!,
             codeStation: station.codeStation,
         });
+
+        if (land.codeLand !== undefined) {
+            await logActivity(req.userMatricule!, "CREATE", "Land", land.codeLand.toString());
+        }
+
         return res.status(201).json(land);
     } catch (error) {
         if (error instanceof Error) {
@@ -85,6 +90,9 @@ export const updateLand = async (req: Request, res: Response) => {
             userMatricule: req.body.userMatricule!,
             codeStation: station.codeStation
         });
+        if (land.codeLand !== undefined) {
+            await logActivity(req.userMatricule!, "UPDATE", "Land", land.codeLand.toString());
+        }
 
         return res.status(200).json(land);
     } catch (error) {
@@ -103,6 +111,11 @@ export const deleteLand = async (req: Request, res: Response) => {
         }
 
         await land.destroy();
+
+        if (land.codeLand !== undefined) {
+            await logActivity(req.userMatricule!, "DELETE", "Land", land.codeLand.toString());
+        }
+
         return res.status(200).json(land);
     } catch (error) {
         if (error instanceof Error) {

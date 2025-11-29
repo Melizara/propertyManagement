@@ -12,6 +12,7 @@ import landRouter from "./routes/land.route.ts";
 import stationRouter from "./routes/station.route.ts";
 import priceRouter from "./routes/price.route.ts";
 import locationRouter from "./routes/location.route.ts";
+import activityRouter from "./routes/activity.route.ts";
 
 dotenv.config();//Chargement variable avy any amin'ny .env
 
@@ -30,6 +31,8 @@ app.use("/api/lands", landRouter);
 app.use("/api/stations", stationRouter);
 app.use("/api/prices", priceRouter);
 app.use("/api/locations",locationRouter);
+app.use("/api/activity-logs", activityRouter);
+
 
 
 const startServer = async () => {

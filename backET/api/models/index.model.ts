@@ -6,6 +6,7 @@ import { initLand, Land } from "./land.model.ts";
 import { initStation, Station } from "./station.model.ts";
 import { initPrice, Price } from "./price.model.ts";
 import { initLocation, Location } from "./location.model.ts";
+import { initActivityLog } from "./activity.model.ts";
 
 export const initModels = (sequelize: Sequelize) => {
     // Initialiser les modèles
@@ -16,7 +17,8 @@ export const initModels = (sequelize: Sequelize) => {
     initLand(sequelize);
     initPrice(sequelize);
     initLocation(sequelize);
-
+    initActivityLog(sequelize);
+    
     // Définir les relations entre les modèles
     User.hasMany(Story, {
         foreignKey: "authorId",

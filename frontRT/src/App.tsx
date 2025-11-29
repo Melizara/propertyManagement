@@ -28,6 +28,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PublicRoute from "./reducerComponent/PuclicRoute.tsx";
 import Welcome from "./pages/homes/Welcome.tsx";
+import HomeActivity from "./pages/homes/HomeActivity.tsx";
 
 //Layout est un modele de page commun,Outlet change selon la route
 const Layout = () => {
@@ -115,6 +116,14 @@ const router = createBrowserRouter([
         )
       },
       {
+        path: "/activity",
+        element: (
+          <PrivateRoute allowedRoles={["admin"]}>
+            <HomeActivity />
+          </PrivateRoute>
+        )
+      },
+      {
         path: "/register",
         element: <Register />
       },
@@ -151,7 +160,7 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute allowedRoles={["admin"]}>
             <LandForm />
-          </PrivateRoute> 
+          </PrivateRoute>
         )
       },
       {

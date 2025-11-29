@@ -6,6 +6,7 @@ import PDFDocument from "pdfkit";
 import { Tenant } from "../models/tenant.model.ts";
 import { Land } from "../models/land.model.ts";
 import { Station } from "../models/station.model.ts";
+import { logActivity } from "../middlewares/activityLogs.ts";
 
 export const createLocation = async (req: Request, res: Response) => {
     try {
@@ -33,6 +34,10 @@ export const createLocation = async (req: Request, res: Response) => {
             { available: true },
             { where: { codeLand: req.body.codeLand } } // ✅ utilise la valeur directement
         );
+
+        if (location.codeLocation !== undefined) {
+            await logActivity(req.userMatricule!, "CREATE", "Location", location.codeLocation.toString());
+        }
 
         return res.status(201).json(location);
     } catch (error) {
@@ -71,6 +76,10 @@ export const updateLocation = async (req: Request, res: Response) => {
             { available: true },
             { where: { codeLand: req.body.codeLand } } // ✅ utilise la valeur directement
         );
+
+        if (location.codeLocation !== undefined) {
+            await logActivity(req.userMatricule!, "UPDATE", "Location", location.codeLocation.toString());
+        }
 
         return res.status(200).json(location);
     } catch (error) {
@@ -130,6 +139,11 @@ export const deleteLocation = async (req: Request, res: Response) => {
         }
 
         await location.destroy();
+
+        if (location.codeLocation !== undefined) {
+            await logActivity(req.userMatricule!, "DELETE", "Location", location.codeLocation.toString());
+        }
+
         return res.status(200).json(location);
     } catch (error) {
         if (error instanceof Error) {
@@ -149,6 +163,15 @@ export const confirmPayment = async (req: AuthRequest, res: Response) => {
 
         location.statusPayment = true;
         await location.save();
+
+        if (req.userMatricule && location.codeLocation !== undefined) {
+            await logActivity(
+                req.userMatricule,
+                "CONFIRM_PAYMENT",
+                "Location",
+                location.codeLocation.toString()
+            );
+        }
 
         return res.status(200).json({ message: "Paiement confirmé", location });
     } catch (err) {
@@ -233,6 +256,15 @@ export const generateConventionPdf = async (req: Request, res: Response) => {
         doc.text(`Lieu de paiement : ${location.placePaymment}`);
 
         doc.end();
+
+        if (req.userMatricule && location.codeLocation !== undefined) {
+            await logActivity(
+                req.userMatricule,
+                "GENERATE_PDF",
+                "Location",
+                location.codeLocation.toString() // ✅ on sait qu'il n'est plus undefined
+            );
+        }
 
     } catch (error) {
         console.error(error);
@@ -324,6 +356,15 @@ export const generateInvoicePdf = async (req: Request, res: Response) => {
         doc.fontSize(14).text(`Prix total : ${totalPrice} USD`, { align: "right" });
 
         doc.end();
+
+        if (req.userMatricule && location.codeLocation !== undefined) {
+            await logActivity(
+                req.userMatricule,
+                "GENERATE_INVOICE",
+                "Location",
+                location.codeLocation.toString()
+            );
+        }
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Erreur serveur lors de la génération de la facture" });

@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { Tenant } from "../models/tenant.model.ts";
 import { User } from "../models/user.model.ts";
+import { logActivity } from "../middlewares/activityLogs.ts";
 
 export const createTenant = async (req: Request, res: Response) => {
     try {
@@ -52,6 +53,11 @@ export const createTenant = async (req: Request, res: Response) => {
             municipality: req.body.municipality,
             userMatricule: req.body.userMatricule!,
         });
+
+        if (tenant.cin !== undefined) {
+            await logActivity(req.userMatricule!, "CREATE", "Tenant", tenant.cin.toString());
+        }
+
         return res.status(201).json(tenant);
     } catch (error) {
         if (error instanceof Error) {
@@ -113,6 +119,10 @@ export const updateTenant = async (req: Request, res: Response) => {
             userMatricule: req.body.userMatricule!,
         });
 
+        if (tenant.cin !== undefined) {
+            await logActivity(req.userMatricule!, "UPDATE", "Tenant", tenant.cin.toString());
+        }
+
         return res.status(200).json(tenant);
     } catch (error) {
         if (error instanceof Error) {
@@ -172,6 +182,9 @@ export const deleteTenant = async (req: Request, res: Response) => {
         };
 
         await tenant.destroy();
+        if (tenant.cin !== undefined) {
+            await logActivity(req.userMatricule!, "DELETE", "Tenant", tenant.cin.toString());
+        }
         return res.status(200).json(tenant);
     } catch (error) {
         if (error instanceof Error) {

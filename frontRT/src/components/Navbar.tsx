@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { FaBars, FaSignInAlt, FaUserPlus, FaSignOutAlt } from "react-icons/fa";
+import { FaBars, FaSignInAlt, FaUserPlus, FaSignOutAlt, FaHistory } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../apps/Store";
 import { logout } from "../features/authSlice";
@@ -51,8 +51,10 @@ function Navbar() {
           }
           className="navbar-brand text-decoration-none"
         >
-          <h2 className="fw-bold text-primary fst-italic mb-0">
-            land<span className="text-dark">Loc</span>
+          <h2 className="fw-bold mb-0" style={{ fontSize: '1.75rem', letterSpacing: '-0.5px' }}>
+            <span className="text-dark fst-italic">lan</span>
+            <span className="text-primary">D</span>
+            <span className="text-dark fst-italic" style={{ fontSize: '1.75rem', fontStyle: 'italic', transform: 'skewX(10deg)', display: 'inline-block' }}>loc</span>
           </h2>
         </Link>
 
@@ -185,6 +187,14 @@ function Navbar() {
                         </div>
                       </div>
                     </li>
+                    {user && user.poste === "admin" && (
+                      <Link
+                        to="/activity"
+                        className="dropdown-item d-flex align-items-center gap-2 py-2 text-dark fw-semibold"
+                      >
+                        <FaHistory /> Historique
+                      </Link>
+                    )}
                     <li>
                       <button
                         className="dropdown-item py-2 text-danger fw-semibold d-flex align-items-center gap-2 mt-1"
