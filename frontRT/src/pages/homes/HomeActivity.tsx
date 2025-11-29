@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { RefreshCcw } from "lucide-react";
 
 interface ActivityLog {
   id: number;
@@ -64,39 +65,85 @@ export default function HomeActivity() {
     else if (entityName === "land") entityName = "terrain";
     else if (entityName === "location") entityName = "location";
 
-    // Format final
-    return `L'utilisateur ${log.userMatricule} ${actionText} ${entityName} ${log.entityId ?? ""} à la date ${new Date(log.timestamp).toLocaleString()}`;
+    return (
+      <span>
+        L'utilisateur <strong>{log.userMatricule}</strong>{" "}
+        <strong>{actionText}</strong> le <strong>{entityName}</strong>{" "}
+        {log.entityId && (
+          <>
+            numéro <strong>{log.entityId}</strong>
+          </>
+        )}{" "}
+      </span>
+    );
   };
 
-
   return (
-    <div className="container-fluid vh-100 d-flex flex-column justify-content-start p-5">
+    <div className="container-lg p-3" style={{ marginTop: "32px" }} >
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb py-2 px-3 rounded-3">
           <li className="breadcrumb-item" style={{ paddingTop: "4px" }}>
-            <Link to="/" className="text-decoration-none text-secondary">
+            <Link to="/" className="text-decoration-none text-secondary" style={{ display: "inline-block" }}>
               Accueil
             </Link>
           </li>
-          <span className="mx-2 mt-1">{">"}</span>
+          <span className="mx-2 mt-1">{" > "}</span>
           <li className="breadcrumb-item active text-primary fs-5" aria-current="page">
-            Historique
+            Historique d'activité
           </li>
         </ol>
       </nav>
-      <h2 className="mb-3">Historique des activités</h2>
 
       {loading && <p>Chargement des logs...</p>}
       {error && <p className="text-danger">{error}</p>}
       {!loading && logs.length === 0 && <p>Aucun log disponible.</p>}
 
-      <ul className="list-group flex-grow-1 overflow-auto">
-        {logs.map(log => (
-          <li key={log.id} className="list-group-item">
-            {formatAction(log)}
-          </li>
-        ))}
+      {/* Liste scrollable */}
+      <ul
+        className="list-group overflow-auto"
+        style={{ maxHeight: "80vh" }} // Hauteur max pour la liste
+      >
+        {logs.map(log => {
+          let badgeColor = "";
+          switch (log.action) {
+            case "CREATE":
+              badgeColor = "success";
+              break;
+            case "UPDATE":
+              badgeColor = "warning";
+              break;
+            case "DELETE":
+              badgeColor = "danger";
+              break;
+            case "GENERATE_PDF":
+            case "GENERATE_INVOICE":
+              badgeColor = "info";
+              break;
+            case "CONFIRM_PAYMENT":
+              badgeColor = "primary";
+              break;
+            default:
+              badgeColor = "secondary";
+          }
+          return (
+            <li
+              key={log.id}
+              className="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center"
+              style={{ gap: "5px" }}
+            >
+              <div>
+                <span className={`badge bg-${badgeColor} me-2`}>{log.action}</span>
+                {formatAction(log)}
+              </div>
+              <small className="text-muted d-flex align-items-center" style={{ gap: "7px" }}>
+                <RefreshCcw size={16} />
+                {new Date(log.timestamp).toLocaleString()}
+              </small>
+            </li>
+          );
+        })}
       </ul>
     </div>
+
   );
 }
