@@ -30,18 +30,32 @@ function Navbar() {
       }
     });
   };
-  
+
   const getInitial = (pseudo: string) => pseudo?.charAt(0)?.toUpperCase() || "?";
 
   return (
     <nav className="navbar navbar-expand-md navbar-light bg-white shadow-sm sticky-top">
       <div className="container-lg">
         {/* Logo avec gradient */}
-        <Link to={user ? "/tenant" : "/"} className="navbar-brand text-decoration-none">
+        <Link
+          to={
+            user
+              ? user.poste === "operateur de saisie"
+                ? "/tenant"
+                : user.poste === "admin"
+                  ? "/terrain"
+                  : user.poste === "caissier"
+                    ? "/location"
+                    : "/" // pour les autres rôles ou si rôle non défini
+              : "/"
+          }
+          className="navbar-brand text-decoration-none"
+        >
           <h2 className="fw-bold text-primary fst-italic mb-0">
             land<span className="text-dark">Loc</span>
           </h2>
         </Link>
+
 
         {/* Burger Menu Mobile */}
         <button
@@ -159,7 +173,7 @@ function Navbar() {
                   <ul className="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-3 py-2" style={{ minWidth: "200px" }}>
                     <li className="px-3 py-2 border-bottom">
                       <div className="d-flex align-items-center gap-2">
-                        <div 
+                        <div
                           className="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold"
                           style={{ width: "35px", height: "35px", fontSize: "0.9rem" }}
                         >
