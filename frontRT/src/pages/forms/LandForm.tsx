@@ -106,10 +106,10 @@ function LandForm({ onSuccess, isModal }: LandFormProps) {
     };
 
     return (
-        <div className="container-lg my-5">
+        <div className="container-lg" style={{ marginTop: "-220px" }}>
             {!isModal && (
                 <nav aria-label="breadcrumb" className="mb-4">
-                    <ol className="breadcrumb py-2 px-3 rounded-3" style={{ backgroundColor: "#f8f9fa" }}>
+                    <ol className="breadcrumb py-2 px-3 rounded-3">
                         <li className="breadcrumb-item" style={{ paddingTop: "4px" }}>
                             <Link to="/" className="text-decoration-none text-secondary" style={{ display: "inline-block" }}>
                                 Accueil

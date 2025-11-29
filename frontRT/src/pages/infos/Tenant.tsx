@@ -59,6 +59,12 @@ function Tenant() {
     }, [cin]);
 
     const handleDelete = async (cin: number) => {
+
+        if (!user || user.poste !== "operateur de saisie") {
+            toast.error("Vous n'avez pas l'autorisation de supprimer ce locataire.");
+            return;
+        }
+        
         Swal.fire({
             title: "Êtes-vous sûr ?",
             text: "Vous allez supprimer ce locataire !",
@@ -97,7 +103,7 @@ function Tenant() {
 
     return (
 
-         <div className="container-lg" style={{ marginTop: "-330px" }}>
+        <div className="container-lg" style={{ marginTop: "-335px" }}>
             {/* Fil d'Ariane */}
             <nav aria-label="breadcrumb" className="mb-3">
                 <ol className="breadcrumb py-2 px-3 rounded-3">
@@ -175,7 +181,7 @@ function Tenant() {
                         </div>
                     </div>
 
-                    {user && user.matricule === tenant.userMatricule && (
+                    {user && user.matricule === tenant.userMatricule && user.poste === "operateur de saisie" && (
                         <div className="d-flex justify-content-center mt-4">
                             <Link to={`/updateTenant/${tenant.cin}`}>
                                 <button className="btn btn-outline-secondary me-2">Modifier</button>

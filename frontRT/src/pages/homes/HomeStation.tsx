@@ -55,19 +55,21 @@ function HomeStation() {
             </nav>
 
             {/* Ajouter bouton */}
-            {user && user.poste === "admin" && (
-                <div className="row mb-3">
-                    <div className="col-md-6">
-                        <button
-                            onClick={handleAddStations}
-                            className="btn btn-primary d-flex align-items-center gap-2"
-                        >
-                            <PlusCircle size={18} />
-                            Ajouter les gares
-                        </button>
-                    </div>
+            <div className="row mb-3">
+                <div className="col-md-6">
+                    <button
+                        onClick={handleAddStations}
+                        className="btn btn-primary d-flex align-items-center gap-2"
+                        style={{
+                            visibility: user && user.poste === "admin" ? "visible" : "hidden"
+                        }}
+                    >
+                        <PlusCircle size={18} />
+                        Ajouter les gares
+                    </button>
                 </div>
-            )}
+            </div>
+
 
             {/* Status */}
             {status === "loading" && (

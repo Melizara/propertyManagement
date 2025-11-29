@@ -11,6 +11,7 @@ function HomeTenant() {
   const { tenants, status } = useSelector((state: RootState) => state.tenants);
   const dispatch = useDispatch<AppDispatch>();
   const [search, setSearch] = useState("");
+  const user = useSelector((state: RootState) => state.auth.data);
 
   useEffect(() => {
     dispatch(fetchTenants())
@@ -35,7 +36,7 @@ function HomeTenant() {
 
 
   return (
-    <div className="container-lg" style={{ marginTop: "-405px" }}>
+    <div className="container-lg" style={{ marginTop: "-357px" }}>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb py-2 px-3 rounded-3">
           <li className="breadcrumb-item" style={{ paddingTop: "4px" }}>
@@ -50,7 +51,7 @@ function HomeTenant() {
         </ol>
       </nav>
       <div className="my-2">  {/* au lieu de my-5 */}
-        <div className="row justify-content-end mb-2">
+        <div className="row justify-content-end mb-5">
           <div className="col-lg-5">
             <div className="input-group">
               <span className="input-group-text bg-white border-end-0">
@@ -86,7 +87,12 @@ function HomeTenant() {
           <div className="col-md-6 mt-5 mt-md-0 order-md-first">
             <div>
               <Link to={"/formTenant"}>
-                <button className="btn btn-primary px-3 my-3 fw-bold d-flex align-items-center gap-2">
+                <button
+                  className="btn btn-primary px-3 my-3 fw-bold d-flex align-items-center gap-2"
+                  style={{
+                    visibility: user && user.poste === "operateur de saisie" ? "visible" : "hidden"
+                  }}
+                >
                   <PlusCircle size={18} />
                   Ajouter un locataire
                 </button>
@@ -94,6 +100,7 @@ function HomeTenant() {
             </div>
           </div>
         </div>
+
 
         {status === "loading" && (
           <div className="text-center mt-5">

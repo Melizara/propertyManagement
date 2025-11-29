@@ -51,16 +51,18 @@ function HomePrice() {
                 </ol>
             </nav>
             <div className="mt-2 mb-4">
-                {user && user.poste === "admin" && (
-                    <button
-                        onClick={handleAddPrices}
-                        className="btn btn-primary d-flex align-items-center gap-2"
-                    >
-                        <PlusCircle size={18} />
-                        Ajouter tous les prix
-                    </button>
-                )}
+                <button
+                    onClick={handleAddPrices}
+                    className="btn btn-primary d-flex align-items-center gap-2"
+                    style={{
+                        visibility: user && user.poste === "admin" ? "visible" : "hidden"
+                    }}
+                >
+                    <PlusCircle size={18} />
+                    Ajouter tous les prix
+                </button>
             </div>
+
 
             {status === "loading" && (
                 <div className="text-center mt-5">

@@ -140,19 +140,27 @@ const router = createBrowserRouter([
       },
       {
         path: "/formTenant",
-        element: <TenantForm />
+        element: (
+          <PrivateRoute allowedRoles={["operateur de saisie"]}>
+            <TenantForm />
+          </PrivateRoute>
+        )
       },
       {
         path: "/formLand",
         element: (
           <PrivateRoute allowedRoles={["admin"]}>
             <LandForm />
-          </PrivateRoute>
+          </PrivateRoute> 
         )
       },
       {
         path: "/formLocation",
-        element: <LocationForm />
+        element:
+          (<PrivateRoute allowedRoles={["operateur de saisie"]}>
+            <LocationForm />
+          </PrivateRoute>
+          )
       },
       {
         path: "/update/:id",
@@ -160,7 +168,10 @@ const router = createBrowserRouter([
       },
       {
         path: "/updateTenant/:cin",
-        element: <TenantForm />
+        element:
+          (<PrivateRoute allowedRoles={["operateur de saisie"]}>
+            <TenantForm />
+          </PrivateRoute>)
       },
       {
         path: "/updateLand/:codeLand",
@@ -172,7 +183,11 @@ const router = createBrowserRouter([
       },
       {
         path: "updateLocation/:codeLocation",
-        element: <LocationForm />
+        element: (
+          <PrivateRoute allowedRoles={["operateur de saisie"]}>
+            <LocationForm />
+          </PrivateRoute>
+        )
       },
       {
         path: "/unauthorized",

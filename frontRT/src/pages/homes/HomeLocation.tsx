@@ -9,6 +9,7 @@ function HomeLocation() {
     const { locations, status } = useSelector((state: RootState) => state.locations);
     const dispatch = useDispatch<AppDispatch>();
     const [search, setSearch] = useState("");
+    const user = useSelector((state: RootState) => state.auth.data);
 
     useEffect(() => {
         dispatch(fetchLocations());
@@ -30,7 +31,7 @@ function HomeLocation() {
     });
 
     return (
-        <div className="container-lg" style={{ marginTop: "-348px" }}>
+        <div className="container-lg" style={{ marginTop: "-302px" }}>
             {/* Breadcrumb */}
             <nav aria-label="breadcrumb">
                 <ol className="breadcrumb py-2 px-3 rounded-3">
@@ -48,7 +49,7 @@ function HomeLocation() {
 
             <div className="my-2">
                 {/* 🔎 Search */}
-                <div className="row justify-content-end mb-2">
+                <div className="row justify-content-end mb-5">
                     <div className="col-lg-5">
 
                         <div className="input-group">
@@ -86,12 +87,18 @@ function HomeLocation() {
                 <div className="row align-items-center align-content-center">
                     <div className="col-md-6 mt-5 mt-md-0 order-md-first">
                         <Link to={"/formLocation"}>
-                            <button className="btn btn-primary px-3 my-3 fw-bold">
+                            <button
+                                className="btn btn-primary px-3 my-3 fw-bold"
+                                style={{
+                                    visibility: user && user.poste === "operateur de saisie" ? "visible" : "hidden"
+                                }}
+                            >
                                 Ajouter une location
                             </button>
                         </Link>
                     </div>
                 </div>
+
 
                 {/* Status messages */}
                 {status === "loading" && (

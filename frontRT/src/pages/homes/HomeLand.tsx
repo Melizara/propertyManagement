@@ -76,7 +76,7 @@ function HomeLand() {
 
     // Début du rendu du composant
     return (
-        <div className="container-lg" style={{ marginTop: "40px" }}>
+        <div className="container-lg" style={{ marginTop: "48px" }}>
             <nav aria-label="breadcrumb">
                 <ol className="breadcrumb py-2 px-3 rounded-3">
                     <li className="breadcrumb-item" style={{ paddingTop: "4px" }}>
@@ -115,16 +115,15 @@ function HomeLand() {
             </div>
 
             {/* Bouton pour ouvrir le modal d'ajout */}
-            {user && user.poste === "admin" && (
-                <button
-                    className="btn btn-primary mb-3 d-flex align-items-center gap-2"
-                    onClick={() => setShowModal(true)}
-                >
-                    <PlusCircle size={18} />
-                    Ajouter un Terrain
-                </button>
+            <button
+                className="btn btn-primary mb-3 d-flex align-items-center gap-2"
+                onClick={() => setShowModal(true)}
+                style={{ visibility: user && user.poste === "admin" ? "visible" : "hidden" }}
+            >
+                <PlusCircle size={18} />
+                Ajouter un Terrain
+            </button>
 
-            )}
             {/* Modal pour ajouter un terrain */}
             {showModal && (
                 <div
