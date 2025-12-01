@@ -255,8 +255,13 @@ function LocationForm() {
                                 <select className="form-select" value={codeLand} onChange={e => setCodeLand(e.target.value)} required>
                                     <option value="">Sélectionnez le terrain</option>
                                     {lands
-                                        .filter(land => land.available === true)
-                                        .map(l => <option key={l.codeLand} value={l.codeLand}>{l.codeLand} - {l.area} m²</option>)}
+                                        .filter(land => land.available || land.codeLand === codeLand)
+                                        .map(l => (
+                                            <option key={l.codeLand} value={l.codeLand}>
+                                                {l.codeLand} - {l.area} m²
+                                            </option>
+                                        ))}
+
                                 </select>
                             </div>
                         </div>
@@ -338,7 +343,7 @@ function LocationForm() {
                                     type="text"
                                     className="form-control"
                                     value={placePaymment}
-                                    maxLength={10}
+                                    maxLength={20}
                                     onChange={e => {
                                         const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
                                         setPlacePaymment(lettersOnly);

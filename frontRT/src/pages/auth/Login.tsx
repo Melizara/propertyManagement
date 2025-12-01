@@ -92,7 +92,7 @@ function Login() {
           <User
             className="position-absolute"
             style={{
-              top: "65%",
+              top: "70%",
               left: "15px",
               transform: "translateY(-50%)",
               color: "#026da1",
@@ -129,7 +129,7 @@ function Login() {
           <Lock
             className="position-absolute"
             style={{
-              top: "65%",
+              top: "70%",
               left: "15px",
               transform: "translateY(-50%)",
               color: "#026da1",
