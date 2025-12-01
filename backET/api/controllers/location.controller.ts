@@ -228,8 +228,6 @@ export const generateConventionPdf = async (req: AuthRequest, res: Response) => 
         doc.fontSize(12).text(`Ny TALEN’NY LALAMBIM-PIRENENA MALAGASY FCE dia manome alalana:`);
         doc.moveDown(0.5);
 
-        const safeText = (str?: string) => str?.replace(/[“”‘’`]/g, "") || "";
-
         doc.text(
             `An’A/toa ${tenant.name} ${tenant.lastName} hoe Mpanofa\n` +
             `Teraka tamin’ny ${tenant.birthDate} tao ${tenant.birthPlace}\n` +
@@ -256,6 +254,7 @@ export const generateConventionPdf = async (req: AuthRequest, res: Response) => 
         // --- SURFACES ET PRIX ---
         doc.text(
             `Andininy voalohany: Ny hampiasana ny tany\n` +
+            `Tany tsy misy fanorenana ${land.area}\n` +
             `- Tany tsy misy fanorenana mirefy: ${location.areaLandBare} metatra tora-droa\n` +
             `- Tany misy fanorenana trano hazo fonenana izay mirefy: ${location.areaWood + location.areaPermanent} metatra tora-droa\n`
         );
@@ -389,3 +388,96 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
     }
 };
 
+
+/*
+export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
+    try {
+        const location = await Location.findByPk(req.params.codeLocation, {
+            include: [
+                { model: Tenant, as: "tenant" },
+                { model: Land, as: "land", include: [{ model: Station, as: "station" }] },
+            ],
+        });
+
+        if (!location) return res.status(404).json({ error: "Location non trouvée" });
+
+        const tenant = location.tenant!;
+        const land = location.land!;
+        const station = land.station!;
+
+        const doc = new PDFDocument({ margin: 50 });
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename=facture_${location.codeLocation}.pdf`
+        );
+
+        doc.pipe(res);
+
+        doc.fontSize(12);
+
+        // En-tête
+        doc.text(`Compte à débiter : ____________________`, 50, 50);
+        doc.text(`Code Gare : ${station.codeStation}`, 300, 50);
+        doc.text(`NOM du locataire : ${tenant.name} ${tenant.lastName}`, 450, 50);
+
+        doc.text(`Compte à créditer : ____________________`, 50, 70);
+        doc.text(`Destination : ${location.placePaymment}`, 300, 70);
+
+        doc.text(`Convention : ____________________`, 50, 90);
+        doc.text(`PK Com : ${land.startPk}`, 300, 90);
+
+        doc.text(`Perception : ____________________`, 50, 110);
+        doc.text(`PK Fin : ${land.endPk}`, 300, 110);
+        doc.text(`ADRESSE du locataire : ${tenant.address}`, 450, 110);
+
+        doc.text(`Code tarif : ____________________`, 50, 130);
+        doc.text(`Superficie : ${location.areaLandBare + location.areaPermanent + location.areaWood}`, 300, 130);
+
+        doc.moveDown(2);
+
+        // Tableau principal
+        doc.text("LOCATION TERRAIN", 50, 160, { underline: true });
+        doc.text("MONTANT(Ar)", 400, 160, { underline: true });
+
+        doc.moveDown(1);
+        const tableTop = 180;
+
+        const rowSpacing = 20;
+        const usages = [
+            { type: "Usage habitation", area: land.area || 0, price: location.codeLocation || 0 },
+            { type: "Usage commercial", area: land.area || 0, price: location.codeLocation || 0 },
+            { type: "Usage agricole", area: land.area || 0, price: location.codeLocation || 0 },
+            { type: "Usage culturel", area: land.area || 0, price: location.codeLocation || 0 },
+            { type: "Terrain nu A.D", area: land.area, price: location.priceLandBare },
+        ];
+
+        usages.forEach((u, i) => {
+            const y = tableTop + i * rowSpacing;
+            doc.text(u.type, 50, y);
+            doc.text(u.area.toString(), 200, y);
+            doc.text(u.price.toString(), 300, y);
+            doc.text((u.area * u.price).toString(), 400, y);
+        });
+
+        // Totaux
+        const totalHorsTva = usages.reduce((acc, u) => acc + u.area * u.price, 0);
+        const tva = totalHorsTva * 0.2;
+        const totalTtc = totalHorsTva + tva;
+
+        doc.text(`TOTAL hors TVA : ${totalHorsTva}`, 50, tableTop + usages.length * rowSpacing + 20);
+        doc.text(`TVA 20% : ${tva}`, 50, tableTop + usages.length * rowSpacing + 40);
+        doc.text(`TOTAL TTC : ${totalTtc}`, 50, tableTop + usages.length * rowSpacing + 60);
+
+        doc.end();
+
+        if (req.userMatricule && location.codeLocation !== undefined) {
+            await logActivity(req.userMatricule, "FACTURE", "Location", location.codeLocation.toString());
+        }
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Erreur serveur lors de la génération de la facture" });
+    }
+};
+*/

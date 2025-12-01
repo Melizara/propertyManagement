@@ -39,6 +39,15 @@ function Location() {
     const { codeLocation } = useParams<{ codeLocation: string }>();
     const [location, setLocation] = useState<LocationType | null>(null);
     const [loading, setLoading] = useState(true);
+    const [land, setLand] = useState<{ area: number } | null>(null);
+
+    useEffect(() => {
+        if (!location) return;
+        axios.get(`/api/lands/${location.codeLand}`)
+            .then(res => setLand(res.data))
+            .catch(err => console.error(err));
+    }, [location]);
+
 
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
@@ -150,10 +159,6 @@ function Location() {
                             <strong>Surface Terrain Nu :</strong> {location.areaLandBare} m²
                         </div>
                         <div className="col-md-6 mb-3">
-                            <strong>Prix Terrain Nu :</strong> {location.priceLandBare}
-                        </div>
-
-                        <div className="col-md-6 mb-3">
                             <strong>Surface Bois :</strong> {location.areaWood} m²
                         </div>
                         <div className="col-md-6 mb-3">
@@ -165,6 +170,12 @@ function Location() {
                         </div>
                         <div className="col-md-6 mb-3">
                             <strong>Prix Dure :</strong> {location.pricePermanent}
+                        </div>
+                        <div className="col-md-6 mb-3">
+                            <strong>Prix Terrain Nu :</strong> {location.priceLandBare}
+                        </div>
+                        <div className="col-md-6 mb-3">
+                            <strong>Surface Totale :</strong> {land ? land.area : "Chargement..."} m²
                         </div>
                     </div>
                     <div className="mt-3">

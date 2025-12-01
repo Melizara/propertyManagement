@@ -281,7 +281,6 @@ function LocationForm() {
                         {/* Surfaces et prix */}
                         {usage !== "Agricole" && (
                             <>
-
                                 <div className="row mb-3">
                                     <div className="col-md-4">
                                         <label className="form-label">Surface Terrain Nu</label>
