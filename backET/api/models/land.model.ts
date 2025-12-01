@@ -85,7 +85,7 @@ export const initLand = (sequelize: Sequelize) => {
             available: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
-                defaultValue: false, // disponible par défaut
+                defaultValue: true, // disponible par défaut
             },
             userMatricule: {
                 type: DataTypes.STRING,

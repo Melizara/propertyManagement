@@ -108,7 +108,7 @@ function HomeLand() {
                         let pk = Number(e.target.value);
 
                         // Empêcher d'aller en dehors de [1 - 163]
-                        if (pk < 1) pk = 1;
+                        if (pk < 0) pk = 0;
                         if (pk > 163) pk = 163;
 
                         e.target.value = pk.toString();
@@ -120,10 +120,6 @@ function HomeLand() {
                     }}
                 />
             </div>
-
-
-
-
             {/* Bouton pour ouvrir le modal d'ajout */}
             <button
                 className="btn btn-success mb-3 d-flex align-items-center gap-2"

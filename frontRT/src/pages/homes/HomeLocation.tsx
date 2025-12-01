@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../apps/Store";
 import { fetchLocations } from "../../features/locationSlice";
-import { MapPin, Eye, Tag, IdCard, Layers2, DollarSign, FileCheck2, Search } from "lucide-react";
+import { MapPin, Eye, Tag, IdCard, Layers2, DollarSign, FileCheck2, Search, PlusCircle } from "lucide-react";
 
 function HomeLocation() {
     const { locations, status } = useSelector((state: RootState) => state.locations);
@@ -86,13 +86,14 @@ function HomeLocation() {
                 {/* Ajouter button */}
                 <div className="row align-items-center align-content-center">
                     <div className="col-md-6 mt-5 mt-md-0 order-md-first">
-                        <Link to={"/formLocation"}>
+                        <Link to={"/formLocation"} style={{textDecoration:"none"}}>
                             <button
-                                className="btn btn-success px-3 my-3 fw-bold"
+                                className="btn btn-success mb-3 d-flex align-items-center gap-2"
                                 style={{
                                     visibility: user && user.poste === "operateur de saisie" ? "visible" : "hidden"
                                 }}
                             >
+                                <PlusCircle size={20} />
                                 Ajouter une location
                             </button>
                         </Link>

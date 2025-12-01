@@ -139,30 +139,66 @@ function LandForm({ onSuccess, isModal }: LandFormProps) {
                 <div className="row mb-3">
                     <div className="col-md-6">
                         <label className="form-label">Longueur</label>
-                        <input type="text" className="form-control" value={length}
-                            maxLength={6}
-                            onChange={(e) => setLength(e.target.value)} required />
+                        <input
+                            type="number"
+                            className="form-control"
+                            value={length}
+                            min="1"
+                            max="999"
+                            onChange={e => {
+                                let pk = Number(e.target.value);
+                                if (pk < 1) pk = 1
+                                if (pk > 999) pk = 999
+                                setLength(pk.toString());
+                            }} required />
                     </div>
                     <div className="col-md-6">
                         <label className="form-label">Largeur</label>
-                        <input type="text" className="form-control" value={width}
-                            maxLength={4}
-                            onChange={(e) => setWidth(e.target.value)} required />
+                        <input
+                            type="number"
+                            className="form-control"
+                            value={width}
+                            min="0"
+                            max="99999"
+                            onChange={e => {
+                                let pk = Number(e.target.value);
+                                if (pk < 0) pk = 0
+                                if (pk > 99999) pk = 99999
+                                setWidth(pk.toString());
+                            }}required />
                     </div>
                 </div>
                 <div className="row mb-3">
                     <div className="col-md-6">
                         <label className="form-label">Pk debut</label>
-                        <input type="text" className="form-control" value={startPk}
-                            maxLength={3}
-                            onChange={e => setStartPk(e.target.value)}
+                        <input
+                            type="number"
+                            className="form-control"
+                            value={startPk}
+                            min="0"
+                            max="163"
+                            onChange={e => {
+                                let pk = Number(e.target.value);
+                                if (pk < 0) pk = 0
+                                if (pk > 163) pk = 163
+                                setStartPk(pk.toString());
+                            }}
                             required />
                     </div>
                     <div className="col-md-6">
                         <label className="form-label">Pk fin</label>
-                        <input type="text" className="form-control" value={endPk}
-                            maxLength={3}
-                            onChange={(e) => setEndPk(e.target.value)} required />
+                        <input
+                            type="number"
+                            className="form-control"
+                            value={endPk}
+                            min="0"
+                            max="163"
+                            onChange={e => {
+                                let pk = Number(e.target.value);
+                                if (pk < 0) pk = 0
+                                if (pk > 163) pk = 163
+                                setEndPk(pk.toString());
+                            }} required />
                     </div>
                 </div>
                 <div className="row mb-3">

@@ -31,7 +31,7 @@ export const createLocation = async (req: Request, res: Response) => {
         });
 
         await Land.update(
-            { available: true },
+            { available: false },
             { where: { codeLand: req.body.codeLand } } // ✅ utilise la valeur directement
         );
 
@@ -73,7 +73,7 @@ export const updateLocation = async (req: Request, res: Response) => {
         });
 
         await Land.update(
-            { available: true },
+            { available: false },
             { where: { codeLand: req.body.codeLand } } // ✅ utilise la valeur directement
         );
 
@@ -139,6 +139,16 @@ export const deleteLocation = async (req: Request, res: Response) => {
         }
 
         await location.destroy();
+
+        try {
+            const result = await Land.update(
+                { available: true },
+                { where: { codeLand: location.codeLand } }
+            );
+            console.log(result);
+        } catch (error) {
+            console.error(error)
+        }
 
         if (location.codeLocation !== undefined) {
             await logActivity(req.userMatricule!, "DELETE", "Location", location.codeLocation.toString());

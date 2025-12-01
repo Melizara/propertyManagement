@@ -212,17 +212,14 @@ function Navbar() {
             {!user && (
               <>
                 <li className="nav-item">
-                  <Link to="/login">
-                    <button className="btn btn-outline-primary fw-semibold px-4 py-2 rounded-pill d-flex align-items-center gap-2">
-                      <FaSignInAlt /> Connexion
-                    </button>
+                  <Link to="/login" className="btn btn-outline-primary fw-semibold px-4 py-2 rounded-pill d-flex align-items-center gap-2">
+                    <FaSignInAlt /> Connexion
+
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link to="/register">
-                    <button className="btn btn-primary fw-semibold px-4 py-2 rounded-pill d-flex align-items-center gap-2 shadow-sm">
-                      <FaUserPlus /> Inscription
-                    </button>
+                  <Link to="/register" className="btn btn-primary fw-semibold px-4 py-2 rounded-pill d-flex align-items-center gap-2 shadow-sm">
+                    <FaUserPlus /> Inscription
                   </Link>
                 </li>
               </>

@@ -86,7 +86,7 @@ function HomeTenant() {
         <div className="row align-items-center align-content-center">
           <div className="col-md-6 mt-5 mt-md-0 order-md-first">
             <div>
-              <Link to={"/formTenant"}>
+              <Link to={"/formTenant"} style={{textDecoration:"none"}}>
                 <button
                   className="btn btn-success px-3 my-3 fw-bold d-flex align-items-center gap-2"
                   style={{

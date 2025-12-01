@@ -24,6 +24,7 @@ type LandWithStation = {
     station: {
         type: string;
     };
+    available: boolean
 };
 
 function LocationForm() {
@@ -253,7 +254,9 @@ function LocationForm() {
                                 <label className="form-label">Code Land</label>
                                 <select className="form-select" value={codeLand} onChange={e => setCodeLand(e.target.value)} required>
                                     <option value="">Sélectionnez le terrain</option>
-                                    {lands.map(l => <option key={l.codeLand} value={l.codeLand}>{l.codeLand} - {l.area} m²</option>)}
+                                    {lands
+                                        .filter(land => land.available === true)
+                                        .map(l => <option key={l.codeLand} value={l.codeLand}>{l.codeLand} - {l.area} m²</option>)}
                                 </select>
                             </div>
                         </div>
@@ -331,7 +334,16 @@ function LocationForm() {
 
                             <div className="col-md-4">
                                 <label className="form-label">Lieu de paiement</label>
-                                <input type="text" className="form-control" value={placePaymment} maxLength={20} onChange={e => setPlacePaymment(e.target.value)} required />
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={placePaymment}
+                                    maxLength={10}
+                                    onChange={e => {
+                                        const lettersOnly = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+                                        setPlacePaymment(lettersOnly);
+                                    }}
+                                    required />
                             </div>
                         </div>
 

@@ -72,7 +72,7 @@ function Location() {
             if (result.isConfirmed) {
                 await dispatch(deleteLocation(codelocation));
                 navigate("/location");
-                toast.success("Locataire supprimé avec succès !");
+                toast.success("Location supprimé avec succès !");
             }
         });
     };

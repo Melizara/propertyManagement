@@ -15,13 +15,13 @@ function Welcome() {
             Icon: Users
         },
         {
-            title: "Suivi des Terrains et Propriétés",
+            title: "Suivi des Terrains et Locations",
             description: "Visualisez les terrains, leurs superficies et usages en un coup d'œil.",
             Icon: MapPin
         },
         {
-            title: "Facturation Automatique",
-            description: "Générez des factures et reçus automatiquement, prêts à être exportés en PDF.",
+            title: "Facturation et convention Automatique",
+            description: "Générez des factures et conventions automatiquement, prêts à être exportés en PDF.",
             Icon: ReceiptText
         },
     ];
@@ -42,7 +42,7 @@ function Welcome() {
                         Propriétés, simplifiées.
                     </h1>
                     <p className="lead text-muted mb-5">
-                        Gérez facilement vos biens, locataires et finances avec la plateforme <strong>Property Management</strong>, conçue pour la rapidité et l'efficacité.
+                        Gérez facilement vos terrains, locataires et contrats avec la plateforme <strong>lanDloc</strong>, conçue pour la rapidité et l'efficacité.
                     </p>
                     
                     <button 
@@ -62,7 +62,7 @@ function Welcome() {
             <section className="py-5 py-lg-6">
                 <div className="container px-4 px-lg-5">
                     <h2 className="text-center display-5 fw-bold text-dark mb-5">
-                        🚀 Fonctionnalités Clés
+                        Fonctionnalités Clés
                     </h2>
                     
                     <div className="row g-4 justify-content-center">
