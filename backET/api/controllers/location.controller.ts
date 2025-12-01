@@ -189,7 +189,6 @@ export const confirmPayment = async (req: AuthRequest, res: Response) => {
         return res.status(500).json({ error: "Erreur serveur" });
     }
 };
-
 export const generateConventionPdf = async (req: AuthRequest, res: Response) => {
     try {
         const location = await Location.findByPk(req.params.codeLocation, {
@@ -205,65 +204,72 @@ export const generateConventionPdf = async (req: AuthRequest, res: Response) => 
         const land = location.land!;
         const station = land.station!;
 
-        // Créer un nouveau PDF
         const doc = new PDFDocument({ margin: 50 });
         res.setHeader("Content-Type", "application/pdf");
-        res.setHeader("Content-Disposition", `attachment; filename=convention_${location.codeLocation}.pdf`);
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename=fanomezan-dalana_${location.codeLocation}.pdf`
+        );
 
         doc.pipe(res);
 
-        doc.fontSize(18).text("Convention de Location", { align: "center" });
-        doc.moveDown();
+        // --- TITRE ---
+        doc.fontSize(18).text(
+            `FANOMEZAN-DALANA N°: ${station.codeStation}/${location.codeLocation}/${new Date().getFullYear()}`,
+            { align: "center" }
+        );
 
-        const currentYear = new Date().getFullYear();
-        doc.fontSize(12).text(`Code Location : ${location.codeLocation}`);
-        doc.text(`Année de génération : ${currentYear}`);
-        doc.moveDown();
+        doc.moveDown(1);
 
-        // Infos gare
-        doc.fontSize(12).text(`Code Gare : ${station.codeStation}`);
-        doc.text(`Nom Gare : ${station.name}`);
-        doc.moveDown();
+        doc.fontSize(12).text(`Hanofa ny tanin’ny Lalamby ao ${station.name}`, { align: "center" });
+        doc.moveDown(2);
 
-        // Infos locataire
-        doc.text(`Nom : ${tenant.name}`);
-        doc.text(`Prénom : ${tenant.lastName}`);
-        doc.text(`Date de naissance : ${tenant.birthDate}`);
-        doc.text(`Lieu de naissance : ${tenant.birthPlace}`);
-        doc.text(`Père : ${tenant.father}`);
-        doc.text(`Mère : ${tenant.mother}`);
-        doc.text(`CIN : ${tenant.cin}`);
-        doc.text(`Date CIN : ${tenant.dateCin}`);
-        doc.text(`Lieu CIN : ${tenant.cinPlace}`);
-        doc.text(`Adresse : ${tenant.address}`);
-        doc.text(`Quartier : ${tenant.neighborHood}`);
-        doc.text(`Commune : ${tenant.municipality}`);
-        doc.moveDown();
+        // --- INFORMATIONS LOCATAIRE ---
+        doc.fontSize(12).text(`Ny TALEN’NY LALAMBIM-PIRENENA MALAGASY FCE dia manome alalana:`);
+        doc.moveDown(0.5);
 
-        // Infos terrain
-        const totalSurface = land.area;
-        doc.text(`Surface totale du terrain : ${totalSurface}`);
-        doc.text(`PK début : ${land.startPk}`);
-        doc.text(`PK fin : ${land.endPk}`);
-        doc.text(`Railway Side : ${land.railwaySide}`);
-        doc.text(`Position : ${land.position}`);
-        doc.text(`Quartier : ${land.neighborHood}`);
-        doc.text(`Commune : ${land.municipality}`);
-        doc.moveDown();
+        const safeText = (str?: string) => str?.replace(/[“”‘’`]/g, "") || "";
 
-        // Surface et prix
-        doc.text(`Surface terrain nu : ${location.areaLandBare} m²`);
-        doc.text(`Surface terrain construction dure : ${location.areaPermanent} m²`);
-        doc.text(`Surface terrain construction bois : ${location.areaWood} m²`);
-        doc.text(`Prix terrain nu : ${location.priceLandBare}`);
-        doc.text(`Prix terrain construction dure : ${location.pricePermanent}`);
-        doc.text(`Prix terrain construction bois : ${location.priceWood}`);
+        doc.text(
+            `An’A/toa ${tenant.name} ${tenant.lastName} hoe Mpanofa\n` +
+            `Teraka tamin’ny ${tenant.birthDate} tao ${tenant.birthPlace}\n` +
+            `Zanak'i ${tenant.father} sy i ${tenant.mother}\n` +
+            `Karam-panondrom-pirenena laharana faha°: ${tenant.cin} natao tao ${tenant.cinPlace} tamin'ny ${tenant.dateCin}\n`
+
+        );
+        doc.text(`Monina ao: ${tenant.address}`);
+        doc.text(`Fokontany: ${tenant.neighborHood}`);
+        doc.text(`Kaominina: ${tenant.municipality}`);
+
+        doc.moveDown(1);
+
+        // --- INFORMATIONS TERRAIN ---
+        doc.text(
+            `Hampiasa ny sombin-tany mirefy ${land.area} m², ` +
+            `ka Longueur ${land.length} metatra ny lavany, ary largeur ${land.width} metatra ny sakany.\n` +
+            `Ao amin’ny tanin’ny Lalambim-pirenena FCE: PK ${land.startPk} ka hatreo PK ${land.endPk}, ` +
+            `${land.railwaySide} raha ho any Manakara, morona faharoa.\n` +
+            `Fokontany: ${land.neighborHood}, Kaominina: ${land.municipality}.`
+        );
+        doc.moveDown(1);
+
+        // --- SURFACES ET PRIX ---
+        doc.text(
+            `Andininy voalohany: Ny hampiasana ny tany\n` +
+            `- Tany tsy misy fanorenana mirefy: ${location.areaLandBare} metatra tora-droa\n` +
+            `- Tany misy fanorenana trano hazo fonenana izay mirefy: ${location.areaWood + location.areaPermanent} metatra tora-droa\n`
+        );
+
         const totalPrice = location.priceLandBare + location.pricePermanent + location.priceWood;
-        doc.text(`Prix total du terrain : ${totalPrice}`);
-        doc.moveDown();
+        doc.text(`Andininy fahatelo: Ny Hofan-tany sy ny fomba fandoavana azy\n` +
+            `- Ho an’ny tany tsy misy fanorenana: ${location.priceLandBare} Ariary\n` +
+            `- Ho an’ny tany misy fanorenana: ${location.pricePermanent + location.priceWood} Ariary\n` +
+            `- Prix total: ${totalPrice} Ariary`
+        );
+        doc.moveDown(1);
 
-        // Lieu de paiement
-        doc.text(`Lieu de paiement : ${location.placePaymment}`);
+        // --- FIN DU DOCUMENT ---
+        doc.text(`Natao teto ${station.name}, ${new Date().toLocaleDateString()}`, { align: "right" });
 
         doc.end();
 
@@ -276,12 +282,12 @@ export const generateConventionPdf = async (req: AuthRequest, res: Response) => 
             );
         }
 
-
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Erreur serveur lors de la génération du PDF" });
     }
 };
+
 
 export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
     try {

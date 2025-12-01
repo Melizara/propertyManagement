@@ -261,7 +261,6 @@ function LocationForm() {
                                                 {l.codeLand} - {l.area} m²
                                             </option>
                                         ))}
-
                                 </select>
                             </div>
                         </div>
