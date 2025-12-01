@@ -43,6 +43,8 @@ export default function HomeActivity() {
   // Actions possibles pour filtrer
   const actions = [
     { value: "", label: "Toutes", color: "secondary" },
+    { value: "REGISTER", label: "Inscription", color: "success" },
+    { value: "LOGIN", label: "Connexion", color: "primary" },
     { value: "CREATE", label: "Insertion", color: "success" },
     { value: "UPDATE", label: "Modification", color: "warning" },
     { value: "DELETE", label: "Résiliation", color: "danger" },
@@ -51,13 +53,23 @@ export default function HomeActivity() {
     { value: "CONFIRM_PAYMENT", label: "Confirmation paiement", color: "primary" },
   ];
 
+
   // Fonction pour traduire l'action en texte français
   const formatAction = (log: ActivityLog) => {
+    // Cas LOGIN et REGISTER simplifiés
+    if (log.action === "LOGIN") {
+      return <span>L'utilisateur <strong>{log.userMatricule}</strong> s'est connecté</span>;
+    }
+    if (log.action === "REGISTER") {
+      return <span>L'utilisateur <strong>{log.userMatricule}</strong> s'est inscrit</span>;
+    }
+
+    // Pour les autres actions
     let actionText = "";
     switch (log.action) {
       case "CREATE": actionText = "ajouté"; break;
       case "UPDATE": actionText = "modifié"; break;
-      case "DELETE": actionText = "resilié"; break;
+      case "DELETE": actionText = "résilié"; break;
       case "GENERATE_PDF": actionText = "conventioné"; break;
       case "GENERATE_INVOICE": actionText = "facturé"; break;
       case "CONFIRM_PAYMENT": actionText = "confirmé"; break;
@@ -65,17 +77,20 @@ export default function HomeActivity() {
     }
 
     let entityName = log.entity.toLowerCase();
+    if (entityName === "user") entityName = "compte utilisateur";
     if (entityName === "tenant") entityName = "locataire";
-    else if (entityName === "land") entityName = "terrain";
-    else if (entityName === "location") entityName = "location";
+    if (entityName === "land") entityName = "terrain";
+    if (entityName === "location") entityName = "location";
 
     return (
       <span>
-        L'utilisateur <strong>{log.userMatricule}</strong> a <strong>{actionText}</strong> le <strong>{entityName}</strong>{" "}
-        {log.entityId && <>numéro <strong>{log.entityId}</strong></>}
+        L'utilisateur <strong>{log.userMatricule}</strong> a <strong>{actionText}</strong>
+        {log.entityId && <> le <strong>{entityName}</strong> numéro <strong>{log.entityId}</strong></>}
       </span>
     );
   };
+
+
 
   return (
     <div className="container-lg p-3" >
@@ -145,6 +160,8 @@ export default function HomeActivity() {
               case "GENERATE_PDF": badgeColor = "secondary"; badgeText = "CONVENTION"; break;
               case "GENERATE_INVOICE": badgeColor = "info"; badgeText = "FACTURE"; break;
               case "CONFIRM_PAYMENT": badgeColor = "primary"; badgeText = "CONFIRMATION_PAYEMENT"; break;
+              case "REGISTER": badgeColor = "success"; badgeText = "INSCRIPTION"; break;
+              case "LOGIN": badgeColor = "primary"; badgeText = "CONNEXION"; break;
               default: badgeColor = "secondary";
             }
 

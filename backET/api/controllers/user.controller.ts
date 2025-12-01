@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 // Import pour créer des tokens JWT
 import jwt from "jsonwebtoken";
 import { validationResult } from "express-validator";
+import { logActivity } from "../middlewares/activityLogs.ts";
 
 // ===============================
 // Fonction pour l'inscription
@@ -53,6 +54,17 @@ export const register = async (req: Request, res: Response) => {
         );
         // Supprime le mot de passe avant de renvoyer la réponse
         const { password: pwd, ...userData } = user.get({ plain: true });
+
+        await logActivity(
+            userPlain.matricule,
+            "REGISTER",   // ⬅️ au lieu de "Inscription"
+            "User",
+            userPlain.matricule
+        );
+
+
+
+
         // Renvoie l'utilisateur et le token
         return res.status(200).json({ userData, token });
     } catch (error) {
@@ -94,6 +106,15 @@ export const login = async (req: Request, res: Response) => {
         );
         // Supprime le mot de passe avant de renvoyer la réponse
         const { password: pwd, ...userData } = user.get({ plain: true });
+
+        await logActivity(
+            userPlain2.matricule,
+            "LOGIN",   // ⬅️ au lieu de "Connexion"
+            "User",
+            userPlain2.matricule
+        );
+
+
         // Renvoie l'utilisateur et le token
         return res.status(200).json({ userData, token });
     } catch (error) {
