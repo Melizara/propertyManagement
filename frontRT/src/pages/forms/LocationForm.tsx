@@ -197,6 +197,21 @@ function LocationForm() {
         }
     };
 
+    const handleAreaChange = (
+        value: string,
+        setter: (val: string) => void,
+        otherAreas: number[]
+    ) => {
+        const val = Number(value) || 0;
+        const sumOthers = otherAreas.reduce((a, b) => a + b, 0);
+        const maxVal = (lands.find(l => String(l.codeLand) === String(codeLand))?.area || 0) - sumOthers;
+
+        setter(val > maxVal ? maxVal.toString() : val.toString());
+    };
+
+
+
+
     return (
         <div className="container-lg" style={{ marginTop: "-225px" }}>
             <nav aria-label="breadcrumb" className="mb-3" >
@@ -284,15 +299,45 @@ function LocationForm() {
                                 <div className="row mb-3">
                                     <div className="col-md-4">
                                         <label className="form-label">Surface Terrain Nu</label>
-                                        <input type="text" className="form-control" value={areaLandBare} maxLength={9} onChange={e => setAreaLandBare(e.target.value)} required />
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            value={areaLandBare}
+                                            onChange={e =>
+                                                handleAreaChange(e.target.value, setAreaLandBare, [
+                                                    Number(areaWood),
+                                                    Number(areaPermanent),
+                                                ])
+                                            }
+                                        />
                                     </div>
                                     <div className="col-md-4">
                                         <label className="form-label">Surface Bois</label>
-                                        <input type="text" className="form-control" value={areaWood} maxLength={9} onChange={e => setAreaWood(e.target.value)} required />
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            value={areaWood}
+                                            onChange={e =>
+                                                handleAreaChange(e.target.value, setAreaWood, [
+                                                    Number(areaLandBare),
+                                                    Number(areaPermanent),
+                                                ])
+                                            }
+                                        />
                                     </div>
                                     <div className="col-md-4">
                                         <label className="form-label">Surface Dure</label>
-                                        <input type="text" className="form-control" value={areaPermanent} maxLength={9} onChange={e => setAreaPermanent(e.target.value)} required />
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            value={areaPermanent}
+                                            onChange={e =>
+                                                handleAreaChange(e.target.value, setAreaPermanent, [
+                                                    Number(areaLandBare),
+                                                    Number(areaWood),
+                                                ])
+                                            }
+                                        />
                                     </div>
                                 </div>
 
