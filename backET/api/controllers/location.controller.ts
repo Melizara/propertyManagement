@@ -290,27 +290,32 @@ Raha misy kosa fanamarihana avy amin’ny andaniny na ny ankilany ka mitaky ny f
         doc.moveDown(1);
 
         // --- ANDININY FAHATelo ---
+        // --- ANDININY FAHATelo ---
         doc.font('Helvetica-Bold').text(
             "Andininy fahatelo: Ny Hofan-tany sy ny fomba fandoavana azy",
             { underline: true }
         );
 
-        // Déterminer les sous-usages existants sur le terrain
+        // Déterminer les sous-usages et surfaces
         const sousUsages: { type: string; area: number }[] = [];
 
         if (location.usage.toLowerCase() === "agricole") {
-            if (land.area > 0) sousUsages.push({ type: "agricole", area: land.area });
+            if (land.area > 0) sousUsages.push({ type: "Tany fambolena", area: land.area });
         } else {
-            if (location.areaLandBare > 0) sousUsages.push({ type: "terrain nu", area: location.areaLandBare });
-            if (location.areaWood > 0) sousUsages.push({ type: "construction bois", area: location.areaWood });
-            if (location.areaPermanent > 0) sousUsages.push({ type: "construction dure", area: location.areaPermanent });
+            if (location.areaLandBare > 0) sousUsages.push({ type: "Terrain nu", area: location.areaLandBare });
+            if (location.areaWood > 0) sousUsages.push({ type: "Construction bois", area: location.areaWood });
+            if (location.areaPermanent > 0) sousUsages.push({ type: "Construction dure", area: location.areaPermanent });
         }
 
-        // Construire le texte dynamiquement
-        let texteHofa = " Arakaraka ny velaran-tany sy ny toerana misy azy ary ny hampiasana azy, no amerana ny hofan-tany ka toy izao manaraka izao:\n";
+        // Déterminer le type de paiement
+        const periodicite = location.usage.toLowerCase() === "agricole" ? "annuelle" : "semestrielle";
+
+        // Construire le texte pour tous les prix sur une seule ligne
+        let prixText = `  - Ho an’ny ${periodicite} dia: `;
+        const prixParts: string[] = [];
 
         for (const su of sousUsages) {
-            // Pour agricole, on ne met pas de sousUsage
+            // Pour agricole, pas de sousUsage
             const whereClause = location.usage.toLowerCase() === "agricole"
                 ? { secteur: station.type, usage: location.usage }
                 : { secteur: station.type, usage: location.usage, sousUsage: su.type };
@@ -318,18 +323,21 @@ Raha misy kosa fanamarihana avy amin’ny andaniny na ny ankilany ka mitaky ny f
             const priceEntry = await Price.findOne({ where: whereClause });
             const prixUnitaire = priceEntry ? priceEntry.prix : 0;
 
-            // Texte à afficher
-            const usageText = location.usage.toLowerCase() === "agricole" ? "Tany fambolena" : su.type;
-            texteHofa += `  - Ho an’ny ${usageText} mirefy ${su.area} m² dia ferana ho ${prixUnitaire} ariary isaky ny metatra tora-droa, isan’enim-bolana.\n`;
+            prixParts.push(`${su.type} ${su.area} m² : ${prixUnitaire} ariary`);
         }
 
-        // Ajouter les infos sur le paiement et les sanctions
-        texteHofa += `  - Ny hofany isaky ny enim-bolana dia aloa manontolo amin’ny Kaontin’ny FCE, BOA 0009 02000 1 294564 000 0 – 88, amin’ny voalohany ka hatramin’ny faha folo ny volana diavina, ary alefa amin’ny adiresy Mailaka: contact.fce@fce.mg sy livaniaina.razafindrabenja@fce.mg, ny «Bordereau de versement» ho fanamarinana ny vola naloa, na koa aterina ao amin’ny Gara FCE Manakara ao anatin’ny fotoana voafaritra ka tsy azo asiana fahatarana.
+        // Joindre tous les prix sur une seule ligne
+        prixText += prixParts.join(" | ") + "\n";
+
+        // Ajouter les infos sur le paiement et sanctions (texte statique)
+        prixText += `  - Ny hofany dia aloa manontolo amin’ny Kaontin’ny FCE, BOA 0009 02000 1 294564 000 0 – 88, amin’ny voalohany ka hatramin’ny faha folo ny volana diavina, ary alefa amin’ny adiresy Mailaka: contact.fce@fce.mg sy livaniaina.razafindrabenja@fce.mg, ny «Bordereau de versement» ho fanamarinana ny vola naloa, na koa aterina ao amin’ny Gara FCE Manakara ao anatin’ny fotoana voafaritra ka tsy azo asiana fahatarana.
   - Ny fahataran’ny fandoavana hofa-tany dia ahazoana sazy ka miampy iray isan-jato 1% isan’andro amin’ny hofany tokony haloa araka ny isan’ny andron’ny fahatarana.
   - Ny tsy fandoavana ny hofan-tany enim-bolana 02 mifanarakaraka dia mitarika avy hatrany ny fanafoanana ny fanomezan-dalana hampiasa ny tany, ary henjehina araka ny lalàna misy ny mpanofa tany izay minia manao izany.
 `;
 
-        doc.font('Helvetica').text(texteHofa);
+        doc.font('Helvetica').text(prixText);
+        doc.moveDown(1);
+
 
         doc.moveDown(1);
 
