@@ -155,30 +155,41 @@ function Location() {
                             <strong>Lieu de paiement :</strong> {location.placePaymment}
                         </div>
 
-                        <div className="col-md-6 mb-3">
-                            <strong>Surface Terrain Nu :</strong> {location.areaLandBare} m²
-                        </div>
-                        <div className="col-md-6 mb-3">
-                            <strong>Surface Bois :</strong> {location.areaWood} m²
-                        </div>
-                        <div className="col-md-6 mb-3">
-                            <strong>Prix Bois :</strong> {location.priceWood}
-                        </div>
-
-                        <div className="col-md-6 mb-3">
-                            <strong>Surface Dure :</strong> {location.areaPermanent} m²
-                        </div>
-                        <div className="col-md-6 mb-3">
-                            <strong>Prix Dure :</strong> {location.pricePermanent}
-                        </div>
-                        <div className="col-md-6 mb-3">
-                            <strong>Prix Terrain Nu :</strong> {location.priceLandBare}
-                        </div>
+                        {location.areaLandBare > 0 && (
+                            <div className="col-md-6 mb-3">
+                                <strong>Surface Terrain Nu :</strong> {location.areaLandBare} m²
+                            </div>
+                        )}
+                        {location.areaWood > 0 && (
+                            <div className="col-md-6 mb-3">
+                                <strong>Surface Bois :</strong> {location.areaWood} m²
+                            </div>
+                        )}
+                        {location.priceWood > 0 && (
+                            <div className="col-md-6 mb-3">
+                                <strong>Prix Bois :</strong> {location.priceWood}
+                            </div>
+                        )}
+                        {location.areaPermanent > 0 && (
+                            <div className="col-md-6 mb-3">
+                                <strong>Surface Dure :</strong> {location.areaPermanent} m²
+                            </div>
+                        )}
+                        {location.pricePermanent > 0 && (
+                            <div className="col-md-6 mb-3">
+                                <strong>Prix Dure :</strong> {location.pricePermanent}
+                            </div>
+                        )}
+                        {location.priceLandBare > 0 && (
+                            <div className="col-md-6 mb-3">
+                                <strong>Prix Terrain Nu :</strong> {location.priceLandBare}
+                            </div>
+                        )}
                         <div className="col-md-6 mb-3">
                             <strong>Surface Totale :</strong> {land ? land.area : "Chargement..."} m²
                         </div>
                     </div>
-                    <div className="mt-3">
+                    <div className="mt-1">
                         <strong>Status du paiement :</strong>{" "}
                         {location.statusPayment ? "Payé ✅" : "Non payé ❌"}
                     </div>
