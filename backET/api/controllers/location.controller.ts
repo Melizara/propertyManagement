@@ -307,7 +307,7 @@ Raha misy kosa fanamarihana avy amin’ny andaniny na ny ankilany ka mitaky ny f
         }
 
         // Déterminer le type de paiement
-        const periodicite = location.usage.toLowerCase() === "agricole" ? "annuelle" : "semestrielle";
+        const periodicite = location.usage.toLowerCase() === "agricole" ? "isan-taona" : "isan'enimbolana";
 
         // Construire le texte pour tous les prix sur une seule ligne
         let prixText = `  - Ho an’ny ${periodicite} dia: `;
@@ -323,13 +323,13 @@ Raha misy kosa fanamarihana avy amin’ny andaniny na ny ankilany ka mitaky ny f
             const priceEntry = await Price.findOne({ where: whereClause });
             const prixUnitaire = priceEntry ? priceEntry.prix : 0;
 
-            prixParts.push(`${su.type} ${su.area} m² : ${prixUnitaire} ariary`);
+            prixParts.push(`${su.type} : ${prixUnitaire} ariary`);
 
             totalPrix += su.area * prixUnitaire;
         }
 
         // Joindre tous les prix sur une seule ligne
-        prixText += prixParts.join(" | ") + "\n";
+        prixText += prixParts.join(" , ") + "\n";
 
         // Ajouter les infos sur le paiement et sanctions (texte statique)
         prixText += `  - Ny hofany dia manontolo ${totalPrix} ariary, aloa manontolo amin’ny Kaontin’ny FCE, BOA 0009 02000 1 294564 000 0 – 88, amin’ny voalohany ka hatramin’ny faha folo ny volana diavina, ary alefa amin’ny adiresy Mailaka: contact.fce@fce.mg sy livaniaina.razafindrabenja@fce.mg, ny «Bordereau de versement» ho fanamarinana ny vola naloa, na koa aterina ao amin’ny Gara FCE ${location.placePaymment} ao anatin’ny fotoana voafaritra ka tsy azo asiana fahatarana.
