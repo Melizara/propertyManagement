@@ -290,7 +290,6 @@ Raha misy kosa fanamarihana avy amin’ny andaniny na ny ankilany ka mitaky ny f
         doc.moveDown(1);
 
         // --- ANDININY FAHATelo ---
-        // --- ANDININY FAHATelo ---
         doc.font('Helvetica-Bold').text(
             "Andininy fahatelo: Ny Hofan-tany sy ny fomba fandoavana azy",
             { underline: true }
@@ -313,6 +312,7 @@ Raha misy kosa fanamarihana avy amin’ny andaniny na ny ankilany ka mitaky ny f
         // Construire le texte pour tous les prix sur une seule ligne
         let prixText = `  - Ho an’ny ${periodicite} dia: `;
         const prixParts: string[] = [];
+        let totalPrix = 0;
 
         for (const su of sousUsages) {
             // Pour agricole, pas de sousUsage
@@ -324,20 +324,20 @@ Raha misy kosa fanamarihana avy amin’ny andaniny na ny ankilany ka mitaky ny f
             const prixUnitaire = priceEntry ? priceEntry.prix : 0;
 
             prixParts.push(`${su.type} ${su.area} m² : ${prixUnitaire} ariary`);
+
+            totalPrix += su.area * prixUnitaire;
         }
 
         // Joindre tous les prix sur une seule ligne
         prixText += prixParts.join(" | ") + "\n";
 
         // Ajouter les infos sur le paiement et sanctions (texte statique)
-        prixText += `  - Ny hofany dia aloa manontolo amin’ny Kaontin’ny FCE, BOA 0009 02000 1 294564 000 0 – 88, amin’ny voalohany ka hatramin’ny faha folo ny volana diavina, ary alefa amin’ny adiresy Mailaka: contact.fce@fce.mg sy livaniaina.razafindrabenja@fce.mg, ny «Bordereau de versement» ho fanamarinana ny vola naloa, na koa aterina ao amin’ny Gara FCE Manakara ao anatin’ny fotoana voafaritra ka tsy azo asiana fahatarana.
+        prixText += `  - Ny hofany dia manontolo ${totalPrix} ariary, aloa manontolo amin’ny Kaontin’ny FCE, BOA 0009 02000 1 294564 000 0 – 88, amin’ny voalohany ka hatramin’ny faha folo ny volana diavina, ary alefa amin’ny adiresy Mailaka: contact.fce@fce.mg sy livaniaina.razafindrabenja@fce.mg, ny «Bordereau de versement» ho fanamarinana ny vola naloa, na koa aterina ao amin’ny Gara FCE ${location.placePaymment} ao anatin’ny fotoana voafaritra ka tsy azo asiana fahatarana.
   - Ny fahataran’ny fandoavana hofa-tany dia ahazoana sazy ka miampy iray isan-jato 1% isan’andro amin’ny hofany tokony haloa araka ny isan’ny andron’ny fahatarana.
   - Ny tsy fandoavana ny hofan-tany enim-bolana 02 mifanarakaraka dia mitarika avy hatrany ny fanafoanana ny fanomezan-dalana hampiasa ny tany, ary henjehina araka ny lalàna misy ny mpanofa tany izay minia manao izany.
 `;
 
         doc.font('Helvetica').text(prixText);
-        doc.moveDown(1);
-
 
         doc.moveDown(1);
 
