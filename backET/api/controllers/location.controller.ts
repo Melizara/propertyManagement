@@ -188,8 +188,7 @@ export const confirmPayment = async (req: AuthRequest, res: Response) => {
         console.error(err);
         return res.status(500).json({ error: "Erreur serveur" });
     }
-};
-export const generateConventionPdf = async (req: AuthRequest, res: Response) => {
+}; export const generateConventionPdf = async (req: AuthRequest, res: Response) => {
     try {
         const location = await Location.findByPk(req.params.codeLocation, {
             include: [
@@ -214,31 +213,26 @@ export const generateConventionPdf = async (req: AuthRequest, res: Response) => 
         doc.pipe(res);
 
         // --- TITRE ---
-        doc.fontSize(18).text(
+        doc.fontSize(18).font('Helvetica-Bold').text(
             `FANOMEZAN-DALANA N°: ${station.codeStation}/${location.codeLocation}/${new Date().getFullYear()}`,
             { align: "center" }
         );
-
         doc.moveDown(1);
-
-        doc.fontSize(12).text(`Hanofa ny tanin’ny Lalamby ao ${station.name}`, { align: "center" });
+        doc.fontSize(12).font('Helvetica').text(`Hanofa ny tanin’ny Lalamby ao ${station.name}`, { align: "center" });
         doc.moveDown(2);
 
         // --- INFORMATIONS LOCATAIRE ---
-        doc.fontSize(12).text(`Ny TALEN’NY LALAMBIM-PIRENENA MALAGASY FCE dia manome alalana:`);
+        doc.fontSize(12).font('Helvetica').text(`Ny TALEN’NY LALAMBIM-PIRENENA MALAGASY FCE dia manome alalana:`);
         doc.moveDown(0.5);
-
         doc.text(
             `An’A/toa ${tenant.name} ${tenant.lastName} hoe Mpanofa\n` +
             `Teraka tamin’ny ${tenant.birthDate} tao ${tenant.birthPlace}\n` +
             `Zanak'i ${tenant.father} sy i ${tenant.mother}\n` +
-            `Karam-panondrom-pirenena laharana faha°: ${tenant.cin} natao tao ${tenant.cinPlace} tamin'ny ${tenant.dateCin}\n`
-
+            `Karam-panondrom-pirenena laharana faha°: ${tenant.cin} natao tao ${tenant.cinPlace} tamin'ny ${tenant.dateCin}`
         );
         doc.text(`Monina ao: ${tenant.address}`);
         doc.text(`Fokontany: ${tenant.neighborHood}`);
         doc.text(`Kaominina: ${tenant.municipality}`);
-
         doc.moveDown(1);
 
         // --- INFORMATIONS TERRAIN ---
@@ -251,23 +245,92 @@ export const generateConventionPdf = async (req: AuthRequest, res: Response) => 
         );
         doc.moveDown(1);
 
-        // --- SURFACES ET PRIX ---
-        doc.text(
-            `Andininy voalohany: Ny hampiasana ny tany\n` +
-            `Tany tsy misy fanorenana ${land.area}\n` +
-            `- Tany tsy misy fanorenana mirefy: ${location.areaLandBare} metatra tora-droa\n` +
-            `- Tany misy fanorenana trano hazo fonenana izay mirefy: ${location.areaWood + location.areaPermanent} metatra tora-droa\n`
-        );
+        // --- ANDININY VOALOHANY ---
+        doc.font('Helvetica-Bold').text("Andininy voalohany: Ny hampiasana ny tany", { underline: true });
+        doc.font('Helvetica');
 
-        const totalPrice = location.priceLandBare + location.pricePermanent + location.priceWood;
-        doc.text(`Andininy fahatelo: Ny Hofan-tany sy ny fomba fandoavana azy\n` +
-            `- Ho an’ny tany tsy misy fanorenana: ${location.priceLandBare} Ariary\n` +
-            `- Ho an’ny tany misy fanorenana: ${location.pricePermanent + location.priceWood} Ariary\n` +
-            `- Prix total: ${totalPrice} Ariary`
+        let texteTany = "";
+        if (location.usage === "agricole" && land.area > 0) {
+            texteTany += `  - Tany tsy misy fanorenana ${land.area} m²\n`;
+        }
+        if (location.areaLandBare > 0) {
+            texteTany += `  - Tany tsy misy fanorenana mirefy: ${location.areaLandBare} metatra tora-droa\n`;
+        }
+        if (location.areaWood > 0) {
+            texteTany += `  - Tany misy fanorenana trano hazo fonenana izay mirefy: ${location.areaWood} metatra tora-droa\n`;
+        }
+        if (location.areaPermanent > 0) {
+            texteTany += `  - Tany misy fanorenana trano vato fonenana izay mirefy: ${location.areaPermanent} metatra tora-droa\n`;
+        }
+        doc.text(texteTany);
+        doc.moveDown(1);
+
+        // --- ANDININY FAHAROA ---
+        doc.font('Helvetica-Bold').text("Andininy faharoa: Faharetan’ny fanomezan-dalana", { underline: true });
+        doc.font('Helvetica').text(
+            `   - Azo havaozina raha toa ka mbola tsy misy ilàn’ny Lalambim-pirenena ny tany.
+        - Folo (10) taona ny faharetan’ity fanomezan-dalana ity, azo havaozina saingy mampahafantatra telo volana mialoha ny lalamby, raha misy fikasana hanohy fanofana.
+        - Azo foanana raha vao misy antony ilàn’ny Lalambim-pirenena ny tany na misy tsy fifanarahana eo amin’ny roa tonta araka ny Andininy fahafito eto ambany.
+Raha misy kosa fanamarihana avy amin’ny andaniny na ny ankilany ka mitaky ny fanovana ny fanomezan-dàlana dia tsy maintsy atao 03 volana mialoha ny fampiharana hatao.`
         );
         doc.moveDown(1);
 
-        // --- FIN DU DOCUMENT ---
+        // --- ANDININY FAHATelo ---
+        doc.font('Helvetica-Bold').text("Andininy fahatelo: Ny Hofan-tany sy ny fomba fandoavana azy", { underline: true });
+        doc.font('Helvetica').text(
+            ` Arakaraka ny velaran-tany sy ny toerana misy azy ary ny hampiasana azy, no amerana ny hofan-tany ka toy izao manaraka izao:
+        - Ho an’ny toerana tsy misy fanorenana (TNAD) dia ferana ho 100 ariary isaky ny metatra tora-droa, ary ny toerana misy fanorenana trano hazo fonenana dia 350 ariary isaky ny metatra tora-droa, isan’enim-bolana.
+        - Ny hofany isaky ny enim-bolana dia 16 200 ariary ho an’ny tany misy fanorenana ary hisy fiakarany dimy isan-jato (5%) isa-taona izany, aloa manontolo amin’ny Kaontin’ny FCE, BOA 0009 02000 1 294564 000 0 – 88, amin’ny voalohany ka hatramin’ny faha folo ny volana diavina, ary alefa amin’ny adiresy Mailaka: contact.fce@fce.mg sy livaniaina.razafindrabenja@fce.mg , ny «Bordereau de versement» ho fanamarinana ny vola naloa, na koa aterina ao amin’ny Gara FCE Manakara ao anatin’ny fotoana voafaritra ka tsy azo asiana fahatarana.
+        - Ny fahataran’ny fandoavana hofa-tany dia ahazoana sazy ka miampy iray isan-jato 1% isan’andro amin’ny hofany tokony haloa amin’iny fe-potoana iny araka ny isan’ny andron’ny fahatarana.
+        - Ny tsy fandoavana ny hofan-tany enim-bolana 02 mifanarakaraka dia mitarika avy hatrany ny fanafoanana ny fanomezan-dalana hampiasa ny tany, ary henjehina araka ny lalàna misy ny mpanofa tany izay minia manao izany.`
+        );
+        doc.moveDown(1);
+
+        // --- ANDININY 4 à 9 ---
+        const andininy: { title: string, content: string }[] = [
+            {
+                title: "Andininy fahefatra: Fanovana mahakasika ny fanofana tany",
+                content: `Raha misy fanovana momba ny hofan-tany na ny fomba fandoavana azy dia amin’ny alalan’ny naotin’ny orinasa no anaovana izany ary ampiharina (03) telo volana aorian’ny daty namoahana azy.
+Raha tsy hampiasain’ny mpanofa intsony ny tany dia averina manontolo amin’ny Lalambim-pirenena fa tsy azo afindra amin’olon-kafa.`
+            },
+            {
+                title: "Andininy fahadimy: Fahazoan-dalana amin’ny fanorenana",
+                content: `Ny vinavinam-panorenana rehetra izay kasain’ny mpanofa hatao dia tsy maintsy angatahana fahazahoan-dalana avy amin’ny talen’ny lalambim-pirenena FCE izany. Ny fandikana izany dia mitarika avy hatrany ny fanafoanana ny fanomezan-dalana.`
+            },
+            {
+                title: "Andininy fahaenina: Fanafoanana ny fanomezan-dalana",
+                content: `Ny Lalambim-pirenena Malagasy dia manana fahefana hanafoana ity fanomezan-dalana ity rehefa avy nanome fampandresenesana an-tsoratra telo (3) volana mialoha.
+Mihatra avy hatrany io fanafoanana io, telo (3) volana aorian’ny daty naharaisana ny taratasy fampandrenesana.
+Fa ireto antony manaraka ireto kosa dia manafoana avy hatrany ity fanomezan-dalana ity tsy misy fampandrenesana mialoha:
+        1.Ny fanorenana tsy nahazoana ny fankatoavana mialoha avy amin’ny TALEN’NY LALAMBY FCE;
+        2. Ny fampanofana manontolo na amin’ny ampahany ny tany voarakitra ato anatin’ity fanomezan-dalana ity amin’olon-kafa;
+        3. Ny tsy fandoavana ara-dalàna ny hofan-tany, izay ampahafantarina ny mpanofa amin’ny alalan’ny taratasy fitakiana hofa-tany farany;
+        4. Ny tsy fanatanterahana ny asa fandoavana sandan’ny fahazoan-dàlana ao anatin’ny fe-potoana ara-dàlana, izay ampahafantarina ny mpanofa amin’ny alalan’ny taratasy fampitandremana farany;
+        5. Ny famarotana manontolo na amin’ny ampahany ny tany voarakitra ato anatin’ity fanomezan-dalana ity amin’olon-kafa.
+Ireo fepetra ireo dia tsy manafoana ny fahafahan’ny Lalamby hanenjika araka ny lalàna misy ny mpanofa tany minia manao ireo fandikàna ireo.`
+            },
+            {
+                title: "Andininy fahafito: Fanalana fanorenana sy onitra",
+                content: `Manaiky ny mpanofa fa hanala ny fanorenana rehetra nataony mialohan’ny vaninandro ahataperan’ny fe-potoana voalaza amin’ny Andininy fahaenina, ka izy no miantoka ny fandaniana rehetra amin’izany, na hoatrinona no mety ho tombam-bidiny ary na toa inona karazam-pitaovana nampiasainy. Ary tsy manana zo ny mpanofa hitaky onitra amin’ny Lalamby FCE.`
+            },
+            {
+                title: "Andininy fahavalo: Fiovana adiresy",
+                content: `Ny taratasy fitakiam-bola dia alefa amin’ny adiresy voalaza etsy ambony ka adidin’ny mpanofa ny mampandre ny Lalamby raha sanatria misy fiovana ny toeram-ponenan’ny mpanofa. Izany no atao dia ny mba ahafahana mandefa ara-potoana ny taratasy fitakiam-bola sy hisorohana ny fandaniam-potoana mety hisy eo amin’ny fivezivezen’ny taratasy.`
+            },
+            {
+                title: "Andininy fahasivy: Fepetra manokana",
+                content: `Ny mpanofa no mandoa ny hetra rehetra mandritra ny fe-potoana ampiasany ny tany. Na eo anivon’ny kaominina na eo anivon’ny sampandraharaham-panjakana isan-tsokajiny.
+Ny Lalambim-pirenena FCE irery ihany no manam-pahefana amin’ny fananany, koa ho enjehina araka ny lalàna manan-kery ireo izay minia mividy na mivarotra ny tanin’ny Lalamby, satria fisolokiana fananam-panjakana izany.`
+            },
+        ];
+
+        andininy.forEach(a => {
+            doc.moveDown(1);
+            doc.font('Helvetica-Bold').text(a.title, { underline: true });
+            doc.font('Helvetica').text(a.content);
+        });
+
+        doc.moveDown(1);
         doc.text(`Natao teto ${station.name}, ${new Date().toLocaleDateString()}`, { align: "right" });
 
         doc.end();
@@ -286,6 +349,7 @@ export const generateConventionPdf = async (req: AuthRequest, res: Response) => 
         return res.status(500).json({ error: "Erreur serveur lors de la génération du PDF" });
     }
 };
+
 
 
 export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {

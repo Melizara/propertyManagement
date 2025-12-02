@@ -203,6 +203,7 @@ function TenantForm() {
                   className="form-control"
                   value={cin}
                   maxLength={12} // limite à 12 caractères
+                  readOnly={isUpdate}
                   onChange={e => {
                     // On ne garde que les chiffres
                     let numbersOnly = e.target.value.replace(/\D/g, "");

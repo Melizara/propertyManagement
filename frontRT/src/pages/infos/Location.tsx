@@ -242,7 +242,7 @@ function Location() {
                                         fileLink.href = fileURL;
                                         fileLink.setAttribute(
                                             "download",
-                                            `convention_${location.codeLocation}.pdf`
+                                            `ConventionTerrain_N°${location.codeLocation}.pdf`
                                         );
                                         document.body.appendChild(fileLink);
                                         fileLink.click();

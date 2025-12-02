@@ -93,7 +93,7 @@ function HomePrice() {
                                     }}
                                 >
                                     <TrainFront size={25} /> {/* icône gauche */}
-                                    <h5 className="mb-0 text-center flex-grow-1 fs-5">{price.secteur}</h5>
+                                    <h5 className="mb-0 text-center flex-grow-1 fs-5">{price.secteur} gare</h5>
                                 </div>
 
                                 {/* Body */}
