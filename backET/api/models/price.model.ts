@@ -10,7 +10,15 @@ export interface IPrice {
     userMatricule: string;
 }
 
-export class Price extends Model<IPrice> { }
+export class Price extends Model<IPrice> {
+    declare codePrice?: number;
+    declare secteur: string;
+    declare usage: string;
+    declare sousUsage: string;  // 🔹 ajouter declare
+    declare prix: number;        // 🔹 ajouter declare
+    declare userMatricule: string;
+}
+
 
 export const initPrice = (sequelize: Sequelize) => {
     Price.init(

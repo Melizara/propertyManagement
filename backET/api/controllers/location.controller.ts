@@ -7,6 +7,7 @@ import { Tenant } from "../models/tenant.model.ts";
 import { Land } from "../models/land.model.ts";
 import { Station } from "../models/station.model.ts";
 import { logActivity } from "../middlewares/activityLogs.ts";
+import { Price } from "../models/price.model.ts";
 
 export const createLocation = async (req: Request, res: Response) => {
     try {
@@ -188,7 +189,9 @@ export const confirmPayment = async (req: AuthRequest, res: Response) => {
         console.error(err);
         return res.status(500).json({ error: "Erreur serveur" });
     }
-}; export const generateConventionPdf = async (req: AuthRequest, res: Response) => {
+};
+
+export const generateConventionPdf = async (req: AuthRequest, res: Response) => {
     try {
         const location = await Location.findByPk(req.params.codeLocation, {
             include: [
@@ -250,19 +253,30 @@ export const confirmPayment = async (req: AuthRequest, res: Response) => {
         doc.font('Helvetica');
 
         let texteTany = "";
-        if (location.usage === "agricole" && land.area > 0) {
-            texteTany += `  - Tany tsy misy fanorenana ${land.area} m²\n`;
+
+        texteTany += `Ny Lalamby FCE dia manome alalana ny mpanofa hampiasa ny sombin-tany voalaza etsy ambony:\n`
+
+        // Tany sans usage précis (terrain nu)
+        if (location.areaLandBare && location.areaLandBare > 0) {
+            texteTany += `  - Tany tsy misy fanorenana mirefy: ${location.areaLandBare} m²\n`;
+        } else {
+            texteTany += `  - Tany tsy misy fanorenana mirefy ${land.area} m²\n`;
         }
-        if (location.areaLandBare > 0) {
-            texteTany += `  - Tany tsy misy fanorenana mirefy: ${location.areaLandBare} metatra tora-droa\n`;
+
+        // Tany avec constructions
+        if (location.areaWood && location.areaWood > 0) {
+            texteTany += `  - Tany misy fanorenana trano hazo fonenana mirefy: ${location.areaWood} m²\n`;
         }
-        if (location.areaWood > 0) {
-            texteTany += `  - Tany misy fanorenana trano hazo fonenana izay mirefy: ${location.areaWood} metatra tora-droa\n`;
+        if (location.areaPermanent && location.areaPermanent > 0) {
+            texteTany += `  - Tany misy fanorenana trano vato fonenana mirefy: ${location.areaPermanent} m²\n`;
         }
-        if (location.areaPermanent > 0) {
-            texteTany += `  - Tany misy fanorenana trano vato fonenana izay mirefy: ${location.areaPermanent} metatra tora-droa\n`;
-        }
+
+        // Si aucune surface n’existe
+        if (!texteTany) texteTany = "  - Tsy misy tany azo aseho.\n";
+
         doc.text(texteTany);
+
+
         doc.moveDown(1);
 
         // --- ANDININY FAHAROA ---
@@ -276,14 +290,47 @@ Raha misy kosa fanamarihana avy amin’ny andaniny na ny ankilany ka mitaky ny f
         doc.moveDown(1);
 
         // --- ANDININY FAHATelo ---
-        doc.font('Helvetica-Bold').text("Andininy fahatelo: Ny Hofan-tany sy ny fomba fandoavana azy", { underline: true });
-        doc.font('Helvetica').text(
-            ` Arakaraka ny velaran-tany sy ny toerana misy azy ary ny hampiasana azy, no amerana ny hofan-tany ka toy izao manaraka izao:
-        - Ho an’ny toerana tsy misy fanorenana (TNAD) dia ferana ho 100 ariary isaky ny metatra tora-droa, ary ny toerana misy fanorenana trano hazo fonenana dia 350 ariary isaky ny metatra tora-droa, isan’enim-bolana.
-        - Ny hofany isaky ny enim-bolana dia 16 200 ariary ho an’ny tany misy fanorenana ary hisy fiakarany dimy isan-jato (5%) isa-taona izany, aloa manontolo amin’ny Kaontin’ny FCE, BOA 0009 02000 1 294564 000 0 – 88, amin’ny voalohany ka hatramin’ny faha folo ny volana diavina, ary alefa amin’ny adiresy Mailaka: contact.fce@fce.mg sy livaniaina.razafindrabenja@fce.mg , ny «Bordereau de versement» ho fanamarinana ny vola naloa, na koa aterina ao amin’ny Gara FCE Manakara ao anatin’ny fotoana voafaritra ka tsy azo asiana fahatarana.
-        - Ny fahataran’ny fandoavana hofa-tany dia ahazoana sazy ka miampy iray isan-jato 1% isan’andro amin’ny hofany tokony haloa amin’iny fe-potoana iny araka ny isan’ny andron’ny fahatarana.
-        - Ny tsy fandoavana ny hofan-tany enim-bolana 02 mifanarakaraka dia mitarika avy hatrany ny fanafoanana ny fanomezan-dalana hampiasa ny tany, ary henjehina araka ny lalàna misy ny mpanofa tany izay minia manao izany.`
+        doc.font('Helvetica-Bold').text(
+            "Andininy fahatelo: Ny Hofan-tany sy ny fomba fandoavana azy",
+            { underline: true }
         );
+
+        // Déterminer les sous-usages existants sur le terrain
+        const sousUsages: { type: string; area: number }[] = [];
+
+        if (location.usage.toLowerCase() === "agricole") {
+            if (land.area > 0) sousUsages.push({ type: "agricole", area: land.area });
+        } else {
+            if (location.areaLandBare > 0) sousUsages.push({ type: "terrain nu", area: location.areaLandBare });
+            if (location.areaWood > 0) sousUsages.push({ type: "construction bois", area: location.areaWood });
+            if (location.areaPermanent > 0) sousUsages.push({ type: "construction dure", area: location.areaPermanent });
+        }
+
+        // Construire le texte dynamiquement
+        let texteHofa = " Arakaraka ny velaran-tany sy ny toerana misy azy ary ny hampiasana azy, no amerana ny hofan-tany ka toy izao manaraka izao:\n";
+
+        for (const su of sousUsages) {
+            // Pour agricole, on ne met pas de sousUsage
+            const whereClause = location.usage.toLowerCase() === "agricole"
+                ? { secteur: station.type, usage: location.usage }
+                : { secteur: station.type, usage: location.usage, sousUsage: su.type };
+
+            const priceEntry = await Price.findOne({ where: whereClause });
+            const prixUnitaire = priceEntry ? priceEntry.prix : 0;
+
+            // Texte à afficher
+            const usageText = location.usage.toLowerCase() === "agricole" ? "Tany fambolena" : su.type;
+            texteHofa += `  - Ho an’ny ${usageText} mirefy ${su.area} m² dia ferana ho ${prixUnitaire} ariary isaky ny metatra tora-droa, isan’enim-bolana.\n`;
+        }
+
+        // Ajouter les infos sur le paiement et les sanctions
+        texteHofa += `  - Ny hofany isaky ny enim-bolana dia aloa manontolo amin’ny Kaontin’ny FCE, BOA 0009 02000 1 294564 000 0 – 88, amin’ny voalohany ka hatramin’ny faha folo ny volana diavina, ary alefa amin’ny adiresy Mailaka: contact.fce@fce.mg sy livaniaina.razafindrabenja@fce.mg, ny «Bordereau de versement» ho fanamarinana ny vola naloa, na koa aterina ao amin’ny Gara FCE Manakara ao anatin’ny fotoana voafaritra ka tsy azo asiana fahatarana.
+  - Ny fahataran’ny fandoavana hofa-tany dia ahazoana sazy ka miampy iray isan-jato 1% isan’andro amin’ny hofany tokony haloa araka ny isan’ny andron’ny fahatarana.
+  - Ny tsy fandoavana ny hofan-tany enim-bolana 02 mifanarakaraka dia mitarika avy hatrany ny fanafoanana ny fanomezan-dalana hampiasa ny tany, ary henjehina araka ny lalàna misy ny mpanofa tany izay minia manao izany.
+`;
+
+        doc.font('Helvetica').text(texteHofa);
+
         doc.moveDown(1);
 
         // --- ANDININY 4 à 9 ---
