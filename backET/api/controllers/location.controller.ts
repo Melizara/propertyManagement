@@ -425,7 +425,7 @@ const drawRow = (
     if (col4 !== undefined) doc.text(col4 != null ? String(col4) : "", 400, y);
 };
 
-// --- Fonction spéciale pour le bloc infos générales ---
+// --- Fonction pour les lignes d'info ---
 const drawInfoRow = (
     doc: PDFDoc,
     y: number,
@@ -439,6 +439,30 @@ const drawInfoRow = (
     doc.text(codeGare, 300, y);
     // Nom → sous MONTANT
     doc.text(nom, 470, y);
+};
+
+// --- Nouvelle fonction pour le header logo + phrase + infos ---
+const drawHeaderRow = (
+    doc: PDFDoc,
+    y: number,
+    logoPath: string,       // chemin vers ton logo
+    phrase: string,         // phrase à afficher
+    infos: string[]         // tableau de 4 lignes
+) => {
+    // Colonne 1 : Logo (aligné avec Compte à débiter)
+    const logoWidth = 100;
+    const logoHeight = 50;
+    if (logoPath) {
+        doc.image(logoPath, 50, y, { width: logoWidth, height: logoHeight });
+    }
+
+    // Colonne 2 : Phrase (alignée avec Superficie jusqu'à Montant)
+    doc.text(phrase, 180, y, { width: 220 }); // largeur ajustable
+
+    // Colonne 3 : 4 lignes (aligné avec Montant)
+    infos.forEach((line, index) => {
+        doc.text(line, 400, y + index * 12); // espacement de 12 pts entre les lignes
+    });
 };
 
 export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
@@ -463,54 +487,65 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
             `attachment; filename=facture_${location.codeLocation}.pdf`
         );
         doc.pipe(res);
+        // --- NOUVEAU TABLEAU HEADER ---
+        doc.fontSize(10);
 
-        // --- TITRE ---
-        doc.fontSize(16).text("CONVENTION DE LOCATION", { align: "center" });
-        doc.moveDown();
+        let yHeader = doc.y;
+        // Déterminer exercice et période
+        let exercice: string;
+        let periode: string;
+        const now = new Date();
+        const currentYear = now.getFullYear();
+
+        if (["agricole"].includes(location.usage)) {
+            exercice = "annuelle";
+            periode = `${currentYear - 1}-${currentYear}`; // ex: 2024-2025
+        } else {
+            exercice = "semestrielle";
+            // Déterminer 1er ou 2e semestre selon le mois
+            const month = now.getMonth() + 1; // 1 → janvier, 12 → décembre
+            periode = month <= 6 ? `1er semestre ${currentYear}` : `2e semestre ${currentYear}`;
+        }
+
+        // Facture
+        const facture = `${location.codeLocation}/TER/2025`;
+
+        // Ensuite on les passe à drawHeaderRow
+        drawHeaderRow(
+            doc,
+            yHeader,
+            "", // chemin logo
+            "RESEAU NATIONAL DES CHEMINS DE FER MALAGASY\nDIRECTION DE LA LIGNE FERROVIAIRE\n FIANARANTSOA COTE-EST",
+            [
+                `DM : 04`,
+                `FACTURE : ${facture}`,
+                `EXERCICE : ${exercice}`,
+                `PERIODE : ${periode}`
+            ]
+        );
+
+        doc.moveDown(1.5); // espace entre le header et le tableau principal
 
         // --- BLOC INFOS GÉNÉRALES ---
-         doc.fontSize(10);
+        doc.fontSize(10);
+
+        // Valeurs pour les infos
+        const compteADebiter = `Compte à débiter : ${location.codeLocation || ""}`;
+        const compteACrediter = "Compte à créditer : 0009 02000 1 294564 000 0 – 88";
+        const convention = `${station.codeStation}/${location.codeLocation}/${currentYear}`;
+        const perception = location.placePaymment || "";
+        const codeTarif = "";
+        const codeGare = ` Code gare: ${String(station.codeStation)}`;
+        const destination = `Destination :${location.placePaymment || ""}`;
+
+        // Dessin des lignes infos
         let y = doc.y;
 
-        drawInfoRow(
-            doc,
-            y,
-            `Compte à débiter : ${location.codeLocation || ""}`,
-            `Code Gare : ${station.codeStation}`,
-            `Nom du locataire : ${tenant.name}`
-        );
-
-        drawInfoRow(
-            doc,
-            y + 20,
-            `Compte à créditer : ${location.codeLocation || ""}`,
-            `Destination : ${location.placePaymment || ""}`,
-            ""
-        );
-
-        drawInfoRow(
-            doc,
-            y + 40,
-            `Convention : ${location.codeLocation}`,
-            `PK Com : ${land.startPk}`,
-            ""
-        );
-
-        drawInfoRow(
-            doc,
-            y + 60,
-            `Perception : ${location.codeLocation || ""}`,
-            `PK Fin : ${land.endPk}`,
-            `Adresse : ${tenant.address}`
-        );
-
-        drawInfoRow(
-            doc,
-            y + 80,
-            `Code tarif : ${location.codeLocation}`,
-            `Superficie : ${land.area ?? 0}`,
-            ""
-        );
+        drawInfoRow(doc, y, compteADebiter, codeGare, `Nom du locataire : ${tenant.name}`);
+        drawInfoRow(doc, y + 20, compteACrediter, destination, "");
+        drawInfoRow(doc, y + 40, `Convention : ${convention}`, `PK Com : ${land.startPk}`, "");
+        drawInfoRow(doc, y + 60, `Perception : ${perception}`, `PK Fin : ${land.endPk}`, `Adresse : ${tenant.address}`);
+        drawInfoRow(doc, y + 80, `Code tarif : ${codeTarif}`, `Superficie : ${land.area ?? 0}`, "");
 
         doc.moveDown(2);
 
@@ -526,25 +561,40 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
 
         doc.fontSize(10);
 
+        // Déterminer la superficie combinée bois + dure uniquement pour l’usage actuel
+        let areaCombined = 0;
+        switch (location.usage) {
+            case "commerciale":
+            case "habitation":
+            case "culturel":
+                areaCombined = (location.areaWood || 0) + (location.areaPermanent || 0);
+                break;
+            default:
+                areaCombined = 0;
+        }
+
+        // Construire le tableau en affichant 0 pour les usages qui ne correspondent pas
         const items = [
-            ["Usage habitation", location.areaLandBare, location.priceLandBare],
-            ["Usage commercial", location.areaWood, location.priceWood],
-            ["Usage agricole", location.areaPermanent, location.pricePermanent],
-            ["Usage culturel", location.areaLandBare, location.priceLandBare],
-            ["Terrain nu A.D", location.areaLandBare, location.priceLandBare],
+            ["Usage habitation", location.usage === "habitation" ? areaCombined : 0, location.priceLandBare],
+            ["Usage commercial", location.usage === "commerciale" ? areaCombined : 0, location.priceWood],
+            ["Usage agricole", 0, location.pricePermanent], // toujours 0
+            ["Usage culturel", location.usage === "culturel" ? areaCombined : 0, location.priceLandBare],
+            ["Terrain nu A.D", location.areaLandBare || 0, location.priceLandBare],
         ];
 
         let currentY = doc.y;
         let totalHorsTVA = 0;
 
         items
-            .filter(([_, area]) => Number(area) > 0) // ignore 0
+            .filter(([_, area]) => Number(area) > 0) // n’affiche que les lignes avec valeur > 0
             .forEach(([label, area, pu]) => {
-                const montant = (Number(area) || 0) * (Number(pu) || 0);
+                const montant = Number(area) * Number(pu || 0);
                 totalHorsTVA += montant;
-                drawRow(doc, currentY, label, area || "", pu || "", montant);
+                drawRow(doc, currentY, label, area, pu || "", montant);
                 currentY += 20;
             });
+
+
 
         // --- Totaux ---
         const tva = totalHorsTVA * 0.2;
@@ -570,6 +620,7 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
         return res.status(500).json({ error: "Erreur serveur" });
     }
 };
+
 
 
 
