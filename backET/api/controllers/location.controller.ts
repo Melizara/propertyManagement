@@ -635,10 +635,6 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
         return res.status(500).json({ error: "Erreur serveur" });
     }
 };
-
-
-
-
 /*
 export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
     try {
