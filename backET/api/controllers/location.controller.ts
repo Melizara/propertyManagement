@@ -2,12 +2,14 @@ import type { Request, Response } from "express";
 import type { AuthRequest } from "../middlewares/protectAuth.ts";
 import { Location } from "../models/location.model.ts";
 import { User } from "../models/user.model.ts";
-import PDFDocument from "pdfkit";
 import { Tenant } from "../models/tenant.model.ts";
 import { Land } from "../models/land.model.ts";
 import { Station } from "../models/station.model.ts";
 import { logActivity } from "../middlewares/activityLogs.ts";
 import { Price } from "../models/price.model.ts";
+import PDFDocument from "pdfkit";
+import type * as PDFKit from "pdfkit";
+
 
 export const createLocation = async (req: Request, res: Response) => {
     try {
@@ -405,7 +407,39 @@ Ny Lalambim-pirenena FCE irery ihany no manam-pahefana amin’ny fananany, koa h
     }
 };
 
+type Cell = string | number | null | undefined;
+type PDFDoc = InstanceType<typeof PDFDocument>;
 
+// --- Fonction pour le tableau principal ---
+const drawRow = (
+    doc: PDFDoc,
+    y: number,
+    col1: Cell,
+    col2: Cell,
+    col3: Cell,
+    col4?: Cell
+) => {
+    doc.text(col1 != null ? String(col1) : "", 50, y);
+    doc.text(col2 != null ? String(col2) : "", 180, y);
+    doc.text(col3 != null ? String(col3) : "", 300, y);
+    if (col4 !== undefined) doc.text(col4 != null ? String(col4) : "", 400, y);
+};
+
+// --- Fonction spéciale pour le bloc infos générales ---
+const drawInfoRow = (
+    doc: PDFDoc,
+    y: number,
+    compte: string,
+    codeGare: string,
+    nom: string
+) => {
+    // Compte à débiter → s'étire jusqu'à PU (x = 50 → 300)
+    doc.text(compte, 50, y, { width: 300 });
+    // Code Gare → sous PU
+    doc.text(codeGare, 300, y);
+    // Nom → sous MONTANT
+    doc.text(nom, 470, y);
+};
 
 export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
     try {
@@ -422,90 +456,121 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
         const land = location.land!;
         const station = land.station!;
 
-        // Créer un nouveau PDF
-        const doc = new PDFDocument({ margin: 50 });
+        const doc = new PDFDocument({ margin: 40 });
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader(
             "Content-Disposition",
             `attachment; filename=facture_${location.codeLocation}.pdf`
         );
-
         doc.pipe(res);
 
-        const currentYear = new Date().getFullYear();
-
-        // Titre
-        doc.fontSize(18).text("Facture de Location", { align: "center" });
+        // --- TITRE ---
+        doc.fontSize(16).text("CONVENTION DE LOCATION", { align: "center" });
         doc.moveDown();
 
-        // Infos générales
-        doc.fontSize(12);
-        doc.text(`Type de paiement : ${location.typePayment}`);
-        doc.text(`Code Location : ${location.codeLocation}`);
-        doc.text(`Année : ${currentYear}`);
-        doc.moveDown();
+        // --- BLOC INFOS GÉNÉRALES ---
+         doc.fontSize(10);
+        let y = doc.y;
 
-        // Infos locataire
-        doc.text(`Nom : ${tenant.name}`);
-        doc.text(`Prénom : ${tenant.lastName}`);
-        doc.text(`Adresse : ${tenant.address}`);
-        doc.text(`Lieu de paiement : ${location.placePaymment}`);
-        doc.moveDown();
+        drawInfoRow(
+            doc,
+            y,
+            `Compte à débiter : ${location.codeLocation || ""}`,
+            `Code Gare : ${station.codeStation}`,
+            `Nom du locataire : ${tenant.name}`
+        );
 
-        // Infos terrain
-        doc.text(`Code Gare : ${station.codeStation}`);
-        doc.text(`PK début : ${land.startPk}`);
-        doc.text(`PK fin : ${land.endPk}`);
-        doc.moveDown();
+        drawInfoRow(
+            doc,
+            y + 20,
+            `Compte à créditer : ${location.codeLocation || ""}`,
+            `Destination : ${location.placePaymment || ""}`,
+            ""
+        );
 
-        // Tableau des surfaces et prix
-        doc.text("Détails du terrain :", { underline: true });
+        drawInfoRow(
+            doc,
+            y + 40,
+            `Convention : ${location.codeLocation}`,
+            `PK Com : ${land.startPk}`,
+            ""
+        );
+
+        drawInfoRow(
+            doc,
+            y + 60,
+            `Perception : ${location.codeLocation || ""}`,
+            `PK Fin : ${land.endPk}`,
+            `Adresse : ${tenant.address}`
+        );
+
+        drawInfoRow(
+            doc,
+            y + 80,
+            `Code tarif : ${location.codeLocation}`,
+            `Superficie : ${land.area ?? 0}`,
+            ""
+        );
+
+        doc.moveDown(2);
+
+        // --- TABLEAU PRINCIPAL ---
+        doc.fontSize(12)
+            .text("LOCATION TERRAIN", 50, doc.y, { continued: true })
+            .text("MONTANT (Ar)", { align: "right" });
+
+        doc.moveDown(0.5);
+        doc.fontSize(11);
+        drawRow(doc, doc.y, "TYPE DE LOCATION", "SUPERFICIE", "PU (Ar/m2)", "MONTANT");
         doc.moveDown(0.5);
 
-        const tableTop = doc.y;
-        const itemSpacing = 150;
+        doc.fontSize(10);
 
-        // Entêtes
-        doc.text("Type", 50, tableTop);
-        doc.text("Surface (m²)", 200, tableTop);
-        doc.text("Prix (USD)", 350, tableTop);
+        const items = [
+            ["Usage habitation", location.areaLandBare, location.priceLandBare],
+            ["Usage commercial", location.areaWood, location.priceWood],
+            ["Usage agricole", location.areaPermanent, location.pricePermanent],
+            ["Usage culturel", location.areaLandBare, location.priceLandBare],
+            ["Terrain nu A.D", location.areaLandBare, location.priceLandBare],
+        ];
 
-        const row1Y = tableTop + 20;
-        doc.text("Terrain nu", 50, row1Y);
-        doc.text(location.areaLandBare.toString(), 200, row1Y);
-        doc.text(location.priceLandBare.toString(), 350, row1Y);
+        let currentY = doc.y;
+        let totalHorsTVA = 0;
 
-        const row2Y = row1Y + 20;
-        doc.text("Construction dure", 50, row2Y);
-        doc.text(location.areaPermanent.toString(), 200, row2Y);
-        doc.text(location.pricePermanent.toString(), 350, row2Y);
+        items
+            .filter(([_, area]) => Number(area) > 0) // ignore 0
+            .forEach(([label, area, pu]) => {
+                const montant = (Number(area) || 0) * (Number(pu) || 0);
+                totalHorsTVA += montant;
+                drawRow(doc, currentY, label, area || "", pu || "", montant);
+                currentY += 20;
+            });
 
-        const row3Y = row2Y + 20;
-        doc.text("Construction bois", 50, row3Y);
-        doc.text(location.areaWood.toString(), 200, row3Y);
-        doc.text(location.priceWood.toString(), 350, row3Y);
+        // --- Totaux ---
+        const tva = totalHorsTVA * 0.2;
+        const totalTTC = totalHorsTVA + tva;
 
-        // Total
-        const totalPrice = location.priceLandBare + location.pricePermanent + location.priceWood;
-        doc.moveDown(5);
-        doc.fontSize(14).text(`Prix total : ${totalPrice} USD`, { align: "right" });
+        currentY += 10;
+        drawRow(doc, currentY, "TOTAL hors TVA", "", "", totalHorsTVA);
+        currentY += 20;
+        drawRow(doc, currentY, "TVA 20%", "", "", tva);
+        currentY += 20;
+        drawRow(doc, currentY, "TOTAL TTC", "", "", totalTTC);
+
+        // --- PAGE COPIE ---
+        doc.addPage();
+        doc.fontSize(16).text("CONVENTION DE LOCATION (copie)", { align: "center" });
+        doc.moveDown(1);
+
+        // Tu peux répéter les mêmes tableaux ici si nécessaire
 
         doc.end();
-
-        if (req.userMatricule && location.codeLocation !== undefined) {
-            await logActivity(
-                req.userMatricule,
-                "FACTURE",
-                "Location",
-                location.codeLocation.toString()
-            );
-        }
-
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Erreur serveur lors de la génération de la facture" });
+        return res.status(500).json({ error: "Erreur serveur" });
     }
 };
+
 
 
 /*
