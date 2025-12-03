@@ -561,39 +561,47 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
 
         doc.fontSize(10);
 
-        // Déterminer la superficie combinée bois + dure uniquement pour l’usage actuel
-        let areaCombined = 0;
-        switch (location.usage) {
-            case "commerciale":
-            case "habitation":
-            case "culturel":
-                areaCombined = (location.areaWood || 0) + (location.areaPermanent || 0);
-                break;
-            default:
-                areaCombined = 0;
-        }
-
-        // Construire le tableau en affichant 0 pour les usages qui ne correspondent pas
         const items = [
-            ["Usage habitation", location.usage === "habitation" ? areaCombined : 0, location.priceLandBare],
-            ["Usage commercial", location.usage === "commerciale" ? areaCombined : 0, location.priceWood],
-            ["Usage agricole", 0, location.pricePermanent], // toujours 0
-            ["Usage culturel", location.usage === "culturel" ? areaCombined : 0, location.priceLandBare],
-            ["Terrain nu A.D", location.areaLandBare || 0, location.priceLandBare],
+            [
+                "Usage habitation",
+                (Number(location.areaWood) || 0) + (Number(location.areaPermanent) || 0), // bois + dure, // vide si aucune superficie
+                location.priceLandBare,
+            ],
+            [
+                "Usage commercial",
+                (Number(location.areaWood) || 0) + (Number(location.areaPermanent) || 0), // bois + dure
+                location.priceWood,
+            ],
+            [
+                "Usage agricole",
+                (Number(land.area) || 0), // bois + dure,
+                location.pricePermanent,
+            ],
+            [
+                "Usage culturel",
+                (Number(location.areaWood) || 0) + (Number(location.areaPermanent) || 0), // bois + dure,
+                location.priceLandBare,
+            ],
+            [
+                "Terrain nu A.D",
+                Number(location.areaLandBare) || 0, // seulement nu
+                location.priceLandBare,
+            ],
         ];
 
         let currentY = doc.y;
         let totalHorsTVA = 0;
 
-        items
-            .filter(([_, area]) => Number(area) > 0) // n’affiche que les lignes avec valeur > 0
-            .forEach(([label, area, pu]) => {
-                const montant = Number(area) * Number(pu || 0);
-                totalHorsTVA += montant;
-                drawRow(doc, currentY, label, area, pu || "", montant);
-                currentY += 20;
-            });
+        items.forEach(([label, area, pu]) => {
+            const montant = (Number(area) || 0) * (Number(pu) || 0);
+            totalHorsTVA += montant;
 
+            // Si area = 0, afficher "" dans la colonne superficie
+            const areaText = Number(area) > 0 ? area : "";
+
+            drawRow(doc, currentY, label, areaText, pu || "", montant);
+            currentY += 20;
+        });
 
 
         // --- Totaux ---
