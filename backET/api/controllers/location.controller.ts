@@ -527,7 +527,7 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
         doc.fontSize(10);
 
         // Valeurs pour les infos
-        const compteADebiter = `Compte à débiter :  }`;
+        const compteADebiter = `Compte à débiter :  `;
         const compteACrediter = "Compte à créditer : 0009 02000 1 294564 000 0 – 88";
         const convention = `${station.codeStation}/${location.codeLocation}/${currentYear}`;
         const perception = location.placePaymment || "";
@@ -589,14 +589,18 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
 
         let currentY = doc.y;
         let totalHorsTVA = 0;
+
         items.forEach(([label, area, pu]) => {
             const superficie = Number(area) || 0;
-            const montant = Number(pu) || 0; // ici, pu est déjà "PU × superficie"
+            const montant = Number(pu) || 0; // pu ici = PU × superficie
             const puUnit = superficie !== 0 ? montant / superficie : 0;
+
+            totalHorsTVA += montant; // somme totale des MONTANT
 
             drawRow(doc, currentY, label, superficie, puUnit, montant);
             currentY += 20;
         });
+
 
         // --- Totaux ---
         const tva = totalHorsTVA * 0.2;
@@ -608,6 +612,15 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
         drawRow(doc, currentY, "TVA 20%", "", "", tva);
         currentY += 20;
         drawRow(doc, currentY, "TOTAL TTC", "", "", totalTTC);
+        currentY += 20;
+
+        // Affichage TOTAL TTC en grand dans la colonne MONTANT
+        doc.fontSize(16).font("Helvetica-Bold");
+        doc.text(totalTTC.toString(), 500, currentY - 100, { align: "right" }); // monte de 5 pts
+
+
+        // Remettre la taille normale pour la suite
+        doc.fontSize(10).font("Helvetica");
 
         // --- PAGE COPIE ---
         doc.addPage();
