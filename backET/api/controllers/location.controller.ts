@@ -409,7 +409,6 @@ Ny Lalambim-pirenena FCE irery ihany no manam-pahefana amin’ny fananany, koa h
 
 type Cell = string | number | null | undefined;
 type PDFDoc = InstanceType<typeof PDFDocument>;
-
 // --- Fonction pour le tableau principal ---
 const drawRow = (
     doc: PDFDoc,
@@ -424,7 +423,6 @@ const drawRow = (
     doc.text(col3 != null ? String(col3) : "", 300, y);
     if (col4 !== undefined) doc.text(col4 != null ? String(col4) : "", 400, y);
 };
-
 // --- Fonction pour les lignes d'info ---
 const drawInfoRow = (
     doc: PDFDoc,
@@ -440,7 +438,6 @@ const drawInfoRow = (
     // Nom → sous MONTANT
     doc.text(nom, 470, y);
 };
-
 // --- Nouvelle fonction pour le header logo + phrase + infos ---
 const drawHeaderRow = (
     doc: PDFDoc,
@@ -530,7 +527,7 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
         doc.fontSize(10);
 
         // Valeurs pour les infos
-        const compteADebiter = `Compte à débiter : ${location.codeLocation || ""}`;
+        const compteADebiter = `Compte à débiter :  }`;
         const compteACrediter = "Compte à créditer : 0009 02000 1 294564 000 0 – 88";
         const convention = `${station.codeStation}/${location.codeLocation}/${currentYear}`;
         const perception = location.placePaymment || "";
@@ -564,45 +561,42 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
         const items = [
             [
                 "Usage habitation",
-                (Number(location.areaWood) || 0) + (Number(location.areaPermanent) || 0), // bois + dure, // vide si aucune superficie
-                location.priceLandBare,
+                location.usage === "Habitation" ? (Number(location.areaWood) + Number(location.areaPermanent)) : "",
+                location.usage === "Habitation" ? (Number(location.priceWood) + Number(location.pricePermanent)) : "",
             ],
             [
                 "Usage commercial",
-                (Number(location.areaWood) || 0) + (Number(location.areaPermanent) || 0), // bois + dure
-                location.priceWood,
+                location.usage === "Commerciale" ? (Number(location.areaWood) + Number(location.areaPermanent)) : "",
+                location.usage === "Commerciale" ? (Number(location.priceWood) + Number(location.pricePermanent)) : "",
             ],
             [
                 "Usage agricole",
-                (Number(land.area) || 0), // bois + dure,
-                location.pricePermanent,
+                location.usage === "Agricole" ? Number(land.area) : "",
+                location.usage === "Agricole" ? location.priceLandBare : "",
             ],
             [
                 "Usage culturel",
-                (Number(location.areaWood) || 0) + (Number(location.areaPermanent) || 0), // bois + dure,
-                location.priceLandBare,
+                location.usage === "Culturel" ? (Number(location.areaWood) + Number(location.areaPermanent)) : "",
+                location.usage === "Culturel" ? (Number(location.priceWood) + Number(location.pricePermanent)) : "",
             ],
             [
                 "Terrain nu A.D",
-                Number(location.areaLandBare) || 0, // seulement nu
-                location.priceLandBare,
+                location.usage === "Commerciale" || location.usage === "Habitation" || location.usage === "Culturel" ? Number(location.areaLandBare) : "",
+                location.usage === "Commerciale" || location.usage === "Habitation" || location.usage === "Culturel" ? location.priceLandBare : "",
             ],
         ];
 
+
         let currentY = doc.y;
         let totalHorsTVA = 0;
-
         items.forEach(([label, area, pu]) => {
-            const montant = (Number(area) || 0) * (Number(pu) || 0);
-            totalHorsTVA += montant;
+            const superficie = Number(area) || 0;
+            const montant = Number(pu) || 0; // ici, pu est déjà "PU × superficie"
+            const puUnit = superficie !== 0 ? montant / superficie : 0;
 
-            // Si area = 0, afficher "" dans la colonne superficie
-            const areaText = Number(area) > 0 ? area : "";
-
-            drawRow(doc, currentY, label, areaText, pu || "", montant);
+            drawRow(doc, currentY, label, superficie, puUnit, montant);
             currentY += 20;
         });
-
 
         // --- Totaux ---
         const tva = totalHorsTVA * 0.2;
