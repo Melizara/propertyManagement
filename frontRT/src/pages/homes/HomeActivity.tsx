@@ -64,17 +64,27 @@ export default function HomeActivity() {
       return <span>L'utilisateur <strong>{log.userMatricule}</strong> s'est inscrit</span>;
     }
 
+    if (log.action === "GENERATE_PDF") {
+      let entityName = log.entity.toLowerCase();
+      if (entityName === "location") entityName = "location";
+      return (
+        <span>
+          L'utilisateur <strong>{log.userMatricule}</strong> conventionne le <strong>{entityName}</strong> numéro <strong>{log.entityId}</strong>
+        </span>
+      );
+    }
+
     // Pour les autres actions
     let actionText = "";
     switch (log.action) {
       case "CREATE": actionText = "ajouté"; break;
       case "UPDATE": actionText = "modifié"; break;
       case "DELETE": actionText = "résilié"; break;
-      case "GENERATE_PDF": actionText = "conventioné"; break;
       case "GENERATE_INVOICE": actionText = "facturé"; break;
       case "CONFIRM_PAYMENT": actionText = "confirmé"; break;
       default: actionText = log.action.toLowerCase();
     }
+
 
     let entityName = log.entity.toLowerCase();
     if (entityName === "user") entityName = "compte utilisateur";

@@ -59,37 +59,57 @@ export const updateLocation = async (req: Request, res: Response) => {
             return res.status(404).json({ message: "Location not found for update" });
         }
 
-        await location.update({
+        // Préparer les données à mettre à jour
+        let updateData: any = {
             cin: req.body.cin,
             codeLand: req.body.codeLand,
             usage: req.body.usage,
-            areaLandBare: req.body.areaLandBare,
-            areaWood: req.body.areaWood,
-            areaPermanent: req.body.areaPermanent,
-            priceLandBare: req.body.priceLandBare,
-            priceWood: req.body.priceWood,
-            pricePermanent: req.body.pricePermanent,
             typePayment: req.body.typePayment,
             methodPayment: req.body.methodPayment,
             placePaymment: req.body.placePaymment,
             statusPayment: false,
             userMatricule: req.userMatricule!
-        });
+        };
 
+        // Si usage est "agricole", mettre les surfaces et prix à 0
+        if (req.body.usage === "Agricole") {
+            updateData.areaLandBare = 0;
+            updateData.areaWood = 0;
+            updateData.areaPermanent = 0;
+            updateData.priceLandBare = 0;
+            updateData.priceWood = 0;
+            updateData.pricePermanent = 0;
+        } else {
+            // Sinon, on prend les valeurs du body
+            updateData.areaLandBare = req.body.areaLandBare;
+            updateData.areaWood = req.body.areaWood;
+            updateData.areaPermanent = req.body.areaPermanent;
+            updateData.priceLandBare = req.body.priceLandBare;
+            updateData.priceWood = req.body.priceWood;
+            updateData.pricePermanent = req.body.pricePermanent;
+        }
+
+        // Mettre à jour la location
+        await location.update(updateData);
+
+        // Marquer le terrain comme non disponible
         await Land.update(
             { available: false },
-            { where: { codeLand: req.body.codeLand } } // ✅ utilise la valeur directement
+            { where: { codeLand: req.body.codeLand } }
         );
 
+        // Logger l'activité
         if (location.codeLocation !== undefined) {
             await logActivity(req.userMatricule!, "UPDATE", "Location", location.codeLocation.toString());
         }
 
         return res.status(200).json(location);
+
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({ error: error.message });
         }
+        return res.status(500).json({ error: "Unknown error" });
     }
 };
 
@@ -481,7 +501,6 @@ Ny Lalambim-pirenena FCE irery ihany no manam-pahefana amin’ny fananany, koa h
         return res.status(500).json({ error: "Erreur serveur lors de la génération du PDF" });
     }
 };
-
 type Cell = string | number | null | undefined;
 type PDFDoc = InstanceType<typeof PDFDocument>;
 // --- Fonction pour le tableau principal ---
@@ -514,7 +533,6 @@ const drawRow = (
         x += widths[i];
     }
 };
-
 // --- Fonction pour les lignes d'info ---
 const drawInfoRow = (
     doc: PDFDoc,
@@ -539,7 +557,6 @@ const drawInfoRow = (
         x += colWidths[i];
     }
 };
-
 // --- Nouvelle fonction pour le header logo + phrase + infos ---
 const drawHeaderRow = (
     doc: PDFDoc,
@@ -563,7 +580,6 @@ const drawHeaderRow = (
         doc.text(line, 400, y + index * 12); // espacement de 12 pts entre les lignes
     });
 };
-
 export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
     try {
         const location = await Location.findByPk(req.params.codeLocation, {
