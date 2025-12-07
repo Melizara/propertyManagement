@@ -645,10 +645,10 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
                 .text("MONTANT(Ar)", { align: "right" });
 
 
-            doc.moveDown(0.5);
+            doc.moveDown(0.6);
             doc.fontSize(11);
             drawRow(doc, doc.y, "TYPE DE LOCATION", "SUPERFICIE", "PU (Ar/m2)", "MONTANT");
-            doc.moveDown(0.5);
+            doc.moveDown(0.6);
 
             doc.fontSize(10);
 
@@ -659,6 +659,8 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
                 ["Usage culturel", location.usage === "Culturel" ? (Number(location.areaWood) + Number(location.areaPermanent)) : "", location.usage === "Culturel" ? (Number(location.priceWood) + Number(location.pricePermanent)) : ""],
                 ["Terrain nu A.D", location.usage === "Commerciale" || location.usage === "Habitation" || location.usage === "Culturel" ? Number(location.areaLandBare) : "", location.usage === "Commerciale" || location.usage === "Habitation" || location.usage === "Culturel" ? location.priceLandBare : ""]
             ];
+
+
 
             let currentY = doc.y;
             let currentX = doc.x;
@@ -676,7 +678,7 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
             // --- Totaux ---
             const tva = totalHorsTVA * 0.2;
             const totalTTC = totalHorsTVA + tva;
-
+            doc.moveDown(0.6);
             currentY += 10;
             drawRow(doc, currentY, "TOTAL hors TVA", "", "", totalHorsTVA);
             currentY += 20;
@@ -688,12 +690,12 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
             // 1️⃣ Position du texte
             const totalX = currentX - 500;
             const totalY = currentY - 100;
-            
+
             // 3️⃣ Écrire le texte à l’intérieur du rectangle
-            doc.fontSize(14).font("Helvetica-Bold");
+            doc.fontSize(15).font("Helvetica-Bold");
             doc.text(totalTTC.toString(), totalX, totalY, { align: "right" });
 
-            doc.moveDown(6);
+            doc.moveDown(5);
 
             // --- TEXTE EXPLICATIF ---
             const startY = doc.y;
@@ -704,6 +706,7 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
                 startY,
                 { width: doc.page.width - 2 * doc.page.margins.left, align: "left" }
             );
+            doc.moveDown(2);
 
             // --- SIGNATURES ---
             const pageWidth = doc.page.width;
@@ -716,12 +719,18 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
             doc.moveDown(5);
             doc.font("Helvetica").text("RAJAOBELISON Rova", leftX, doc.y);
 
+            const datenow = new Date();
+            const options: Intl.DateTimeFormatOptions = { day: "2-digit", month: "long", year: "numeric" };
+            const dateText = `${land.placePaymment || "Fianarantsoa"}, le ${datenow.toLocaleDateString("fr-FR", options)}`;
+
+            doc.font("Helvetica").fontSize(10).text(dateText, rightX, sigY - 20, { width: 250, align: "right" });
             doc.font("Helvetica-Bold").text(
                 "Le Chef Service Patrimoine et Développement Commercial",
                 rightX,
                 sigY,
                 { width: 250, align: "right" }
             );
+
             doc.moveDown(4);
             doc.font("Helvetica").text(
                 "RAZAFINDRABENJA Livaniaina Lucie",
