@@ -274,7 +274,7 @@ function Location() {
                                             link.href = url;
                                             link.setAttribute(
                                                 "download",
-                                                `facture_${location.codeLocation}.pdf`
+                                                `FactureTerrain_N°${location.codeLocation}.pdf`
                                             );
                                             document.body.appendChild(link);
                                             link.click();

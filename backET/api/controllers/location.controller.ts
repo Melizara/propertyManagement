@@ -9,6 +9,7 @@ import { logActivity } from "../middlewares/activityLogs.ts";
 import { Price } from "../models/price.model.ts";
 import PDFDocument from "pdfkit";
 import type * as PDFKit from "pdfkit";
+import fs from "fs";
 
 
 export const createLocation = async (req: Request, res: Response) => {
@@ -207,6 +208,26 @@ export const generateConventionPdf = async (req: AuthRequest, res: Response) => 
         const tenant = location.tenant!;
         const land = location.land!;
         const station = land.station!;
+        // Traduction droite/gauche → ankavan-dalana / ankavia
+        const directionText =
+            land.railwaySide?.toLowerCase() === "droite"
+                ? "ankavan-dalana"
+                : land.railwaySide?.toLowerCase() === "gauche"
+                    ? "ankavian-dalana"
+                    : land.railwaySide;
+
+        // Traduction position : 1 = morona voalohany, 2 = morona faharoa
+        // Convertir position (string → number)
+        const pos = Number(land.position);
+
+        // Traduction position : 1 = morona voalohany, 2 = morona faharoa
+        const positionText =
+            pos === 1
+                ? "morona voalohany"
+                : pos === 2
+                    ? "morona faharoa"
+                    : land.position;
+
 
         const doc = new PDFDocument({ margin: 50 });
         res.setHeader("Content-Type", "application/pdf");
@@ -218,12 +239,38 @@ export const generateConventionPdf = async (req: AuthRequest, res: Response) => 
         doc.pipe(res);
 
         // --- TITRE ---
-        doc.fontSize(18).font('Helvetica-Bold').text(
-            `FANOMEZAN-DALANA N°: ${station.codeStation}/${location.codeLocation}/${new Date().getFullYear()}`,
-            { align: "center" }
-        );
-        doc.moveDown(1);
-        doc.fontSize(12).font('Helvetica').text(`Hanofa ny tanin’ny Lalamby ao ${station.name}`, { align: "center" });
+        // --- TITRE + LOGO ---
+        const logoPath = "api/assets/image.png"; // chemin vers ton logo
+        const titleText = `FANOMEZAN-DALANA N°: ${station.codeStation}/${location.codeLocation}/${new Date().getFullYear()}`;
+        const pageWidth = doc.page.width;
+        const margin = doc.page.margins.left; // 50 si tu laisses le margin à 50
+
+        // Définir largeur et hauteur du logo
+        const logoWidth = 80;
+        const logoHeight = 50;
+
+        // Vérifier si le logo existe pour éviter crash
+
+        let logoExists = fs.existsSync(logoPath);
+
+        // Y de départ
+        let yStart = doc.y;
+
+
+        // Dessiner logo à gauche
+        if (logoExists) {
+            doc.image(logoPath, margin, yStart, { width: logoWidth, height: logoHeight });
+        }
+
+        let textX = margin;
+        let textWidth = pageWidth - 2 * margin;
+
+        doc.fontSize(12).font('Helvetica').text("FITALEAVAN’NY LALAMBIM-\n PIRENENA F.C.E.", textX, yStart + logoHeight + 5, { width: textWidth, align: "left" });
+        doc.moveDown(0.5);
+        doc.fontSize(14).font("Helvetica-Bold");
+        doc.text(titleText, textX, yStart + (logoExists ? logoHeight / 4 : 0), { width: textWidth, align: "right" });
+        doc.moveDown(2);
+        doc.fontSize(12).font('Helvetica').text(`Hanofa ny tanin’ny Lalamby ao ${station.name}`, { align: "right" });
         doc.moveDown(2);
 
         // --- INFORMATIONS LOCATAIRE ---
@@ -245,7 +292,7 @@ export const generateConventionPdf = async (req: AuthRequest, res: Response) => 
             `Hampiasa ny sombin-tany mirefy ${land.area} m², ` +
             `ka Longueur ${land.length} metatra ny lavany, ary largeur ${land.width} metatra ny sakany.\n` +
             `Ao amin’ny tanin’ny Lalambim-pirenena FCE: PK ${land.startPk} ka hatreo PK ${land.endPk}, ` +
-            `${land.railwaySide} raha ho any Manakara, morona faharoa.\n` +
+            `${directionText} raha ho any Manakara,${positionText} .\n` +
             `Fokontany: ${land.neighborHood}, Kaominina: ${land.municipality}.`
         );
         doc.moveDown(1);
@@ -387,9 +434,37 @@ Ny Lalambim-pirenena FCE irery ihany no manam-pahefana amin’ny fananany, koa h
             doc.font('Helvetica').text(a.content);
         });
 
+        // --- TEXTE FINAL (date et ville) ---
         doc.moveDown(1);
         doc.text(`Natao teto ${station.name}, ${new Date().toLocaleDateString()}`, { align: "right" });
+        doc.moveDown(2); // espace avant les signatures
 
+        // Définir les positions horizontales pour les colonnes
+        const pageWidth2 = doc.page.width;
+        const margin2 = doc.page.margins.left;
+        const leftX = margin; // colonne gauche
+        const centerX = pageWidth2 / 3; // centre
+        const rightX = pageWidth2 - margin2 - 200; // colonne droite, 200 = largeur approx du texte
+
+        let currentY = doc.y; // y de départ pour toutes les signatures
+
+        // --- Colonne gauche : Locataire ---
+        doc.fontSize(10).font("Helvetica-Bold").text("NY MPANOFA", leftX, currentY);
+        doc.font("Helvetica").text("Voaray ny fampahafantarana,\nvoavaky ary ekena,\nanio", leftX, doc.y);
+
+        // --- Colonne centre : Directeur ---
+        const centerY = currentY;
+        doc.font("Helvetica-Bold").text("NY TALE LEFITRY NY FCE", centerX, centerY, { width: 200, align: "center" });
+        doc.moveDown(8);
+        doc.font("Helvetica").text("RAJAOBELISON Rova", centerX, doc.y, { width: 200, align: "center" });
+
+        // --- Colonne droite : Responsable foncier ---
+        const rightY = currentY;
+        doc.font("Helvetica-Bold").text("NY TOMPON’ANDRAIKITRY\nNY FANANAN-TANY", rightX, rightY, { width: 200, align: "right" });
+        doc.moveDown(7);
+        doc.font("Helvetica").text("RAZAFINDRABENJA Livaniaina Lucie", rightX, doc.y, { width: 200, align: "right" });
+
+        // --- FIN DU PDF ---
         doc.end();
 
         if (req.userMatricule && location.codeLocation !== undefined) {
@@ -511,7 +586,7 @@ export const generateInvoicePdf = async (req: AuthRequest, res: Response) => {
         drawHeaderRow(
             doc,
             yHeader,
-            "", // chemin logo
+            "api/assets/image.png", // chemin logo
             "RESEAU NATIONAL DES CHEMINS DE FER MALAGASY\nDIRECTION DE LA LIGNE FERROVIAIRE\n FIANARANTSOA COTE-EST",
             [
                 `DM : 04`,
