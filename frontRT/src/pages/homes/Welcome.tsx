@@ -38,8 +38,8 @@ function Welcome() {
                     <div className="d-flex justify-content-center mb-4">
                         <HomeIcon className="text-primary" style={{ width: '3rem', height: '3rem' }} />
                     </div>
-                    <h1 className="display-3 fw-bolder text-dark mb-3">
-                        Propriétés, simplifiées.
+                    <h1 className="display-5 fw-bolder text-dark mb-3">
+                        Terrains, simplifiés.
                     </h1>
                     <p className="lead text-muted mb-5">
                         Gérez facilement vos terrains, locataires et contrats avec la plateforme <strong>lanDloc</strong>, conçue pour la rapidité et l'efficacité.
