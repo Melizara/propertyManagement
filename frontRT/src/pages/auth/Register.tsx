@@ -4,7 +4,8 @@ import type { ChangeEvent, FormEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { register, clearError } from "../../features/authSlice.tsx";
 import type { AppDispatch, RootState } from "../../apps/Store.tsx";
-import { User, Mail, Lock, Briefcase } from "lucide-react";
+import { User, Mail, Lock, Briefcase, Eye, EyeOff } from "lucide-react";
+
 
 function Register() {
   const user = useSelector((state: RootState) => state.auth.data);
@@ -13,6 +14,7 @@ function Register() {
   const [emailError, setEmailError] = useState("");
   const [matriculeError, setMatriculeError] = useState("");
   const [generalError, setGeneralError] = useState("");
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [inputs, setInputs] = useState({
     matricule: "",
     pseudo: "",
@@ -204,7 +206,7 @@ function Register() {
               size={22}
             />
             <input
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirmer le mot de passe"
               maxLength={8}
               minLength={8}
@@ -214,6 +216,22 @@ function Register() {
               className="form-control rounded-pill ps-5 py-2 shadow-sm"
               style={{ borderColor: "#026da1", transition: "all 0.3s" }}
             />
+
+            {/* Icône œil */}
+            <div
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="position-absolute"
+              style={{
+                top: "30%",
+                right: "15px",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                color: "#026da1",
+              }}
+            >
+              {showConfirmPassword ? <EyeOff size={22} /> : <Eye size={22} />}
+            </div>
+
             <div style={errorStyleFixed}>
               {passwordError && <span>{passwordError}</span>}
             </div>

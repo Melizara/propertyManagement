@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux"; // pour dispatcher des a
 import { login, clearError } from "../../features/authSlice.tsx"; // actions pour login et effacer les erreurs
 import type { AppDispatch, RootState } from "../../apps/Store.tsx"; // types pour Redux
 import { User, Lock } from "lucide-react"; // icônes pour les inputs
+import { Eye, EyeOff } from "lucide-react";
+
 
 function Login() {
   // Récupère l'utilisateur actuel depuis le store Redux
@@ -13,6 +15,9 @@ function Login() {
 
   // État local pour stocker les inputs du formulaire
   const [inputs, setInputs] = useState({ matricule: "", password: "" });
+
+  const [showPassword, setShowPassword] = useState(false);
+
 
   // Récupère l'erreur liée au champ "matricule" depuis Redux
   const matriculeError = useSelector(
@@ -138,7 +143,7 @@ function Login() {
           />
           {/* Input password */}
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             name="password"
             placeholder="Password"
             maxLength={8}
@@ -151,11 +156,27 @@ function Login() {
               transition: "all 0.3s",
             }}
           />
+
+          {/* Bouton œil */}
+          <div
+            onClick={() => setShowPassword(!showPassword)}
+            className="position-absolute"
+            style={{
+              top: "70%",
+              right: "15px",
+              transform: "translateY(-50%)",
+              cursor: "pointer",
+              color: "#026da1",
+            }}
+          >
+            {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
+          </div>
+
         </div>
 
         {/* Lien vers la page d'inscription */}
         <div className="text-center mb-4">
-           <p className="small">
+          <p className="small">
             Pas encore membre ? <Link to="/register">Inscrivez-vous ici</Link>
           </p>
         </div>
