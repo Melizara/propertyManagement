@@ -107,7 +107,7 @@ export const login = createAsyncThunk(
       }
       return rejectWithValue({
         field: "matricule",
-        message: "Oops"
+        message: "Matricule inexistant."
       });
     }
   }
