@@ -23,12 +23,8 @@ export interface ILocation {
     userMatricule: string;
 };
 
-// export class Location extends Model<ILocation> { }
-
-// Rendre codeLocation et statusPayment optionnels lors de la création
 interface LocationCreationAttributes extends Optional<ILocation, "codeLocation" | "statusPayment"> { }
 
-// Déclaration de la classe
 export class Location extends Model<ILocation, LocationCreationAttributes> implements ILocation {
     declare codeLocation?: number;
     declare cin: string;
