@@ -47,9 +47,6 @@ export class Location extends Model<ILocation, LocationCreationAttributes> imple
     declare land?: Land;      // ← pour inclure le terrain
 }
 
-
-
-
 export const initLocation = (sequelize: Sequelize) => {
     Location.init(
         {

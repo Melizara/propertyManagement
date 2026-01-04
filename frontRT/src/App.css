@@ -7,4 +7,5 @@
 /* Optionnel : garder le défilement fluide */
 html, body {
   scroll-behavior: smooth;
+  font-size: 12px;
 }

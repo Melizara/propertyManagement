@@ -76,7 +76,7 @@ function HomeLand() {
 
     // Début du rendu du composant
     return (
-        <div className="container-lg" style={{ marginTop: "48px" }}>
+        <div className="container-lg my-5" >
             <nav aria-label="breadcrumb">
                 <ol className="breadcrumb py-2 px-3 rounded-3">
                     <li className="breadcrumb-item" style={{ paddingTop: "4px" }}>
@@ -183,14 +183,13 @@ function HomeLand() {
             )}
 
             {/* Titre de la carte */}
-            <h2>Carte des terrains le long de la FCE (25 m = 1 cm)</h2>
+            <h4>Carte des terrains le long de la FCE (25 m = 1 cm)</h4>
 
-            {/* Conteneur scrollable pour le SVG */}
             {/* Conteneur scrollable pour le SVG */}
             <div
                 id="svg-container"
                 style={{
-                    width: "61vw",
+                    width: "88vw",
                     height: "650px",
                     overflow: "auto",
                     border: "1px solid #ccc",

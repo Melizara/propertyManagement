@@ -31,7 +31,7 @@ function HomeLocation() {
     });
 
     return (
-        <div className="container-lg" style={{ marginTop: "-302px" }}>
+        <div className="container-lg" style={{ marginTop: "-92px" }}>
             {/* Breadcrumb */}
             <nav aria-label="breadcrumb">
                 <ol className="breadcrumb py-2 px-3 rounded-3">
