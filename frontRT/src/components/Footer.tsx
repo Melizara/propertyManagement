@@ -3,7 +3,7 @@ function Footer() {
     <footer className="border-top py-0 bg-light">
       <div className="container-lg">
         <p className="text-center text-muted mb-0 pe-3">
-          Melizara GOAT
+          Melizara lanDloc
         </p>
       </div>
     </footer>

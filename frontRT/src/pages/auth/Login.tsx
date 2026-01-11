@@ -33,8 +33,11 @@ function Login() {
 
   // Fonction pour mettre à jour l'état des inputs lorsque l'utilisateur tape
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target; // récupère le nom et la valeur de l'input
-    setInputs((prev) => ({ ...prev, [name]: value })); // met à jour le bon champ
+    const { name, value } = e.target;
+
+    if (name === "matricule" && !/^\d*$/.test(value)) return;
+
+    setInputs((prev) => ({ ...prev, [name]: value }));
   };
 
   const dispatch = useDispatch<AppDispatch>(); // pour envoyer des actions Redux
@@ -203,7 +206,7 @@ function Login() {
             e.currentTarget.style.transform = "translateY(0)";
           }}
         >
-          Sign In
+          Se connecter
         </button>
       </form>
     </div>

@@ -266,7 +266,7 @@ function LocationForm() {
                                 </select>
                             </div>
                             <div className="col-md-6">
-                                <label className="form-label">Code Land</label>
+                                <label className="form-label">Code du terrain</label>
                                 <select className="form-select" value={codeLand} onChange={e => setCodeLand(e.target.value)} required>
                                     <option value="">Sélectionnez le terrain</option>
                                     {lands

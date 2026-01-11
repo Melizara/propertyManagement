@@ -308,8 +308,6 @@ function HomeLand() {
                                         transition: "transform 0.3s, fill 0.3s",
                                     }}
                                     onClick={() => setSelectedTerrain(t)}
-                                    onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.05)"; }}
-                                    onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
                                 />
                                 {/* Nom du terrain */}
                                 <text

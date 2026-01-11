@@ -25,6 +25,7 @@ function Register() {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
+    if (name === "matricule" && !/^\d*$/.test(value)) return;
     setInputs((prevState) => ({ ...prevState, [name]: value }));
   };
 
@@ -269,7 +270,7 @@ function Register() {
             e.currentTarget.style.transform = "translateY(0)";
           }}
         >
-          Sign Up
+          S'inscrire
         </button>
       </form>
     </div>
